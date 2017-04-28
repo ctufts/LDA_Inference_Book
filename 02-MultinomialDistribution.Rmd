@@ -1,0 +1,7 @@
+# Multinomial Distribution
+
+## Relationship to Bernoulli
+
+## Conjugate Prior: Dirichlet
+
+## Gibbs Sampling Example

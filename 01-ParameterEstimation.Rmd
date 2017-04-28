@@ -1,0 +1,64 @@
+
+# Parameter Estimation
+
+I'm going to build off of a simple example which can be extended through the 
+remainder of this tutorial - a coin flip. A coin flip has 2 possible outcomes: 
+heads or tails. 
+
+__Conditioning for your brain__ : Try to start keeping in mind that we think of a work in a similar 
+manner: word exists in the document or word doesn't exist in the document 
+
+The equation below is a fundamental building block on the way we think about inference. 
+The 4 components are:
+
+* __Prior__: Defines our prior beliefs of the parameter. Do we believe to a good degree of 
+certainty that the coin is fair?  Maybe take a step back and ask yourself 'do I 
+trust the manufacturer of this coin?'. If this manufacturer has always had great quality
+fair coins then you would probably estimate your prior to be 0.5 (50% heads, 50% tails). 
+* __Posterior__: The probability of the parameter __given__ the evidence. The only way 
+to know this value is to already have the evidence...but we can estimate it. Think of 
+it this way give 100 coin flips with 47 heads and 53 tails what is the probability that
+theta is 0.5 (coin is fair)?
+* __Likelihood__: The probability of the evidence __given__ the parameter. Given that 
+we know the coin is fair (theta = 0.5) what is the probability of having 47 heads out 
+of 100 flips? 
+* __Evidence__: The probability of all possible outcomes. Probability of 1/100 heads, 
+2/100 heads, .....
+
+
+
+$$
+\underbrace{p(\Theta|D)}_{posterior} = {\overbrace{p(D|\Theta)}^{likelihood}
+  \overbrace{p(\Theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
+$$
+
+
+## Maximum Likelihood
+The simplest method of parameter estimation is the maximum likelihood method. Effectively
+we calculate the parameter that maximizes the likelihood. So what does this actually 
+mean? 
+
+$$
+L(p;x)\approx f(x;p)=\prod\limits_{i=1}^n f(x_i;p)=\prod\limits_{i=1}^n p^x(1-p)^{1-x}
+$$
+```{r ML, echo = TRUE, fig.cap = 'Scatter Plot - Random Data'}
+
+```
+
+## Maximum a Posteriori (MAP)
+MAP is similar to the method of maximum likelihood estimation, but it also let's us 
+include information about our prior beliefs. 
+
+## Bayesian Inference
+
+### Conjugate Priors
+
+* Stress pattern matching
+
+### Gibbs Sampling
+
+* What happens to the evidence term & why can we ignore it? 
+
+
+### Bias of Two Coins
+
