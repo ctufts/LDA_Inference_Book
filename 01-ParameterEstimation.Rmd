@@ -5,6 +5,29 @@ I'm going to build off of a simple example which can be extended through the
 remainder of this tutorial - a coin flip. A coin flip has 2 possible outcomes: 
 heads or tails. 
 
+## Bernoulli Distribution
+When you flip a coin you get either heads or tails. This single coin flip is known 
+as a Bernoulli trial.  You can think of any single trial with two possible outcomes as a Bernoulli trial. The Bernoulli distribution is the probability distribution of Bernoulli trials, basically a model of the coin flip.  
+
+
+### Bernoulli: A Special Case of the Binomial Distribution
+You will often see Bernoulli distribution mentioned as a special case of the Binomial distribution. The difference between the two is that a Bernoulli distribution only looks at the outcome of a single experiment, not a string of experiments. 
+
+Add citation for [@kerns2010introduction]
+------------Image Placeholder-----------------------
+Single coin outcome - probability of single flip 
+Multi flip outcome  - probability of getting 3 heads in a row and 0 tails
+------------Image Placeholder-----------------------
+
+
+### Bernoulli - Distribution Notation
+
+Probability Mass Function
+$$
+f_{x}(x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\} 
+$$
+
+
 __Conditioning for your brain__ : Try to start keeping in mind that we think of a work in a similar 
 manner: word exists in the document or word doesn't exist in the document 
 
@@ -34,16 +57,60 @@ $$
 
 
 ## Maximum Likelihood
-The simplest method of parameter estimation is the maximum likelihood method. Effectively
-we calculate the parameter that maximizes the likelihood. So what does this actually 
-mean? 
+The simplest method of parameter estimation is the maximum likelihood method. Effectively we calculate the parameter that maximizes the likelihood. 
+$$ 
+\underbrace{p(\Theta|D)}_{posterior} = {\overbrace{\bf \Large p(D|\Theta)}^{\bf \Large LIKELIHOOD}
+  \overbrace{p(\Theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
+$$
+
+So what does this actually 
+mean? In the case of a bernoulli distribution it is fairly straight forward. The 
+value of $\theta$ that maximizes the likelihood is the number of heads over the 
+number of flips. 
+
+Maximum Likelihood
+$$
+L = log \prod\limits_{n=1}^N \theta^{x}(1-\theta)^{1-x} \\
+L = \sum\limits_{n=1}^N \theta^{x}(1-\theta)^{1-x} \\
+L = n^{(1)}log(\theta) + n^{(0)}log(1-\theta)
+$$
+Differentiate with respect to $\theta$:
 
 $$
-L(p;x)\approx f(x;p)=\prod\limits_{i=1}^n f(x_i;p)=\prod\limits_{i=1}^n p^x(1-p)^{1-x}
+{dL \over d\theta} =  {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta}
 $$
-```{r ML, echo = TRUE, fig.cap = 'Scatter Plot - Random Data'}
+Set it equal to zero and solve:
+$$
+\begin{align*}
+{n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} &= 0  \\ \\
+{n^{(1)}\over\theta} &= {n^{(0)}\over 1-\theta} \\ \\
+{n^{1} - \theta n^{1}} &= {\theta n^{0}} \\ \\
+n^{(1)} &= \theta(n^{(1)} + n^{0}) \\ \\
+\theta &= {n^{(1)} \over N}
+\end{align*}
+$$
+
+```{r bernoulliml, echo = TRUE, fig.cap = 'Bernoulli Maximum Likelihood'}
+library(ggplot2)
+heads = 1:10
+flips = 10
+ds <- data.frame(heads, flips = rep(flips, length(heads)))
+ds$theta <- ds$heads/ds$flips
+
+
+ggplot(ds, aes(x = heads,
+               y = theta)) + 
+  geom_point(color ='#1520c1', size = 3) + 
+  geom_linerange(aes(x=heads,
+                     y=NULL, ymax=theta,
+                     ymin=0)) +
+  scale_x_continuous(breaks = seq(0,10,2), labels = seq(0,10,2)) + 
+  labs(y='\U0398', x="Number of Heads", title ="ML Parameter Estimation: 10 Bernoulli Trials") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
 
 ```
+
 
 ## Maximum a Posteriori (MAP)
 MAP is similar to the method of maximum likelihood estimation, but it also let's us 

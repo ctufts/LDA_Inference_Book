@@ -1,1 +1,4 @@
 # LDA
+
+## Level Overview
+Edwin Chen's general explanation of how gibbs sampling is working in a practical sense. 
