@@ -5,31 +5,101 @@ I'm going to build off of a simple example which can be extended through the
 remainder of this tutorial - a coin flip. A coin flip has 2 possible outcomes: 
 heads or tails. 
 
-## Bernoulli Distribution
+## Distributions
+### Bernoulli
 When you flip a coin you get either heads or tails. This single coin flip is known 
 as a Bernoulli trial.  You can think of any single trial with two possible outcomes as a Bernoulli trial. The Bernoulli distribution is the probability distribution of Bernoulli trials, basically a model of the coin flip.  
 
 
-### Bernoulli: A Special Case of the Binomial Distribution
-You will often see Bernoulli distribution mentioned as a special case of the Binomial distribution. The difference between the two is that a Bernoulli distribution only looks at the outcome of a single experiment, not a string of experiments. 
+#### Bernoulli: A Special Case of the Binomial Distribution
+You will often see Bernoulli distribution mentioned as a special case of the Binomial distribution. The binomial model consists of _n_ bernoulli trials, where each trial is independent and the probability of success does not change between trials.[@kerns2010introduction]. The bernoulli distribution is the case of a single trial or _n_=1. 
 
-Add citation for [@kerns2010introduction]
+To clarify if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However if I want to know the probability of getting 2 heads in a row, this is where the binomial distribution comes in. Keep this in mind while reviewing the upcoming examples as I will be referencing our probability of getting a __single__ heads during a coin flip even though I am using 100 coin flips for reference. 
+
 ------------Image Placeholder-----------------------
+
 Single coin outcome - probability of single flip 
 Multi flip outcome  - probability of getting 3 heads in a row and 0 tails
+
 ------------Image Placeholder-----------------------
 
 
-### Bernoulli - Distribution Notation
-
+#### Bernoulli - Distribution Notation
+The probability mass function of the bernoulli distribution is shown below. 
 Probability Mass Function
 $$
-f_{x}(x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\} 
+f_{x}(x)=P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\} 
+$$
+The only parameter of the bernoulli distribution is $\theta$ which defines the probability of success during a bernoulli trial. The value of _x_ is 0 for a failure and 1 for a success. In a practical example you can think of this as 0 for tails and 1 for heads during a coin flip. In the example below the value of $\theta$ is set to 0.7. We can see the probability of getting a success, a 1, is 0.7, while the probability of failure is 0.3. 
+
+$$
+\begin{align*}
+P(X=1)&=\theta^{1}(1-\theta)^{1-1}, \hspace{1cm} \theta=0.7 \\
+P(X=1)&=0.7*1=0.7 \\\\
+P(X=0)&=0.7^{0}(1-0.7)^{1-0}\\
+P(X=0)&=0.3
+
+\end{align*}
 $$
 
+### Beta Distribution
 
-__Conditioning for your brain__ : Try to start keeping in mind that we think of a work in a similar 
-manner: word exists in the document or word doesn't exist in the document 
+The beta distribution can be thought of as a probability distribution of 
+distributions[@Robinson2014beta]. 
+
+Since we are building up to estimation of a coin's bias, I'll stick with the coin flip
+to describe how the beta distribution works. We already know the bernoulli distribution has one parameter $\theta$. We can use the beta distribution to determine the probability of the parameter $\theta$ based on some prior information. 
+
+If you flip a coin 2 
+times resulting in 1 heads and 1 tails how sure are you that the coin is fair? Probably not all that sure, right? But what if you flipped the coin 200 times and 
+it resulted in 100 heads and 100 tails? You would be much more confident that the coin
+is fair.  
+The beta distribution has 2 shape parameters, $\alpha$ and $\beta$. These can be though of as the results from the coin flips we just talked about. Below the probability density for different values of $\theta$ is displayed based on different values of $\alpha$ and $\beta$. In general, the higher the value of $\alpha$ and $\beta$ the narrower the density curve is. This makes sense with our logical example, the more information we have pointing to a fair coin, the more confident we are the coin is fair. (Reread - make sure this doesn't sound like circular reasoning)
+
+```{r betashape, echo = TRUE, fig.cap = 'Beta Distribution'}
+library(ggplot2)
+a <- c(1, 10, 100)
+b <- c(1, 10, 100)
+params <- cbind(a,b)
+ds <- NULL
+n <- seq(0,1,0.01)
+for(i in 1:nrow(params)){
+  ds <- rbind(data.frame(x = n, y = dbeta(n, params[i,1], params[i,2]),
+                             parameters = paste0("\U03B1 = ",params[i,1],
+                                                 ", \U03B2 = ", params[i,2])), ds)
+}
+
+ggplot(ds, aes(x = x, y = y, color=parameters)) + geom_line() + 
+  labs(x = '\U03B8', y = 'Probability Density') +
+  scale_color_discrete(name=NULL)
+
+```
+
+What about the cases where $\alpha$ and $\beta$ are not equal or close to equal? Well in those 
+cases you would probably assume a bit of skew in the distribution, i.e. your coin may
+be less than fair. 
+
+```{r betaShapeSkewed, echo = TRUE, fig.cap = 'Beta Distribution - Skewed'}
+library(ggplot2)
+a <- c(8, 2)
+b <- c(2, 8)
+params <- cbind(a,b)
+ds <- NULL
+n <- seq(0,1,0.01)
+for(i in 1:nrow(params)){
+  ds <- rbind(data.frame(x = n, y = dbeta(n, params[i,1], params[i,2]),
+                             parameters = paste0("\U03B1 = ",params[i,1],
+                                                 ", \U03B2 = ", params[i,2])), ds)
+}
+
+ggplot(ds, aes(x = x, y = y, color=parameters)) + geom_line() + 
+  labs(x = '\U03B8', y = 'Probability Density') +
+  scale_color_discrete(name=NULL)
+
+```
+
+
+## Inference: The Building Blocks
 
 The equation below is a fundamental building block on the way we think about inference. 
 The 4 components are:
@@ -48,36 +118,61 @@ of 100 flips?
 * __Evidence__: The probability of all possible outcomes. Probability of 1/100 heads, 
 2/100 heads, .....
 
-
+__Conditioning for your brain__ : We are starting with a coin flip, but the eventual goal is to link this back to words appearing in a document. Try to keep in mind that we think of a word similar to the outcome of a coin: word exists in the document (success!!) or word doesn't exist in the document (failure!!)
 
 $$
-\underbrace{p(\Theta|D)}_{posterior} = {\overbrace{p(D|\Theta)}^{likelihood}
-  \overbrace{p(\Theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
+\underbrace{p(\theta|D)}_{posterior} = {\overbrace{p(D|\theta)}^{likelihood}
+  \overbrace{p(\theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
 $$
+
 
 
 ## Maximum Likelihood
-The simplest method of parameter estimation is the maximum likelihood method. Effectively we calculate the parameter that maximizes the likelihood. 
+The simplest method of parameter estimation is the maximum likelihood method. Effectively we calculate the parameter that maximizes the likelihood.
+
+
 $$ 
-\underbrace{p(\Theta|D)}_{posterior} = {\overbrace{\bf \Large p(D|\Theta)}^{\bf \Large LIKELIHOOD}
-  \overbrace{p(\Theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
+\underbrace{p(\theta|D)}_{posterior} = {\overbrace{\bf \Large p(D|\theta)}^{\bf \Large LIKELIHOOD}
+  \overbrace{p(\theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
 $$
 
-So what does this actually 
-mean? In the case of a bernoulli distribution it is fairly straight forward. The 
+Let's first discuss what the likelihood is. The likelihood can be described as the probability of getting observed data given a specified value of the parameter, $\theta$.  For example, let's say I've flipped a coin 10 times and got 5 heads, 5 tails. Given that data what is the likelihood the coin is fair, i.e. $\theta$ equals 0.5.  
+
+To calculate the likelihood of a parameter given a single outcome we would use the probability mass function:
+$$
+P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\} 
+$$
+Where an outcome of heads equal 1 and tails is 0. Now let's say we have carried out the 10 flips as mentioned previously:
+$$
+\begin{align*}
+P(X_{1}=x_{1},X_{2}=x_{2},...,X_{10}=x_{10}) &= \prod\limits_{n=1}^{10} \theta^{x}(1-\theta)^{1-x}\\
+L(\theta) &= \prod\limits_{n=1}^{N} \theta^{x}(1-\theta)^{1-x}
+\end{align*}
+$$
+What is shown in the equations above is the joint probability mass function. Each coin flip is independent so we calculate the product of the PMF's for each trial. This is known as the likelihood function - the likelihood of $\theta$ given our observed data. 
+
+https://onlinecourses.science.psu.edu/stat414/node/191
+
+
+In the case of a bernoulli distribution it is fairly straight forward. The 
 value of $\theta$ that maximizes the likelihood is the number of heads over the 
 number of flips. 
 
 Maximum Likelihood
+
+To derive the maximum likelihood we start by taking the log of the likelihood, $\mathcal{L}$. 
+
 $$
-L = log \prod\limits_{n=1}^N \theta^{x}(1-\theta)^{1-x} \\
-L = \sum\limits_{n=1}^N \theta^{x}(1-\theta)^{1-x} \\
-L = n^{(1)}log(\theta) + n^{(0)}log(1-\theta)
+\begin{align*}
+\mathcal{L} &= log \prod\limits_{n=1}^N \theta^{x}(1-\theta)^{1-x} \\\\
+ &= \sum\limits_{n=1}^N log(\theta^{x}(1-\theta)^{1-x}) \\\\
+ &= n^{(1)}log(\theta) + n^{(0)}log(1-\theta)
+\end{align*}
 $$
 Differentiate with respect to $\theta$:
 
 $$
-{dL \over d\theta} =  {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta}
+{d\mathcal{L} \over d\theta} =  {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta}
 $$
 Set it equal to zero and solve:
 $$
@@ -90,7 +185,7 @@ n^{(1)} &= \theta(n^{(1)} + n^{0}) \\ \\
 \end{align*}
 $$
 
-```{r bernoulliml, echo = TRUE, fig.cap = 'Bernoulli Maximum Likelihood'}
+```{r bernoulliml, echo = TRUE, warning=FALSE, fig.cap = 'Bernoulli Maximum Likelihood'}
 library(ggplot2)
 heads = 1:10
 flips = 10
@@ -105,16 +200,165 @@ ggplot(ds, aes(x = heads,
                      y=NULL, ymax=theta,
                      ymin=0)) +
   scale_x_continuous(breaks = seq(0,10,2), labels = seq(0,10,2)) + 
-  labs(y='\U0398', x="Number of Heads", title ="ML Parameter Estimation: 10 Bernoulli Trials") +
+  labs(y='\U03B8', x="Number of Heads", title ="ML Parameter Estimation: 10 Bernoulli Trials") +
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-```
+
 
 
 ## Maximum a Posteriori (MAP)
 MAP is similar to the method of maximum likelihood estimation, but it also let's us 
-include information about our prior beliefs. 
+include information about our prior beliefs. Unlike ML estimation, MAP estimatest parameters by trying to maximize the posterior of the parameters.
+
+$$
+\theta_{MAP}=\underset{\theta}{\operatorname{argmax}} P(\theta|X)
+$$
+
+
+
+Pros
+
+Cons
+
+$$
+\require{enclose}
+\theta_{MAP}=\underset{\theta}{\operatorname{argmax}}{\overbrace{p(D|\theta)}^{likelihood}
+  \overbrace{p(\theta)}^{prior} \over \underbrace{\enclose{horizontalstrike}{p(D)}}_{evidence}}
+$$
+The evidence term is dropped during the calculation of $\theta_{MAP}$ since it is not a function of $\theta$. We will see this also occur when performing Bayesian inference using conjugate priors in the coming section. 
+
+Similar to calculating the Likelhood, the first step is to apply the log function to the remaining terms. 
+$$
+\begin{align*}
+\theta_{MAP} &=\underset{\theta}{\operatorname{argmax}}p(D|\theta)p(\theta) \\\\
+&= \mathcal{L}(\theta|D) + log(p(\theta))
+
+\end{align*}
+$$
+We have already derived the log likelihood during our derivation of the maximum likelihood, so let's now focus on the prior. The prior for the Bernoulli distribution is the Beta distribution and can be used to describe $p(\theta)$. The probability distribution function for the Beta distribution is shown below. 
+
+$$
+p(\theta|\alpha,\beta) = {\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \beta)}}
+$$
+Plugging in the PDF of the beta distribution for the prior:
+
+$$
+\begin{align*}
+\theta_{MAP}&= \mathcal{L}(\theta|D) + log(p(\theta)) \\\\
+\theta_{MAP}&= n^{(1)}log(\theta) + n^{(0)}log(1-\theta) + log({\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \beta)}}) \\\\
+\theta_{MAP}&= n^{(1)}log(\theta) + n^{(0)}log(1-\theta) + log({\theta^{\alpha-1}) + log((1-\theta)^{\beta-1})-log({B(\alpha, \beta)}}) \\\\
+
+
+{d \over d\theta} \mathcal{L}(\theta|D) + log(p(\theta)) &= {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} + {\alpha - 1\over\theta} - {\beta - 1 \over 1-\theta}
+\\\\
+0 &= {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} + {\alpha - 1\over\theta} - {\beta - 1 \over 1-\theta}
+\\\\
+\theta_{MAP}&= {{n^{(1)} + \alpha -1} \over {n^{(1)} + n^{0} + \alpha + \beta - 2}}
+\end{align*}
+$$
+
+Now that we know how to calculate the parameter $\theta$ that maximizes the posterior, lets take a look at how choices of different priors effects our outcome. 
+
+```{r mapSmallnUninformedPrior, echo = TRUE, fig.cap = 'MAP: Small number of experiments and uninformed prior'}
+# description:
+# ml will yeild the expected average and is not effected by the prior
+# map uses a weak assumption - uniform density for all values of theta
+# this results in a theta_map value very similar to the ml value
+n <- 20
+heads <- 12
+tails <- 8
+
+
+# ml
+ml_theta <- heads/n
+# map
+B <- 2
+alpha <- 2
+
+map_theta <- (heads + alpha - 1)/(heads + tails + alpha + B -2)
+possible_theta <- seq(0,1,0.01)
+beta_ds <- data.frame(theta = possible_theta, density = dbeta(possible_theta, alpha,B))
+ggplot(beta_ds, aes(x = theta, y = density)) + geom_point(color='#3316cc') + 
+  geom_vline(xintercept=map_theta, color = '#ba0223') + 
+  annotate("text", x = map_theta + 0.1, y=0.5, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
+  labs(x='\U03B8')
+
+```
+
+
+```{r mapSmallnInformedPrior, echo = TRUE, fig.cap = 'MAP: Small number of experiments and informed prior'}
+# description:
+# the strong assumption of a 'fair' coin prior reduces the width of the 
+# distribution, i.e. much higher probability density near theta (p) of 0.5
+# This forces the MAP theta value to stay much closer to the prior due to the 
+# small amount of observed evidence
+
+n <- 20
+heads <- 12
+tails <- 8
+
+
+# ml
+ml_theta <- heads/n
+# map
+B <- 100
+alpha <- 100
+
+map_theta <- (heads + alpha - 1)/(heads + tails + alpha + B -2)
+possible_theta <- seq(0,1,0.001)
+beta_ds <- data.frame(theta = possible_theta, density = dbeta(possible_theta, alpha,B))
+ggplot(beta_ds, aes(x = theta, y = density)) + geom_line(color='#3316cc') + 
+  geom_vline(xintercept=map_theta, color = '#ba0223') + 
+  annotate("text", x = map_theta + 0.1, y=11, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
+  labs(x='\U03B8', y = 'Density')
+
+```
+
+```{r mapLargenUninformedPrior, echo = TRUE, fig.cap = 'MAP: Large number of experiments and uninformed prior'}
+# description
+# high number of observed samples (evidence)
+# weak prior - uniform 
+# ml and map are close to one another - close... as expected
+n <- 1000
+heads <- 723
+tails <- n-heads
+
+
+# ml
+ml_theta <- heads/n
+# map
+B <- 2
+alpha <- 2
+map_theta <- (heads + alpha - 1)/(heads + tails + alpha + B -2)
+possible_theta <- seq(0,1,0.001)
+beta_ds <- data.frame(theta = possible_theta, density = dbeta(possible_theta, alpha,B))
+ggplot(beta_ds, aes(x = theta, y = density)) + geom_line(color='#3316cc') + 
+  geom_vline(xintercept=map_theta, color = '#ba0223') + 
+  annotate("text", x = map_theta + 0.2, y=1.2, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
+  labs(x='\U03B8', y = 'Density')
+```
+```{r mapLargeInformedPrior, echo = TRUE, fig.cap = 'MAP: Large number of experiments and informed prior'}
+
+n <- 1000
+heads <- 723
+tails <- n-heads
+
+
+# ml
+ml_theta <- heads/n
+# map
+B <- 100
+alpha <- 100
+possible_theta <- seq(0,1,0.001)
+beta_ds <- data.frame(theta = possible_theta, density = dbeta(possible_theta, alpha,B))
+map_theta <- (heads + alpha - 1)/(heads + tails + alpha + B -2)
+ggplot(beta_ds, aes(x = theta, y = density)) + 
+  geom_line(color='#3316cc') + 
+  geom_vline(xintercept=map_theta, color = '#ba0223') + 
+  annotate("text", x = map_theta + 0.1, y=1.2, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
+  labs(x='\U03B8', y = 'Density')
+```
 
 ## Bayesian Inference
 
@@ -147,7 +391,9 @@ p(theta1, theta2|D) show how denominator p(d) drops out.
 
 The general premise of conjugate priors is that the prior has the same form 
 as the posterior distribution. Ok, but what does that mean for us? In a pragmatic 
-sense it means we need to look for a pattern when solving for our posterior. 
+sense it means we need to look for a __pattern__ when solving for our posterior. 
+
+__PATTERN MATCHING__
 
 Let's take the coin flip example. We want to estimate the posterior, the 
 probability of $\theta$ given the observed data. Obviously we don't have observed 
@@ -159,60 +405,42 @@ form:
 
 #### Bernoulli & Beta
 The beta distribution serves as the conjugate prior for the bernoulli distribution.
-The beta distribution can be thought of as a probability distribution of 
-distributions[@Robinson2014beta]. 
 
-Since we are building up to estimation of a coin's bias, I'll stick with the coin flip
-to describe how the beta distribution works. In general the more information I have
-the more narrow my distribution will be.  In a logical sense if you flip a coin 2 
-times resulting in 1 heads and 1 tails how sure are you that the coin is fair? Probably not all that sure, right? But what if you flipped the coin 200 times and 
-it resulted in 100 heads and 100 tails? You would be much more confident that the coin
-is fair.  Below you will see the shape of the beta distribution dependent on it's shape parameters $\alpha$ and $\beta$. 
+Putting the conjugate prior to use....estimating the posterior
 
-```{r betashape, echo = TRUE, fig.cap = 'Beta Distribution'}
-library(ggplot2)
-a <- c(1, 10, 100)
-b <- c(1, 10, 100)
-params <- cbind(a,b)
-ds <- NULL
-n <- seq(0,1,0.01)
-for(i in 1:nrow(params)){
-  ds <- rbind(data.frame(x = n, y = dbeta(n, params[i,1], params[i,2]),
-                             parameters = paste0("\U03B1 = ",params[i,1],
-                                                 ", \U03B2 = ", params[i,2])), ds)
-}
+$$
+\underbrace{p(\theta|D)}_{posterior} = {\overbrace{p(D|\theta)}^{likelihood}
+  \overbrace{p(\theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
+$$
+When estimating the posterior, the evidence term is dropped out...scaling factor, blah blah
 
-ggplot(ds, aes(x = x, y = y, color=parameters)) + geom_line() + 
-  labs(x = 'Density')
-
-```
-
-What about the cases where $\alpha$ and $\beta$ are not equal or close to equal? Well in those 
-cases you would probably assume a bit of skew in the distribution, i.e. your coin may
-be less than fair. 
-
-```{r betaShapeSkewed, echo = TRUE, fig.cap = 'Beta Distribution - Skewed'}
-library(ggplot2)
-a <- c(6, 4)
-b <- c(4, 6)
-params <- cbind(a,b)
-ds <- NULL
-n <- seq(0,1,0.01)
-for(i in 1:nrow(params)){
-  ds <- rbind(data.frame(x = n, y = dbeta(n, params[i,1], params[i,2]),
-                             parameters = paste0("\U03B1 = ",params[i,1],
-                                                 ", \U03B2 = ", params[i,2])), ds)
-}
-
-ggplot(ds, aes(x = x, y = y, color=parameters)) + geom_line() + 
-  labs(x = 'Density')
-
-```
+$$
+\underbrace{p(\theta|D)}_{posterior}  \propto  {\overbrace{p(D|\theta)}^{likelihood}
+  \overbrace{p(\theta)}^{prior}}
+$$
+To estimate the posterior of the bernoulli distribution 
+$$
+p(\theta|z,N) \propto \overbrace{\theta^z(1-\theta)^{(N-z)}}^{likelihood} \overbrace{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}^{prior}
+$$
+After combining terms we get....
+$$
+p(\theta|z,N) \propto \overbrace{\theta^{(a + z -1)}(1-\theta)^{(N-z+b-1)}}^{Same \hspace{1 mm} Pattern \hspace{1 mm} as \hspace{1 mm} Likelihood}
+$$
 
 ### Gibbs Sampling
 
-* What happens to the evidence term & why can we ignore it? 
+
+
 
 
 ### Bias of Two Coins
+
+
+## Summary
+
+* ML
+* MAP
+* Bayesian Inference 
+* Gibbs Sampling
+* Evidence Term 
 
