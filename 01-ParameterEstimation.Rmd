@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 
 # Parameter Estimation
 
@@ -338,6 +343,7 @@ ggplot(beta_ds, aes(x = theta, y = density)) + geom_line(color='#3316cc') +
   annotate("text", x = map_theta + 0.2, y=1.2, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
   labs(x='\U03B8', y = 'Density')
 ```
+
 ```{r mapLargeInformedPrior, echo = TRUE, fig.cap = 'MAP: Large number of experiments and informed prior'}
 
 n <- 1000
@@ -428,12 +434,55 @@ p(\theta|z,N) \propto \overbrace{\theta^{(a + z -1)}(1-\theta)^{(N-z+b-1)}}^{Sam
 $$
 
 ### Gibbs Sampling
-
+This should include a drawing of sampling from two different jars
+At each iteration the jar is changed (the parameters of the distribution)
 
 
 
 
 ### Bias of Two Coins
+Code example of 2 coins
+
+```{r 2coins, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Bias of Two Coins: Theta 1'}
+a = 2
+b = 2
+
+z1 = 11
+N1 = 14
+z2 = 7
+N2 = 14
+
+
+theta = rep(0.5,2)
+niters = 10000
+burnin = 500
+
+thetas = matrix(0, nrow = (niters-burnin), ncol=2)
+for (i in 1:niters){
+
+  theta1 = rbeta(n = 1, shape1 = a + z1, shape2 = b + N1 - z1)
+  # get value theta2| all other vars
+  theta2 = rbeta(n = 1, shape1 = a + z2, shape2 =b + N2 - z2)
+  
+  if (i >= burnin){
+    thetas[(i-burnin), ] = c(theta1, theta2)
+  }
+}
+
+
+ds <- data.frame(theta1 = thetas[,1], theta2= thetas[,2])
+ggplot(ds, aes(x=theta1)) + geom_histogram(aes(y=..density..),color='#1303a5', fill='#200cd1') + 
+  labs(title = expression(theta[1]~Estimate), x=expression(theta[1])) + geom_vline(xintercept = mean(ds$theta1), color='#b7091a')
+```
+```{r 2coins2, echo = TRUE, warning=FALSE,message=FALSE, fig.cap = 'Bias of Two Coins - Theta 2'}
+ggplot(ds, aes(x=theta2)) + geom_histogram(aes(y=..density..),color='#1303a5', fill='#200cd1') + 
+  labs(title = expression(theta[2]~Estimate), x=expression(theta[2])) + geom_vline(xintercept = mean(ds$theta2), color='#b7091a')
+
+```
+
+### When was the coin swapped out
+Code example where variables take into account other variables (showing the need for 
+gibbs sampling)
 
 
 ## Summary
