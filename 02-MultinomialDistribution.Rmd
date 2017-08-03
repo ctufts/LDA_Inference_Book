@@ -1,7 +1,58 @@
 # Multinomial Distribution
 
-## Relationship to Bernoulli
+Comparison of a Die vs. Words
+The binomial distribution is a special case of the multinomeial distribution 
+where the number of possible outcomes is 2. A multinomial distribution can 
+have 2 or more outcomes and therefore is normally shown through examples using 
+a 6-sided die. To get things on track for LDA, let's instead think of 1 
+document (similar to the die), with 6 distinct words (the 6 sides of the die):
+
+"Latent Dirichlet Allocation has many peices"
+
+From the example above we would assume each word has an equal probability (think 
+fair die) because each word is unique. Therefore each word has 1/6 chances of being randomly sampled from the document (think 1/6 chance of getting a '1' during a dice roll). 
+
+
+
+k sided die n times (in our case n = 1, k = 6)
+n = 1, k=2 is bernoulli distribution 
+n >1 , k = 2 is binomial distribution
+
+$$
+f(x)=\dfrac{n!}{x_1!x_2!\cdots x_k!}\theta_1^{x_1} \theta_2^{x_2} \cdots \theta_k^{x_k}
+$$
+
+## Relationship to Bernoulli 
+
+Let's recall the bernoulli probability mass function
+$$
+P(X_{1}=x_{1},X_{2}=x_{2},...,X_{N}=x_{N}) = \prod\limits_{n=1}^{N} \theta^{x}(1-\theta)^{1-x}
+$$
+Let's swap in some different terms. We can replace the first term, $\theta$, with $\theta_{1}$ and the second term, $(1-\theta)$ as $\theta_{2}$. Then we have:
+
+$$
+\prod\limits_{n=1}^{N} {\theta_{1}}^{x_{1}}{\theta_{2}}^{x_{2}}
+$$
+x's are 1 or zero, so the factorial is always 1 for this example (counts never higher that that). Factorial of _n_ is the same as the product from _n_=1 to _N_. 
+
+
+```{r multinomialDist, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Sampling from Multinomial with Equal Parameters'}
+# draw 1000 samples from multinomial distribution
+outcomes <- replicate(10000, which(rmultinom(1,1,rep(1/6,6))==1))
+words <- unlist(strsplit("Latent Dirichlet Allocation has many peices", ' '))
+ds <- data.frame(id = outcomes, word = sapply(outcomes, function(x)words[x]))
+ggplot(ds, aes(x= word)) + geom_histogram(stat='count')
+
+```
+
 
 ## Conjugate Prior: Dirichlet
+The conjugate prior for the multinomial distribution is the Dirichlet distribution. Similar
+to the beta distribution, it can be though of as a distribution of distributions. Let's first 
+take a look at the distribution of both the multinomial and Dirichlet distribution and see if we can find a similar pattern. Remember, conjugate priors have the same form as the estimated posterior of the original distribution. 
+
+
 
 ## Gibbs Sampling Example
+
+`r '\U03B8'`

@@ -31,7 +31,9 @@ Multi flip outcome  - probability of getting 3 heads in a row and 0 tails
 
 #### Bernoulli - Distribution Notation
 The probability mass function of the bernoulli distribution is shown below. 
+
 Probability Mass Function
+
 $$
 f_{x}(x)=P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\} 
 $$
@@ -39,6 +41,7 @@ The only parameter of the bernoulli distribution is $\theta$ which defines the p
 
 $$
 \begin{align*}
+
 P(X=1)&=\theta^{1}(1-\theta)^{1-1}, \hspace{1cm} \theta=0.7 \\
 P(X=1)&=0.7*1=0.7 \\\\
 P(X=0)&=0.7^{0}(1-0.7)^{1-0}\\
@@ -151,7 +154,7 @@ Where an outcome of heads equal 1 and tails is 0. Now let's say we have carried 
 $$
 \begin{align*}
 P(X_{1}=x_{1},X_{2}=x_{2},...,X_{10}=x_{10}) &= \prod\limits_{n=1}^{10} \theta^{x}(1-\theta)^{1-x}\\
-L(\theta) &= \prod\limits_{n=1}^{N} \theta^{x}(1-\theta)^{1-x}
+L(\theta) &= \prod\limits_{n=1}^{10} \theta^{x}(1-\theta)^{1-x}
 \end{align*}
 $$
 What is shown in the equations above is the joint probability mass function. Each coin flip is independent so we calculate the product of the PMF's for each trial. This is known as the likelihood function - the likelihood of $\theta$ given our observed data. 
@@ -480,9 +483,13 @@ ggplot(ds, aes(x=theta2)) + geom_histogram(aes(y=..density..),color='#1303a5', f
 
 ```
 
-### When was the coin swapped out
-Code example where variables take into account other variables (showing the need for 
-gibbs sampling)
+### Change Point Example
+What if the problem we are solving is more complicated. Let's say I flip a coin repeatedly, but at some point I switch to another coin with a different bias ($/theta$). I want to detect the point in time when coin 1 was swapped out for coin 2. 
+
+IMAGE PLACE HOLDER - MAKE A DRAWING OF FLIPPING TWO COINS ON A TIME SCALE
+
+
+
 
 
 ## Summary
