@@ -51,8 +51,16 @@ The conjugate prior for the multinomial distribution is the Dirichlet distributi
 to the beta distribution, it can be though of as a distribution of distributions. Let's first 
 take a look at the distribution of both the multinomial and Dirichlet distribution and see if we can find a similar pattern. Remember, conjugate priors have the same form as the estimated posterior of the original distribution. 
 
+General notes on Dirichlet: higher values of beta (or whatever parameter name is), 
+the more uniform the probability for each class, the lower the more more likely a specific class is going to be much larger than the rest. 
 
+Let's try to rationalize this in the same way we do bernoulli. Bernoulli is 2 possible outcomes, beta is it's prior. 
+Bernoulli is a special case of multinomial where n = 2, so I would assume that means beta is the special case of dirichlet where the number of shape parameters is 2. Think about this a bit more - in the case of beta distribution we use prior data (or assumption) of coin flips - 5 heads, 5 tails - means a = 5, b = 5. From this we make our distribution and we can randomly sample a valid value of theta (and remember we only use theta for bernoulli because if we have one probability, we can infer the other via subtraction from 1, but in reality there is a p value for heads, and a p value for tails... this makes it a bit eaiser to understand the transfer to multinomial) based on this prior information. So it would be no different if we have 3 different words in a topic, we use the prior info as the parameters for the Dirichlet distribution - 3 red, 2 blue, 1 green which would translate to alpha1 = 3, alpha2 = 2, alpha3 = 1, from there we can build our multidimensional distribution and select the most likely value for our thetas (or the probability of a specific outcome where all those p's sum to one).  
+
+[May want to put a plot or two here showing the dirichlet code, but creating the same beta distributions, so 
+this makes more sense]
 
 ## Gibbs Sampling Example
 
 `r '\U03B8'`
+

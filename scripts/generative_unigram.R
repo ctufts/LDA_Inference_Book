@@ -1,6 +1,19 @@
+# Description: Generate document based on one document's prior word distributions
+# i.e. this is used for the dirichlet prior
+# word is then generated based on the parameter provided by the dirichlet 
+# random variable as input to a multinomial random variable
+# This is an example of equations 53-54 in Heinrich's paper
+# 
+
+
+
+
 rm(list = ls())
 library(MCMCpack)
-library(dplyr)
+library(tidyverse)
+
+
+
 # use letters function as your vocabulary
 v <- c('red', 'green', 'blue')
 d1 <- c(.1, .1, .8)
@@ -34,5 +47,5 @@ books <- tibble(label = c('blue', 'red', 'green'),
 cat(sapply(new_doc, function(x) books$code[which(books$label == x)]))
 # mixture of our 3 docs ....
 
-# think about this a bit, maybe go to reproducing the fig 7 in gregor first
-# also rewatch tim hoppers talk
+
+
