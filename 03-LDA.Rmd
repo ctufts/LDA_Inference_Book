@@ -1,93 +1,6 @@
 # LDA
 
-## Components
-Words
-Documents
-Topics
-Alphas
-Beta
-
-## Generative Model
-LDA is know as a generative model. What is a generative model? Approaches that explicitly or implicitly model the distribution of inputs as well as outputs are known as generative models, because by sampling from them it is possible to generate synthetic data points in the input space (cite Bishop's book here). This means we can create documents with a mixture of topics and a mixture of words based on thosed topics. Let's start off with a simple example of generating unigrams. 
-
-### Unigram Model 
-(cite gregor)
-Let's start with a static example where we know the word distributions in our vocabulary. Let's say I have 4 words and I have the probability a word will be used. 
-
-```{r} 
-
-```
-
-
-### Generating Documents 
-
-Provide an example of document generation based on a set # of topics
-
-
-```{r GenerativeTable, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'results of generative example'}
-
-library(MCMCpack)
-library(tidyverse)
-library(knitr)
-library(kableExtra)
-
-
-k <- 2 # number of topics
-M <- 5 # let's create 10 documents
-vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
-betas <- rep(1,length(vocab)) # dirichlet parameters for topic word distributions
-
-xi <- 10 # lambda parameter for poisson distribution
-alphas <- rep(1,k) # topic document dirichlet parameters
-
-theta <- matrix(0, nrow = M, ncol = k)
-
-N <- rep(0, M)
-
-# thetas - document topic proportion ~ Dir(alpha)
-# Nm - lenght of document m ~ Poisson(xi)
-# 
-
-# calculate topic word distributions
-
-set.seed(7)
-phi <- rdirichlet(k, betas)
-
-
-ds <-NULL
-for(m in 1:M){
-  # sample topic mixture proportion for document
-  set.seed(m)
-  theta[m, ] <- rdirichlet(1, alphas)
-  # sample document length
-  N[m] <- rpois(1, xi)
-  
-  for(n in 1:N[m]){
-    # sample topic index , i.e. select topic
-    set.seed(n)
-    topic <- which(rmultinom(1,1,theta[m, ])==1)
-    # sample word from topic
-    set.seed(n)
-    new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
-    ds <- rbind(ds, tibble(word = new_word, topic = topic, document = m,
-                               prop_a = theta[m, 1], prop_b = theta[m,2], 
-                           n = n))
-  }
-}
-
-
-ds %>% group_by(document, topic) %>% 
-  summarise(words = paste(word, collapse = ' '),
-            topic_distribution_parameter = if_else(topic[1] == 1, prop_a[1], prop_b[1])
-            ) %>% arrange(document, topic) %>%
-  kable() %>% kable_styling(bootstrap_options = 'striped')
-
-```
-
-## Inference
-What if I don't want to generate docuements. What if my goal is to infer what topics are present in each document and what words belong to each topic? This is were LDA for inference comes into play. 
-
-## High Level Overview
+## High Level Overview 
 Edwin Chen's general explanation of how gibbs sampling is working in a practical sense. 
 
 Pseudo code break down - nesting of for loops so that we can display 
@@ -118,3 +31,259 @@ Make the following points:
 This though is somewhat incoherent and needs to be cleaned up, but this is how to drive home the point of what is actually happening without tons of calculus. 
 
 1) This is similar to what we did in the bernoulli example as well as the change detection example. We identify our estimate for the posterior and plug in our counts and parameter values during each iteration. For example in the bernoulli/beta example, we estimate theta 1, then theta 2, then move to the next iteration and repeat. In the timeseries example it is a bit more complicated as our parameter estimations often feed the next parameter estimation. This was shown in the change point detection example. This is very similar to what is happening in each iteration of gibbs sampling for our topic assignment. This is the reason for the decrement in each step - we can't use the current parameter in the estimation of our current parameter, it has to be taken out of the equation. However we are going to use the new topic assignment given to all the other words during our estimations. 
+
+## Components
+Words
+Documents
+Topics
+Alphas
+Beta
+
+## Generative Model
+LDA is know as a generative model. What is a generative model? Approaches that explicitly or implicitly model the distribution of inputs as well as outputs are known as generative models, because by sampling from them it is possible to generate synthetic data points in the input space (cite Bishop's book here). This means we can create documents with a mixture of topics and a mixture of words based on thosed topics. Let's start off with a simple example of generating unigrams. 
+
+### Unigram Model 
+(cite gregor)
+Let's start with a static example where we know the word distributions in our vocabulary. Let's say I have 4 words and I have the probability a word will be used. 
+
+
+
+### Generating Documents 
+
+#### Topic Word Mixtures, Document Topic Mixtures, and Document Length Known
+
+Provide an example of document generation based on a set # of topics, with set topic word distributions and set document topic distributions
+
+Known values:
+* 2 topics : word distributions of each topic below
+    * $\phi_{1} = [ , ]$
+    * $\phi_{2} = [ , ]$
+* All Documents have same topic distribution:
+    * $\theta = [ , ]$
+* All Documents contain 10 words
+    
+
+* For d = 1 to D where D is the number of documents
+    * For w = 1 to W  where W is the number of words in document *d*
+        + *Select the topic for word *w* *
+        + $z_{i}$ ~ Multinomial($\theta_{d}$)
+        + *Select word based on topic *z*'s word distribution  
+        + $w_{i}$ ~ Multinomial($\phi^{(z_{i})})
+
+
+```{r} 
+library(MCMCpack)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+
+k <- 2 # number of topics
+M <- 5 # let's create 10 documents
+vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
+betas <- rep(1,length(vocab)) # dirichlet parameters for topic word distributions
+
+xi <- 10 # lambda parameter for poisson distribution
+alphas <- rep(1,k) # topic document dirichlet parameters
+
+theta <- matrix(0, nrow = M, ncol = k)
+
+N <- rep(0, M)
+
+# thetas - document topic proportion ~ Dir(alpha)
+# Nm - lenght of document m ~ Poisson(xi)
+# 
+
+# calculate topic word distributions
+
+set.seed(7)
+phi <- rdirichlet(k, betas)
+
+ds <-NULL
+for(m in 1:M){
+  # sample topic mixture proportion for document
+  set.seed(m)
+  theta[m, ] <- rdirichlet(1, alphas)
+  # sample document length
+  N[m] <- rpois(1, xi)
+  
+  for(n in 1:N[m]){
+    # sample topic index , i.e. select topic
+    set.seed(n)
+    topic <- which(rmultinom(1,1,theta[m, ])==1)
+    # sample word from topic
+    set.seed(n)
+    new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
+    ds <- rbind(ds, tibble(word = new_word, topic = topic, document = m,
+                               prop_a = theta[m, 1], prop_b = theta[m,2], 
+                           n = n))
+  }
+}
+```
+
+
+#### Topic Word Mixtures and Document Length Known
+
+So this time we will introduce documents with different topic distributions. The document length is still known, as is the topic word mixtures, but we will be randomly sampling the topic distribution of each document. 
+Provide an example of document generation based on a set # of topics, with set topic word distributions and set document topic distributions
+
+Known values:
+* 2 topics : word distributions of each topic below
+    * $\phi_{1} = [ , ]$
+    * $\phi_{2} = [ , ]$
+* All Documents have same topic distribution:
+    * $\theta = [ , ]$
+* All Documents contain 10 words
+    
+
+* For d = 1 to D where D is the number of documents
+    * For w = 1 to W  where W is the number of words in document *d*
+        + *Select the topic for word *w* *
+        + $z_{i}$ ~ Multinomial($\theta_{d}$)
+        + *Select word based on topic *z*'s word distribution  
+        + $w_{i}$ ~ Multinomial($\phi^{(z_{i})})
+
+
+```{r} 
+library(MCMCpack)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+
+k <- 2 # number of topics
+M <- 5 # let's create 10 documents
+vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
+betas <- rep(1,length(vocab)) # dirichlet parameters for topic word distributions
+
+xi <- 10 # lambda parameter for poisson distribution
+alphas <- rep(1,k) # topic document dirichlet parameters
+
+theta <- matrix(0, nrow = M, ncol = k)
+
+N <- rep(0, M)
+
+# thetas - document topic proportion ~ Dir(alpha)
+# Nm - lenght of document m ~ Poisson(xi)
+# 
+
+# calculate topic word distributions
+
+set.seed(7)
+phi <- rdirichlet(k, betas)
+
+ds <-NULL
+for(m in 1:M){
+  # sample topic mixture proportion for document
+  set.seed(m)
+  theta[m, ] <- rdirichlet(1, alphas)
+  # sample document length
+  N[m] <- rpois(1, xi)
+  
+  for(n in 1:N[m]){
+    # sample topic index , i.e. select topic
+    set.seed(n)
+    topic <- which(rmultinom(1,1,theta[m, ])==1)
+    # sample word from topic
+    set.seed(n)
+    new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
+    ds <- rbind(ds, tibble(word = new_word, topic = topic, document = m,
+                               prop_a = theta[m, 1], prop_b = theta[m,2], 
+                           n = n))
+  }
+}
+```
+
+The generative process for LDA is shown below. 
+
+1. For k = 1 to K where K is the total number of topics
+    + *Sample parameters for word distribution of each topic*
+    + $\phi^{(k)}$ ~ Dirichlet($\beta$) 
+2. For d = 1 to D where number of documents is D
+    + *Sample parameters for document topic distribution*
+    + $\theta_{d}$ ~ Dirichlet($\alpha$)
+    + For w = 1 to W  where W is the number of words in document *d*
+        + *Select the topic for word *w* *
+        + $z_{i}$ ~ Multinomial($\theta_{d}$)
+        + *Select word based on topic *z*'s word distribution  
+        + $w_{i}$ ~ Multinomial($\phi^{(z_{i})})
+
+
+
+
+Then change example to be set # of topics, set topic word distributions, but document topic distributions are drawn from dirichlet
+
+Then go to full LDA (example below)
+
+
+```{r GenerativeTableCode, echo = TRUE, warning=FALSE, message=FALSE}
+
+library(MCMCpack)
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+
+k <- 2 # number of topics
+M <- 5 # let's create 10 documents
+vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
+betas <- rep(1,length(vocab)) # dirichlet parameters for topic word distributions
+
+xi <- 10 # lambda parameter for poisson distribution
+alphas <- rep(1,k) # topic document dirichlet parameters
+
+theta <- matrix(0, nrow = M, ncol = k)
+
+N <- rep(0, M)
+
+# thetas - document topic proportion ~ Dir(alpha)
+# Nm - lenght of document m ~ Poisson(xi)
+# 
+
+# calculate topic word distributions
+
+set.seed(7)
+phi <- rdirichlet(k, betas)
+
+ds <-NULL
+for(m in 1:M){
+  # sample topic mixture proportion for document
+  set.seed(m)
+  theta[m, ] <- rdirichlet(1, alphas)
+  # sample document length
+  N[m] <- rpois(1, xi)
+  
+  for(n in 1:N[m]){
+    # sample topic index , i.e. select topic
+    set.seed(n)
+    topic <- which(rmultinom(1,1,theta[m, ])==1)
+    # sample word from topic
+    set.seed(n)
+    new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
+    ds <- rbind(ds, tibble(word = new_word, topic = topic, document = m,
+                               prop_a = theta[m, 1], prop_b = theta[m,2], 
+                           n = n))
+  }
+}
+```
+
+
+```{r r GenerativeTable, echo = FALSE, warning=FALSE, message=FALSE}
+ds %>% group_by(document, topic) %>% 
+  summarise(words = paste(word, collapse = ' '),
+            topic_distribution_parameter = if_else(topic[1] == 1, prop_a[1], prop_b[1])
+            ) %>% arrange(document, topic) %>%
+  kable() %>% kable_styling(bootstrap_options = 'striped')
+
+```
+
+## Inference
+What if I don't want to generate docuements. What if my goal is to infer what topics are present in each document and what words belong to each topic? This is were LDA for inference comes into play.
+
+
+Use Darling as an outline for the derivation process .... cite carpenter and heinrich (same as Darling does). 
+
+
+Toy Code example of inference on a simple set of docs - maybe another emoji example. 
+
+
