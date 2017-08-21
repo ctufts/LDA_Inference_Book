@@ -21,10 +21,8 @@ betas <- rep(1,length(vocab)) # dirichlet parameters for topic word distribution
 xi <- 20 # lambda parameter for poisson distribution
 alphas <- rep(1,k) # topic document dirichlet parameters
 
-topic_1 <- runif(M)
-theta <- matrix(c(topic_1, 1-topic_1), nrow = M, ncol = k)
+topic_doc_distributions <- c(0.5, 0.5)
 
-# N <- rep(0, M)
 
 # thetas - document topic proportion ~ Dir(alpha)
 # Nm - lenght of document m ~ Poisson(xi)
@@ -36,21 +34,20 @@ theta <- matrix(c(topic_1, 1-topic_1), nrow = M, ncol = k)
 phi <- matrix(c(0.1, 0, 0.9, 0.4, 0.4, 0.2), nrow = k, ncol = length(vocab), 
               byrow = TRUE)
 
-N <- 10 #words in each document
-ds <-tibble(word = rep('', N*M),
-            topic = rep(0, N*M)
-            ) 
-            
-for(m in 1:M){
-  # sample topic mixture proportion for document
-  # sample document length
-  # N[m] <- rpois(1, xi)
-  
-  for(n in 1:N){
-    # sample topic index , i.e. select topic
-    topic <- which(rmultinom(1,1,theta[m, ])==1)
-    # sample word from topic
-    new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
-    ds[n,] <- c(new_word, topic)
-  }
+
+books <- tibble(label = c('blue', 'red', 'green'), 
+                code = c('\U1F4D8', '\U1F4D5', '\U1F4D7'))
+
+
+get_word <- function(theta, phi){
+  vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
+  topic <- which(rmultinom(1,1,theta)==1)
+  # sample word from topic
+  new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
+  return(c(topic, new_word))  
 }
+
+selected_words <- t(replicate(100, get_word(theta= topic_doc_distributions, phi)))
+df <- tibble(topic = as.numeric(selected_words[,1]),
+             word_label = books$label[match(selected_words[, 2],books$code)],
+             word_encodings = selected_words[, 2])

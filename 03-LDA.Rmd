@@ -62,10 +62,10 @@ Building on the document generating model in chapter two, let's try to create do
 
 Known values:
 * 2 topics : word distributions of each topic below
-    * $\phi_{1} = [ , ]$
-    * $\phi_{2} = [ , ]$
+    * $\phi_{1} = [ red = 0.8, blue = 0.2, green = 0.0 ]$
+    * $\phi_{2} = [ red = 0.2, blue = 0.1, green = 0.7 ]$
 * All Documents have same topic distribution:
-    * $\theta = [ , ]$
+    * $\theta = [ topic a = 0.5, topic b = 0.5 ]$
 * All Documents contain 10 words
     
 
@@ -84,12 +84,85 @@ library(knitr)
 library(kableExtra) 
 ```
 
-```{r} 
 
+
+```{r, echo=TRUE, warning=FALSE, message=FALSE} 
+
+k <- 2 # number of topics
+M <- 10 # let's create 10 documents
+vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
+alphas <- rep(1,k) # topic document dirichlet parameters
+
+phi <- matrix(c(0.1, 0, 0.9,
+                0.4, 0.4, 0.2), 
+              nrow = k, 
+              ncol = length(vocab), 
+              byrow = TRUE)
+
+theta <- c(0.5, 0.5)
+
+N <- 10 #words in each document
+ds <-tibble(doc_id = rep(0,N*M), 
+            word = rep('', N*M),
+            topic = rep(0, N*M)
+            ) 
+            
+row_index <- 1
+for(m in 1:M){
+  for(n in 1:N){
+    # sample topic index , i.e. select topic
+    topic <- which(rmultinom(1,1,theta)==1)
+    # sample word from topic
+    new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
+    ds[row_index,] <- c(m,new_word, topic)
+    row_index <- row_index + 1
+  }
+}
+
+ds %>% group_by(doc_id) %>% summarise(
+  tokens = paste(word, collapse = ' ')
+) %>% kable()
+```
+#### Topic Word Mixtures, Document Topic Mixtures, and Document Length Unknown
+
+```{r} 
+k <- 2 # number of topics
+M <- 10 # let's create 10 documents
+vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
+alphas <- rep(1,k) # topic document dirichlet parameters
+
+phi <- matrix(c(0.1, 0, 0.9,
+                0.4, 0.4, 0.2), 
+              nrow = k, 
+              ncol = length(vocab), 
+              byrow = TRUE)
+
+theta <- c(0.5, 0.5)
+xi <- 10 # average document length 
+N <- rpois(M, xi) #words in each document
+ds <-tibble(doc_id = rep(0,sum(N)), 
+            word   = rep('', sum(N)),
+            topic  = rep(0, sum(N))
+            ) 
+            
+row_index <- 1
+for(m in 1:M){
+  for(n in 1:N[m]){
+    # sample topic index , i.e. select topic
+    topic <- which(rmultinom(1,1,theta)==1)
+    # sample word from topic
+    new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
+    ds[row_index,] <- c(m,new_word, topic)
+    row_index <- row_index + 1
+  }
+}
+
+ds %>% group_by(doc_id) %>% summarise(
+  tokens = paste(word, collapse = ' ')
+) %>% kable()
 ```
 
-
-#### Topic Word Mixtures and Document Length Known
+#### Static Topic Word Mixtures, Varying Document Topic Distributions
 
 So this time we will introduce documents with different topic distributions. The document length is still known, as is the topic word mixtures, but we will be randomly sampling the topic distribution of each document. 
 Provide an example of document generation based on a set # of topics, with set topic word distributions and set document topic distributions
@@ -111,49 +184,6 @@ Known values:
         + $w_{i}$ ~ Multinomial($\phi^{(z_{i})})
 
 
-```{r} 
-k <- 2 # number of topics
-M <- 5 # let's create 10 documents
-vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
-betas <- rep(1,length(vocab)) # dirichlet parameters for topic word distributions
-
-xi <- 10 # lambda parameter for poisson distribution
-alphas <- rep(1,k) # topic document dirichlet parameters
-
-theta <- matrix(0, nrow = M, ncol = k)
-
-N <- rep(0, M)
-
-# thetas - document topic proportion ~ Dir(alpha)
-# Nm - lenght of document m ~ Poisson(xi)
-# 
-
-# calculate topic word distributions
-
-set.seed(7)
-phi <- rdirichlet(k, betas)
-
-ds <-NULL
-for(m in 1:M){
-  # sample topic mixture proportion for document
-  set.seed(m)
-  theta[m, ] <- rdirichlet(1, alphas)
-  # sample document length
-  N[m] <- rpois(1, xi)
-  
-  for(n in 1:N[m]){
-    # sample topic index , i.e. select topic
-    set.seed(n)
-    topic <- which(rmultinom(1,1,theta[m, ])==1)
-    # sample word from topic
-    set.seed(n)
-    new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
-    ds <- rbind(ds, tibble(word = new_word, topic = topic, document = m,
-                               prop_a = theta[m, 1], prop_b = theta[m,2], 
-                           n = n))
-  }
-}
-```
 
 The generative process for LDA is shown below. 
 
@@ -177,58 +207,56 @@ Then change example to be set # of topics, set topic word distributions, but doc
 Then go to full LDA (example below)
 
 
-```{r GenerativeTableCode, echo = TRUE, warning=FALSE, message=FALSE}
-
-library(MCMCpack)
-library(tidyverse)
-library(knitr)
-library(kableExtra)
-
+```{r  echo = TRUE, warning=FALSE, message=FALSE}
 
 k <- 2 # number of topics
-M <- 5 # let's create 10 documents
+M <- 10 # let's create 10 documents
 vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
-betas <- rep(1,length(vocab)) # dirichlet parameters for topic word distributions
-
-xi <- 10 # lambda parameter for poisson distribution
 alphas <- rep(1,k) # topic document dirichlet parameters
 
-theta <- matrix(0, nrow = M, ncol = k)
+phi <- matrix(c(0.1, 0, 0.9,
+                0.4, 0.4, 0.2), 
+              nrow = k, 
+              ncol = length(vocab), 
+              byrow = TRUE)
 
-N <- rep(0, M)
 
-# thetas - document topic proportion ~ Dir(alpha)
-# Nm - lenght of document m ~ Poisson(xi)
-# 
-
-# calculate topic word distributions
-
-set.seed(7)
-phi <- rdirichlet(k, betas)
-
-ds <-NULL
+xi <- 10 # average document length 
+N <- rpois(M, xi) #words in each document
+ds <-tibble(doc_id = rep(0,sum(N)), 
+            word   = rep('', sum(N)),
+            topic  = rep(0, sum(N)), 
+            theta_a = rep(0, sum(N)),
+            theta_b = rep(0, sum(N))
+            ) 
+            
+row_index <- 1
 for(m in 1:M){
-  # sample topic mixture proportion for document
-  set.seed(m)
-  theta[m, ] <- rdirichlet(1, alphas)
-  # sample document length
-  N[m] <- rpois(1, xi)
+  theta <-  rdirichlet(1, alphas)
   
   for(n in 1:N[m]){
     # sample topic index , i.e. select topic
-    set.seed(n)
-    topic <- which(rmultinom(1,1,theta[m, ])==1)
+    topic <- which(rmultinom(1,1,theta)==1)
     # sample word from topic
-    set.seed(n)
     new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
-    ds <- rbind(ds, tibble(word = new_word, topic = topic, document = m,
-                               prop_a = theta[m, 1], prop_b = theta[m,2], 
-                           n = n))
+    ds[row_index,] <- c(m,new_word, topic,theta)
+    row_index <- row_index + 1
   }
 }
+
+ds %>% group_by(doc_id) %>% summarise(
+  tokens = paste(word, collapse = ' '), 
+  topic_a = round(as.numeric(unique(theta_a)), 2), 
+  topic_b = round(as.numeric(unique(theta_b)), 2) 
+) %>% kable()
+
 ```
 
+### LDA Generative Model 
 
+```{r}
+
+```
 (NOTE: Spread the table so topics are side by side for each doc)
 
 ```{r r GenerativeTable, echo = FALSE, warning=FALSE, message=FALSE}
