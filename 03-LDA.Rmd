@@ -40,19 +40,25 @@ Alphas
 Beta
 
 ## Generative Model
-LDA is know as a generative model. What is a generative model? Approaches that explicitly or implicitly model the distribution of inputs as well as outputs are known as generative models, because by sampling from them it is possible to generate synthetic data points in the input space (cite Bishop's book here). This means we can create documents with a mixture of topics and a mixture of words based on thosed topics. Let's start off with a simple example of generating unigrams. 
 
-### Unigram Model 
-(cite gregor)
-Let's start with a static example where we know the word distributions in our vocabulary. Let's say I have 4 words and I have the probability a word will be used. 
+IMPORTANT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+(NOTE: You need to figure out a way to connect the code example of generating words/docs back to the math (or at least one of the other symbolic representations). This is necesary for explaining how to flip to inferenece. It is fine if the inference part leaves out the long process of derivation, but you need to be able to unstack the generative model so that the transfer to inference makes sense - this has been covered at the end of chapter 2 in the multinomial/dirichlet example, but should be expanded to show how plate diagrams work.....ugh I hate these)
+
+
+LDA is know as a generative model. What is a generative model? Approaches that explicitly or implicitly model the distribution of inputs as well as outputs are known as generative models, because by sampling from them it is possible to generate synthetic data points in the input space [@bishop2006pattern]. This means we can create documents with a mixture of topics and a mixture of words based on thosed topics. Let's start off with a simple example of generating unigrams. 
 
 
 ### Generating Documents 
 
 #### Topic Word Mixtures, Document Topic Mixtures, and Document Length Known
 
-Provide an example of document generation based on a set # of topics, with set topic word distributions and set document topic distributions
+Building on the document generating model in chapter two, let's try to create documents that have words drawn from more than one topic. To clarify the contraints of the model will be:
+
+* set number of topics (2)
+* constant topic distributions in each document
+* constant word distribution in each topic 
+
 
 Known values:
 * 2 topics : word distributions of each topic below
@@ -71,54 +77,15 @@ Known values:
         + $w_{i}$ ~ Multinomial($\phi^{(z_{i})})
 
 
-```{r} 
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 library(MCMCpack)
 library(tidyverse)
 library(knitr)
-library(kableExtra)
+library(kableExtra) 
+```
 
+```{r} 
 
-k <- 2 # number of topics
-M <- 5 # let's create 10 documents
-vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
-betas <- rep(1,length(vocab)) # dirichlet parameters for topic word distributions
-
-xi <- 10 # lambda parameter for poisson distribution
-alphas <- rep(1,k) # topic document dirichlet parameters
-
-theta <- matrix(0, nrow = M, ncol = k)
-
-N <- rep(0, M)
-
-# thetas - document topic proportion ~ Dir(alpha)
-# Nm - lenght of document m ~ Poisson(xi)
-# 
-
-# calculate topic word distributions
-
-set.seed(7)
-phi <- rdirichlet(k, betas)
-
-ds <-NULL
-for(m in 1:M){
-  # sample topic mixture proportion for document
-  set.seed(m)
-  theta[m, ] <- rdirichlet(1, alphas)
-  # sample document length
-  N[m] <- rpois(1, xi)
-  
-  for(n in 1:N[m]){
-    # sample topic index , i.e. select topic
-    set.seed(n)
-    topic <- which(rmultinom(1,1,theta[m, ])==1)
-    # sample word from topic
-    set.seed(n)
-    new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
-    ds <- rbind(ds, tibble(word = new_word, topic = topic, document = m,
-                               prop_a = theta[m, 1], prop_b = theta[m,2], 
-                           n = n))
-  }
-}
 ```
 
 
@@ -145,12 +112,6 @@ Known values:
 
 
 ```{r} 
-library(MCMCpack)
-library(tidyverse)
-library(knitr)
-library(kableExtra)
-
-
 k <- 2 # number of topics
 M <- 5 # let's create 10 documents
 vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
@@ -267,6 +228,8 @@ for(m in 1:M){
 }
 ```
 
+
+(NOTE: Spread the table so topics are side by side for each doc)
 
 ```{r r GenerativeTable, echo = FALSE, warning=FALSE, message=FALSE}
 ds %>% group_by(document, topic) %>% 

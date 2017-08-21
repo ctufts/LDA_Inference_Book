@@ -11,6 +11,8 @@ link-citations: yes
 documentclass: book
 site: bookdown::bookdown_site
 biblio-style: apalike
+twitter-handle: devlintufts
+cover-image: "Davis.jpg"
 ---
 
 # Preface {-}

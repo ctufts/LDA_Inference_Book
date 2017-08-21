@@ -1,6 +1,3 @@
-
-
-
 rm(list = ls())
 library(tidyverse)
 library(dplyr)
@@ -12,10 +9,11 @@ get_topic <- function(k){
   which(rmultinom(1,size = 1,rep(1/k,k))[,1] == 1)
 } 
 
-create_documents <- function(k, M){
+create_documents <- function(k, M, phi, vocab){
   # k - topics
   # M - documents
-  vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
+  # phi - word distribution for each topic
+  # vocab - vocabulary
   betas <- rep(1,length(vocab)) # dirichlet parameters for topic word distributions
   
   xi <- 20 # lambda parameter for poisson distribution
@@ -25,16 +23,6 @@ create_documents <- function(k, M){
   theta <- matrix(c(topic_1, 1-topic_1), nrow = M, ncol = k)
   
   N <- rep(0, M)
-  
-  # thetas - document topic proportion ~ Dir(alpha)
-  # Nm - lenght of document m ~ Poisson(xi)
-  # 
-  
-  # calculate topic word distributions
-  
-  
-  phi <- matrix(c(0.1, 0, 0.9, 0.4, 0.4, 0.2), nrow = k, ncol = length(vocab), 
-                byrow = TRUE)
   
   
   ds <-NULL
@@ -58,12 +46,17 @@ create_documents <- function(k, M){
 
 k <- 2 # number of topics
 m <- 10 # let's create 10 documents
-beta <- 0.1
+beta <- 1
 # k <- 2
-alpha <- 50/k
+alpha <- 5
 p <- rep(0,k)
+vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
+phi <- matrix(c(0.1, 0, 0.9, 0.4, 0.4, 0.2), nrow = k, ncol = length(vocab), 
+              byrow = TRUE)
+colnames(phi) <- vocab
 
-docs_origin <- create_documents(k,m)
+
+docs_origin <- create_documents(k,m, phi, vocab)
 current_state <- docs_origin[,c('document', 'word', 'topic')]
 current_state$topic <- NA
 
@@ -72,6 +65,8 @@ current_state$topic <- NA
 
 
 t <- length(unique(current_state$word))
+
+# n_mk  doc_topic_count
 n_mk <- matrix(0, nrow = m, ncol = k)
 # document_topic_sum
 n_m  <- rep(0,m)
@@ -97,7 +92,7 @@ for( i in 1:nrow(current_state)){
 
 # gibbs
 
-for (iter in 1:2000){
+for (iter in 1:1000){
   # for(i in 1:m){
   # cs <- filter(current_state, document == m)
   # either fix the indexing or need to update 2's?
@@ -152,7 +147,7 @@ docs_origin %>% select(document, prop_a, prop_b) %>% distinct()
 
 current_state %>% group_by(word) %>%
   summarise(
-    topic_a = sum(topic == 1)/n(),
-    topic_b = sum(topic == 2)/n()
+    topic_a = sum(topic == 1)/sum(current_state$topic == 1),
+    topic_b = sum(topic == 2)/sum(current_state$topic == 2)
   )
 

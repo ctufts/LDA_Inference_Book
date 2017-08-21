@@ -12,8 +12,6 @@ rm(list = ls())
 library(MCMCpack)
 library(tidyverse)
 
-
-
 # use letters function as your vocabulary
 v <- c('red', 'green', 'blue')
 d1 <- c(.1, .1, .8)
@@ -33,19 +31,40 @@ nwords_d1 <- 100 # lenght of new document
 word_counts <- table(words_d1)
 alphas <-  word_counts
 new_doc <- rep('', nwords_d1)
-
 for(i in 1:nwords_d1){
   p = rdirichlet(1,alphas)
   new_doc[i] <- names(word_counts)[which(rmultinom(1, 1, p) == 1)]
 }
-
 table(new_doc)
 books <- tibble(label = c('blue', 'red', 'green'), 
                     code = c('\U1F4D8', '\U1F4D5', '\U1F4D7'))
-
-
 cat(sapply(new_doc, function(x) books$code[which(books$label == x)]))
 # mixture of our 3 docs ....
 
 
+###### tidy version of the same thing ######
 
+# data frame should consist of:
+# document id
+# word
+# unicode
+
+nwords <- 10
+ndocs  <- 5
+word_encodings <- tibble(label = c('blue', 'red', 'green'), 
+                code = c('\U1F4D8', '\U1F4D5', '\U1F4D7'), 
+                word_props = c(.1, .1, .8))
+
+thetas <- rdirichlet(ndocs*nwords, alphas)
+print(head(thetas))
+
+selected_words <- apply(thetas, 1, function(x) which(rmultinom(1,1,x)==1))
+
+ds <- tibble(doc_id = rep(1:ndocs, each = nwords),
+             word = word_encodings$label[selected_words], 
+             word_uni = word_encodings$code[selected_words])
+
+
+ds %>% group_by(doc_id) %>% summarise(
+  tokens = paste(word_uni, collapse = ' ')
+)
