@@ -214,6 +214,8 @@ M <- 10 # let's create 10 documents
 vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
 alphas <- rep(1,k) # topic document dirichlet parameters
 
+
+
 phi <- matrix(c(0.1, 0, 0.9,
                 0.4, 0.4, 0.2), 
               nrow = k, 
@@ -256,19 +258,61 @@ ds %>% group_by(doc_id) %>% summarise(
 
 ```{r}
 
+k <- 2 # number of topics
+M <- 10 # let's create 10 documents
+vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
+alphas <- rep(1,k) # topic document dirichlet parameters
+
+
+betas <- rep(1,length(vocab)) # dirichlet parameters for topic word distributions
+phi <- rdirichlet(k, betas)
+
+
+xi <- 10 # average document length 
+N <- rpois(M, xi) #words in each document
+ds <-tibble(doc_id = rep(0,sum(N)), 
+            word   = rep('', sum(N)),
+            topic  = rep(0, sum(N)), 
+            theta_a = rep(0, sum(N)),
+            theta_b = rep(0, sum(N))
+            # , 
+            # word_prop = rep(0, sum(N))
+            ) 
+            
+row_index <- 1
+for(m in 1:M){
+  theta <-  rdirichlet(1, alphas)
+  
+  for(n in 1:N[m]){
+    # sample topic index , i.e. select topic
+    topic <- which(rmultinom(1,1,theta)==1)
+    # sample word from topic
+    new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
+    ds[row_index,] <- c(m,new_word, topic,theta)
+    row_index <- row_index + 1
+  }
+}
+
+ds %>% group_by(doc_id, topic) %>% summarise(
+  tokens = paste(word, collapse = ' '), 
+  topic_a = round(as.numeric(unique(theta_a)), 2), 
+  topic_b = round(as.numeric(unique(theta_b)), 2) 
+) %>% kable() 
+
 ```
 (NOTE: Spread the table so topics are side by side for each doc)
 
 ```{r r GenerativeTable, echo = FALSE, warning=FALSE, message=FALSE}
-ds %>% group_by(document, topic) %>% 
-  summarise(words = paste(word, collapse = ' '),
-            topic_distribution_parameter = if_else(topic[1] == 1, prop_a[1], prop_b[1])
-            ) %>% arrange(document, topic) %>%
-  kable() %>% kable_styling(bootstrap_options = 'striped')
-
 ```
 
 ## Inference
+
+----- Give general description of pseudo code 
+- go through each doc, each word, get probability of topic, assign topic, repeat
+- this all gets lost in the math - it really is that simple, all the confusing components 
+come from the derivation of the probability calculation ....
+
+
 What if I don't want to generate docuements. What if my goal is to infer what topics are present in each document and what words belong to each topic? This is were LDA for inference comes into play.
 
 
@@ -276,5 +320,7 @@ Use Darling as an outline for the derivation process .... cite carpenter and hei
 
 
 Toy Code example of inference on a simple set of docs - maybe another emoji example. 
+
+
 
 
