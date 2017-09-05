@@ -440,7 +440,17 @@ $$
 This should include a drawing of sampling from two different jars
 At each iteration the jar is changed (the parameters of the distribution)
 
+Mathematical representation of what happens in Gibbs Sampling:
 
+$$
+\begin{align*}
+&p(\theta_{1}^{i+1}) \sim p(\theta_{1}^{i}|\theta_{2}^{i}, \theta_{3}^{i},..., \theta{n}^{i}) \\
+&p(\theta_{2}^{i+1}) \sim p(\theta_{2}^{i}|\theta_{1}^{i+1}, \theta_{3}^{i},..., \theta{n}^{i}) \\
+&p(\theta_{3}^{i+1}) \sim p(\theta_{3}^{i}|\theta_{1}^{i+1}, \theta_{2}^{i+1},..., \theta{n}^{i}) \\
+&................................ \\ 
+&p(\theta_{n}^{i+1}) \sim p(\theta_{n}^{i}|\theta_{1}^{i+1}, \theta_{2}^{i+1},..., \theta_{n-1}^{i+1}) \\
+\end{align*}
+$$
 
 
 ### Bias of Two Coins
@@ -487,6 +497,7 @@ ggplot(ds, aes(x=theta2)) + geom_histogram(aes(y=..density..),color='#1303a5', f
 What if the problem we are solving is more complicated. Let's say I flip a coin repeatedly, but at some point I switch to another coin with a different bias ($/theta$). I want to detect the point in time when coin 1 was swapped out for coin 2. 
 
 IMAGE PLACE HOLDER - MAKE A DRAWING OF FLIPPING TWO COINS ON A TIME SCALE
+
 
 
 
