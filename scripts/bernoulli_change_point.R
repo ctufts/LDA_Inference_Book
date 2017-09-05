@@ -77,6 +77,23 @@ ggplot(ds, aes(x = sample_index, y = x, color = as.factor(theta))) + geom_point(
 
 params_df <- as.data.frame(params)
 names(params_df) <- c('theta1', 'theta2', 'change_point')
-ggplot(params_df, aes(x = theta2)) + geom_histogram(fill="#7A99AC", color ='#1A384A' ) + theme_minimal()
-ggplot(params_df, aes(x = theta1)) + geom_histogram(fill="#7A99AC", color ='#1A384A' ) + theme_minimal()
-ggplot(params_df, aes(x = change_point)) + geom_histogram(fill="#7A99AC", color ='#1A384A') + theme_minimal()
+ggplot(params_df, aes(x = theta2)) + 
+  geom_histogram(fill="#7A99AC", color ='#1A384A' ) + 
+  theme_minimal() + 
+  geom_vline(xintercept = mean(params_df$theta2), color='#b7091a') +
+  labs(title = expression(theta[2]~Estimate), x=expression(theta[2]), y = 'Density') 
+
+ggplot(params_df, aes(x = theta1)) + 
+  geom_histogram(fill="#7A99AC", color ='#1A384A' ) + 
+  theme_minimal() + 
+  geom_vline(xintercept = mean(params_df$theta1), color='#b7091a') +
+  labs(title = expression(theta[1]~Estimate), x=expression(theta[1]), y = 'Density') 
+
+ggplot(params_df, aes(x = change_point)) + 
+  geom_histogram(fill="#7A99AC", color ='#1A384A') +
+  theme_minimal() + 
+  geom_vline(xintercept = mean(params_df$change_point), color='#b7091a') +
+  labs(title = 'Change Point Estimate', x='Change Point', y = 'Density') 
+
+
+

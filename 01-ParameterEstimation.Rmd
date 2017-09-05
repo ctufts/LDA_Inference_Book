@@ -65,7 +65,7 @@ is fair.
 The beta distribution has 2 shape parameters, $\alpha$ and $\beta$. These can be though of as the results from the coin flips we just talked about. Below the probability density for different values of $\theta$ is displayed based on different values of $\alpha$ and $\beta$. In general, the higher the value of $\alpha$ and $\beta$ the narrower the density curve is. This makes sense with our logical example, the more information we have pointing to a fair coin, the more confident we are the coin is fair. (Reread - make sure this doesn't sound like circular reasoning)
 
 ```{r betashape, echo = TRUE, fig.cap = 'Beta Distribution'}
-library(ggplot2)
+library(tidyverse)
 a <- c(1, 10, 100)
 b <- c(1, 10, 100)
 params <- cbind(a,b)
@@ -79,7 +79,7 @@ for(i in 1:nrow(params)){
 
 ggplot(ds, aes(x = x, y = y, color=parameters)) + geom_line() + 
   labs(x = '\U03B8', y = 'Probability Density') +
-  scale_color_discrete(name=NULL)
+  scale_color_discrete(name=NULL) + theme_minimal()
 
 ```
 
@@ -88,7 +88,6 @@ cases you would probably assume a bit of skew in the distribution, i.e. your coi
 be less than fair. 
 
 ```{r betaShapeSkewed, echo = TRUE, fig.cap = 'Beta Distribution - Skewed'}
-library(ggplot2)
 a <- c(8, 2)
 b <- c(2, 8)
 params <- cbind(a,b)
@@ -102,7 +101,7 @@ for(i in 1:nrow(params)){
 
 ggplot(ds, aes(x = x, y = y, color=parameters)) + geom_line() + 
   labs(x = '\U03B8', y = 'Probability Density') +
-  scale_color_discrete(name=NULL)
+  scale_color_manual(name=NULL, values = c("#7A99AC", "#E4002B")) + theme_minimal()
 
 ```
 
@@ -194,7 +193,6 @@ n^{(1)} &= \theta(n^{(1)} + n^{0}) \\ \\
 $$
 
 ```{r bernoulliml, echo = TRUE, warning=FALSE, fig.cap = 'Bernoulli Maximum Likelihood'}
-library(ggplot2)
 heads = 1:10
 flips = 10
 ds <- data.frame(heads, flips = rep(flips, length(heads)))
@@ -209,7 +207,7 @@ ggplot(ds, aes(x = heads,
                      ymin=0)) +
   scale_x_continuous(breaks = seq(0,10,2), labels = seq(0,10,2)) + 
   labs(y='\U03B8', x="Number of Heads", title ="ML Parameter Estimation: 10 Bernoulli Trials") +
-  theme(plot.title = element_text(hjust = 0.5))
+  theme(plot.title = element_text(hjust = 0.5)) + theme_minimal()
 ```
 
 
@@ -287,10 +285,10 @@ alpha <- 2
 map_theta <- (heads + alpha - 1)/(heads + tails + alpha + B -2)
 possible_theta <- seq(0,1,0.01)
 beta_ds <- data.frame(theta = possible_theta, density = dbeta(possible_theta, alpha,B))
-ggplot(beta_ds, aes(x = theta, y = density)) + geom_point(color='#3316cc') + 
+ggplot(beta_ds, aes(x = theta, y = density)) + geom_point(color='#7A99AC') + 
   geom_vline(xintercept=map_theta, color = '#ba0223') + 
   annotate("text", x = map_theta + 0.1, y=0.5, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
-  labs(x='\U03B8')
+  labs(x='\U03B8') + theme_minimal()
 
 ```
 
@@ -316,10 +314,10 @@ alpha <- 100
 map_theta <- (heads + alpha - 1)/(heads + tails + alpha + B -2)
 possible_theta <- seq(0,1,0.001)
 beta_ds <- data.frame(theta = possible_theta, density = dbeta(possible_theta, alpha,B))
-ggplot(beta_ds, aes(x = theta, y = density)) + geom_line(color='#3316cc') + 
+ggplot(beta_ds, aes(x = theta, y = density)) + geom_line(color='#7A99AC') + 
   geom_vline(xintercept=map_theta, color = '#ba0223') + 
   annotate("text", x = map_theta + 0.1, y=11, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
-  labs(x='\U03B8', y = 'Density')
+  labs(x='\U03B8', y = 'Density') + theme_minimal()
 
 ```
 
@@ -341,10 +339,10 @@ alpha <- 2
 map_theta <- (heads + alpha - 1)/(heads + tails + alpha + B -2)
 possible_theta <- seq(0,1,0.001)
 beta_ds <- data.frame(theta = possible_theta, density = dbeta(possible_theta, alpha,B))
-ggplot(beta_ds, aes(x = theta, y = density)) + geom_line(color='#3316cc') + 
+ggplot(beta_ds, aes(x = theta, y = density)) + geom_line(color='#7A99AC') + 
   geom_vline(xintercept=map_theta, color = '#ba0223') + 
   annotate("text", x = map_theta + 0.2, y=1.2, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
-  labs(x='\U03B8', y = 'Density')
+  labs(x='\U03B8', y = 'Density') + theme_minimal()
 ```
 
 ```{r mapLargeInformedPrior, echo = TRUE, fig.cap = 'MAP: Large number of experiments and informed prior'}
@@ -363,10 +361,10 @@ possible_theta <- seq(0,1,0.001)
 beta_ds <- data.frame(theta = possible_theta, density = dbeta(possible_theta, alpha,B))
 map_theta <- (heads + alpha - 1)/(heads + tails + alpha + B -2)
 ggplot(beta_ds, aes(x = theta, y = density)) + 
-  geom_line(color='#3316cc') + 
+  geom_line(color='#7A99AC') + 
   geom_vline(xintercept=map_theta, color = '#ba0223') + 
   annotate("text", x = map_theta + 0.1, y=1.2, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
-  labs(x='\U03B8', y = 'Density')
+  labs(x='\U03B8', y = 'Density') + theme_minimal()
 ```
 
 ## Bayesian Inference
@@ -484,12 +482,16 @@ for (i in 1:niters){
 
 
 ds <- data.frame(theta1 = thetas[,1], theta2= thetas[,2])
-ggplot(ds, aes(x=theta1)) + geom_histogram(aes(y=..density..),color='#1303a5', fill='#200cd1') + 
-  labs(title = expression(theta[1]~Estimate), x=expression(theta[1])) + geom_vline(xintercept = mean(ds$theta1), color='#b7091a')
+ggplot(ds, aes(x=theta1)) + geom_histogram(aes(y=..density..),color='#1A384A', fill='#7A99AC') + 
+  labs(title = expression(theta[1]~Estimate), x=expression(theta[1]), y = 'Density') + 
+  geom_vline(xintercept = mean(ds$theta1), color='#b7091a') +
+  theme_minimal()
 ```
 ```{r 2coins2, echo = TRUE, warning=FALSE,message=FALSE, fig.cap = 'Bias of Two Coins - Theta 2'}
-ggplot(ds, aes(x=theta2)) + geom_histogram(aes(y=..density..),color='#1303a5', fill='#200cd1') + 
-  labs(title = expression(theta[2]~Estimate), x=expression(theta[2])) + geom_vline(xintercept = mean(ds$theta2), color='#b7091a')
+ggplot(ds, aes(x=theta2)) + geom_histogram(aes(y=..density..),color='#1A384A', fill='#7A99AC') + 
+  labs(title = expression(theta[2]~Estimate), x=expression(theta[2]), y = 'Density') + 
+  geom_vline(xintercept = mean(ds$theta2), color='#b7091a') + 
+  theme_minimal()
 
 ```
 
@@ -497,6 +499,8 @@ ggplot(ds, aes(x=theta2)) + geom_histogram(aes(y=..density..),color='#1303a5', f
 What if the problem we are solving is more complicated. Let's say I flip a coin repeatedly, but at some point I switch to another coin with a different bias ($/theta$). I want to detect the point in time when coin 1 was swapped out for coin 2. 
 
 IMAGE PLACE HOLDER - MAKE A DRAWING OF FLIPPING TWO COINS ON A TIME SCALE
+
+
 
 
 
