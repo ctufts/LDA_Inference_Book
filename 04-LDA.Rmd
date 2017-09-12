@@ -33,11 +33,20 @@ This though is somewhat incoherent and needs to be cleaned up, but this is how t
 1) This is similar to what we did in the bernoulli example as well as the change detection example. We identify our estimate for the posterior and plug in our counts and parameter values during each iteration. For example in the bernoulli/beta example, we estimate theta 1, then theta 2, then move to the next iteration and repeat. In the timeseries example it is a bit more complicated as our parameter estimations often feed the next parameter estimation. This was shown in the change point detection example. This is very similar to what is happening in each iteration of gibbs sampling for our topic assignment. This is the reason for the decrement in each step - we can't use the current parameter in the estimation of our current parameter, it has to be taken out of the equation. However we are going to use the new topic assignment given to all the other words during our estimations. 
 
 ## Components
-Words
-Documents
-Topics
-Alphas
-Beta
+
+### Static/Known Parameters
+
+Let's start with the static components of LDA. We have words and we have documents. Words are somewhat self explanatory - they are the words we find in the documents. The definition of a document is a bit more tricky. A document can be any collection of text: a book, an article, a blog post, a tweet, a movie script, etc. 
+
+### Latent Structures
+
+<b>Latent</b> Dirichlet Allocation is used to infer <b>latent</b> structures in the documents. Those latent structures are referred to as topics. A topic is probability distribiton of words. What does that mean? If  we know the word distributions of a topic we can generate words based on the this topic. This is the basis of the unigram generative model from the previous section. We have a probability for each word and we can generate a document based on these probabilities. This can be extended to multiple topics. 
+
+Wait, multiple topics? How does that work? That brings us to the next <b>latent</b> structure - topic mixtures. Topic mixtures are the proportion of each topic in each document. This can also be stated as the distribution of topics in a given document. In the following section we will incorporate this into a more complex generative model, similar to the unigram model, but with the addition of different topic mixtures for each topic. 
+
+### Priors
+Alphas - Alphas are used as the prior to the document/topic mixtures
+Beta - Prior for the word distribtion for each topic
 
 ## Generative Model
 
@@ -61,6 +70,7 @@ Building on the document generating model in chapter two, let's try to create do
 
 
 Known values:
+
 * 2 topics : word distributions of each topic below
     * $\phi_{1} = [ red = 0.8, blue = 0.2, green = 0.0 ]$
     * $\phi_{2} = [ red = 0.2, blue = 0.1, green = 0.7 ]$
@@ -70,11 +80,11 @@ Known values:
     
 
 * For d = 1 to D where D is the number of documents
-    * For w = 1 to W  where W is the number of words in document *d*
-        + *Select the topic for word *w* *
+    + For w = 1 to W  where W is the number of words in document *d*
+        + *Select the topic for word w *
         + $z_{i}$ ~ Multinomial($\theta_{d}$)
-        + *Select word based on topic *z*'s word distribution  
-        + $w_{i}$ ~ Multinomial($\phi^{(z_{i})})
+        + *Select word based on topic z's word distribution*
+        + $w_{i}$ ~ Multinomial($\phi^{(z_{i})}$)
 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
@@ -123,6 +133,7 @@ ds %>% group_by(doc_id) %>% summarise(
   tokens = paste(word, collapse = ' ')
 ) %>% kable()
 ```
+
 #### Topic Word Mixtures, Document Topic Mixtures, and Document Length Unknown
 
 ```{r} 
@@ -177,11 +188,11 @@ Known values:
     
 
 * For d = 1 to D where D is the number of documents
-    * For w = 1 to W  where W is the number of words in document *d*
-        + *Select the topic for word *w* *
+    + For w = 1 to W  where W is the number of words in document *d*
+        + *Select the topic for word w *
         + $z_{i}$ ~ Multinomial($\theta_{d}$)
-        + *Select word based on topic *z*'s word distribution  
-        + $w_{i}$ ~ Multinomial($\phi^{(z_{i})})
+        + *Select word based on topic z's word distribution * 
+        + $w_{i}$ ~ Multinomial($\phi^{(z_{i})}$)
 
 
 
@@ -194,10 +205,10 @@ The generative process for LDA is shown below.
     + *Sample parameters for document topic distribution*
     + $\theta_{d}$ ~ Dirichlet($\alpha$)
     + For w = 1 to W  where W is the number of words in document *d*
-        + *Select the topic for word *w* *
+        + *Select the topic for word w *
         + $z_{i}$ ~ Multinomial($\theta_{d}$)
-        + *Select word based on topic *z*'s word distribution  
-        + $w_{i}$ ~ Multinomial($\phi^{(z_{i})})
+        + *Select word based on topic z's word distribution * 
+        + $w_{i}$ ~ Multinomial($\phi^{(z_{i})}$)
 
 
 
@@ -392,7 +403,7 @@ ds %>% group_by(doc_id) %>% summarise(
 
 
 
-current_state <- ds %>% select(doc_id, word, topic)
+current_state <- ds %>% dplyr::select(doc_id, word, topic)
 current_state$topic <- NA
 
 

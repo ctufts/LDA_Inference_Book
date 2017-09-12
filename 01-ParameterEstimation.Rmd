@@ -7,19 +7,19 @@ output:
 # Parameter Estimation
 
 I'm going to build off of a simple example which can be extended through the 
-remainder of this tutorial - a coin flip. A coin flip has 2 possible outcomes: 
+remainder of this tutorial - a coin flip. A coin flip has 2 possible outcomes:   
 heads or tails. 
 
 ## Distributions
 ### Bernoulli
 When you flip a coin you get either heads or tails. This single coin flip is known 
-as a Bernoulli trial.  You can think of any single trial with two possible outcomes as a Bernoulli trial. The Bernoulli distribution is the probability distribution of Bernoulli trials, basically a model of the coin flip.  
+as a Bernoulli trial.  You can think of any <i>single</i> trial with two possible outcomes as a Bernoulli trial. The Bernoulli distribution is the probability distribution of Bernoulli trials, basically a model of the coin flip.  
 
 
 #### Bernoulli: A Special Case of the Binomial Distribution
 You will often see Bernoulli distribution mentioned as a special case of the Binomial distribution. The binomial model consists of _n_ bernoulli trials, where each trial is independent and the probability of success does not change between trials.[@kerns2010introduction]. The bernoulli distribution is the case of a single trial or _n_=1. 
 
-To clarify if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However if I want to know the probability of getting 2 heads in a row, this is where the binomial distribution comes in. Keep this in mind while reviewing the upcoming examples as I will be referencing our probability of getting a __single__ heads during a coin flip even though I am using 100 coin flips for reference. 
+To clarify, if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However if I want to know the probability of getting 2 heads in a row, this is where the binomial distribution comes in. Keep this in mind while reviewing the upcoming examples as I will be referencing our probability of getting a __single__ heads during a coin flip even though I am using 100 coin flips for reference. 
 
 ------------Image Placeholder-----------------------
 
@@ -36,18 +36,21 @@ Probability Mass Function
 
 $$
 f_{x}(x)=P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\} 
+\tag{1}
 $$
+
 The only parameter of the bernoulli distribution is $\theta$ which defines the probability of success during a bernoulli trial. The value of _x_ is 0 for a failure and 1 for a success. In a practical example you can think of this as 0 for tails and 1 for heads during a coin flip. In the example below the value of $\theta$ is set to 0.7. We can see the probability of getting a success, a 1, is 0.7, while the probability of failure is 0.3. 
+
+
 
 $$
 \begin{align*}
-
 P(X=1)&=\theta^{1}(1-\theta)^{1-1}, \hspace{1cm} \theta=0.7 \\
 P(X=1)&=0.7*1=0.7 \\\\
 P(X=0)&=0.7^{0}(1-0.7)^{1-0}\\
 P(X=0)&=0.3
-
 \end{align*}
+\tag{2}
 $$
 
 ### Beta Distribution
@@ -130,6 +133,7 @@ __Conditioning for your brain__ : We are starting with a coin flip, but the even
 $$
 \underbrace{p(\theta|D)}_{posterior} = {\overbrace{p(D|\theta)}^{likelihood}
   \overbrace{p(\theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
+\tag{3}
 $$
 
 
@@ -141,6 +145,7 @@ The simplest method of parameter estimation is the maximum likelihood method. Ef
 $$ 
 \underbrace{p(\theta|D)}_{posterior} = {\overbrace{\bf \Large p(D|\theta)}^{\bf \Large LIKELIHOOD}
   \overbrace{p(\theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
+\tag{4}
 $$
 
 Let's first discuss what the likelihood is. The likelihood can be described as the probability of getting observed data given a specified value of the parameter, $\theta$.  For example, let's say I've flipped a coin 10 times and got 5 heads, 5 tails. Given that data what is the likelihood the coin is fair, i.e. $\theta$ equals 0.5.  
@@ -148,6 +153,7 @@ Let's first discuss what the likelihood is. The likelihood can be described as t
 To calculate the likelihood of a parameter given a single outcome we would use the probability mass function:
 $$
 P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\} 
+\tag{5}
 $$
 Where an outcome of heads equal 1 and tails is 0. Now let's say we have carried out the 10 flips as mentioned previously:
 $$
@@ -155,6 +161,7 @@ $$
 P(X_{1}=x_{1},X_{2}=x_{2},...,X_{10}=x_{10}) &= \prod\limits_{n=1}^{10} \theta^{x}(1-\theta)^{1-x}\\
 L(\theta) &= \prod\limits_{n=1}^{10} \theta^{x}(1-\theta)^{1-x}
 \end{align*}
+\tag{6}
 $$
 What is shown in the equations above is the joint probability mass function. Each coin flip is independent so we calculate the product of the PMF's for each trial. This is known as the likelihood function - the likelihood of $\theta$ given our observed data. 
 
@@ -175,11 +182,13 @@ $$
  &= \sum\limits_{n=1}^N log(\theta^{x}(1-\theta)^{1-x}) \\\\
  &= n^{(1)}log(\theta) + n^{(0)}log(1-\theta)
 \end{align*}
+\tag{7}
 $$
 Differentiate with respect to $\theta$:
 
 $$
 {d\mathcal{L} \over d\theta} =  {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta}
+\tag{8}
 $$
 Set it equal to zero and solve:
 $$
@@ -190,6 +199,8 @@ $$
 n^{(1)} &= \theta(n^{(1)} + n^{0}) \\ \\
 \theta &= {n^{(1)} \over N}
 \end{align*}
+\tag{9}
+
 $$
 
 ```{r bernoulliml, echo = TRUE, warning=FALSE, fig.cap = 'Bernoulli Maximum Likelihood'}
@@ -219,6 +230,7 @@ include information about our prior beliefs. Unlike ML estimation, MAP estimates
 
 $$
 \theta_{MAP}=\underset{\theta}{\operatorname{argmax}} P(\theta|X)
+\tag{10}
 $$
 
 
@@ -231,6 +243,7 @@ $$
 \require{enclose}
 \theta_{MAP}=\underset{\theta}{\operatorname{argmax}}{\overbrace{p(D|\theta)}^{likelihood}
   \overbrace{p(\theta)}^{prior} \over \underbrace{\enclose{horizontalstrike}{p(D)}}_{evidence}}
+\tag{11}
 $$
 The evidence term is dropped during the calculation of $\theta_{MAP}$ since it is not a function of $\theta$. We will see this also occur when performing Bayesian inference using conjugate priors in the coming section. 
 
@@ -241,11 +254,13 @@ $$
 &= \mathcal{L}(\theta|D) + log(p(\theta))
 
 \end{align*}
+\tag{12}
 $$
 We have already derived the log likelihood during our derivation of the maximum likelihood, so let's now focus on the prior. The prior for the Bernoulli distribution is the Beta distribution and can be used to describe $p(\theta)$. The probability distribution function for the Beta distribution is shown below. 
 
 $$
 p(\theta|\alpha,\beta) = {\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \beta)}}
+\tag{13}
 $$
 Plugging in the PDF of the beta distribution for the prior:
 
@@ -262,6 +277,7 @@ $$
 \\\\
 \theta_{MAP}&= {{n^{(1)} + \alpha -1} \over {n^{(1)} + n^{0} + \alpha + \beta - 2}}
 \end{align*}
+\tag{14}
 $$
 
 Now that we know how to calculate the parameter $\theta$ that maximizes the posterior, lets take a look at how choices of different priors effects our outcome. 
@@ -418,20 +434,24 @@ Putting the conjugate prior to use....estimating the posterior
 $$
 \underbrace{p(\theta|D)}_{posterior} = {\overbrace{p(D|\theta)}^{likelihood}
   \overbrace{p(\theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
+\tag{15}
 $$
 When estimating the posterior, the evidence term is dropped out...scaling factor, blah blah
 
 $$
 \underbrace{p(\theta|D)}_{posterior}  \propto  {\overbrace{p(D|\theta)}^{likelihood}
   \overbrace{p(\theta)}^{prior}}
+\tag{16}
 $$
 To estimate the posterior of the bernoulli distribution 
 $$
 p(\theta|z,N) \propto \overbrace{\theta^z(1-\theta)^{(N-z)}}^{likelihood} \overbrace{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}^{prior}
+\tag{17}
 $$
 After combining terms we get....
 $$
 p(\theta|z,N) \propto \overbrace{\theta^{(a + z -1)}(1-\theta)^{(N-z+b-1)}}^{Same \hspace{1 mm} Pattern \hspace{1 mm} as \hspace{1 mm} Likelihood}
+\tag{18}
 $$
 
 ### Gibbs Sampling
@@ -448,6 +468,7 @@ $$
 &................................ \\ 
 &p(\theta_{n}^{i+1}) \sim p(\theta_{n}^{i}|\theta_{1}^{i+1}, \theta_{2}^{i+1},..., \theta_{n-1}^{i+1}) \\
 \end{align*}
+\tag{19}
 $$
 
 
@@ -496,15 +517,109 @@ ggplot(ds, aes(x=theta2)) + geom_histogram(aes(y=..density..),color='#1A384A', f
 ```
 
 ### Change Point Example
-What if the problem we are solving is more complicated. Let's say I flip a coin repeatedly, but at some point I switch to another coin with a different bias ($/theta$). I want to detect the point in time when coin 1 was swapped out for coin 2. 
+What if the problem we are solving is more complicated. Let's say I flip a coin repeatedly, but at some point I switch to another coin with a different bias ($\theta$). I want to detect the point in time when coin 1 was swapped out for coin 2. 
 
 IMAGE PLACE HOLDER - MAKE A DRAWING OF FLIPPING TWO COINS ON A TIME SCALE
 
 
+```{r bern_change_point, echo = TRUE, warning=FALSE,message=FALSE}
+real_thetas <- c(0.2, 0.6)
+N <- 300
+a = 2
+b = 3
+change_point <- 100
+x <- c(rbinom(1:change_point, 1, real_thetas[1]),rbinom((change_point+1):N, 1, real_thetas[2]))
+
+
+## Initialize all parameters
+
+# n ~ uniform 
+n <- round(N*runif(1))
+# theta1 ~ beta(a,b)
+theta1 <- rbeta(1, a, b)
+# theta2 ~ beta(a,b)
+theta2 <- rbeta(1, a, b)
 
 
 
+niters = 10000
+burnin = 2000
+# sigma = np.diag([0.2,0.2])
 
+# thetas = np.zeros((niters-burnin,2), np.float)
+params = matrix(0, nrow = (niters-burnin), ncol=3)
+for (i in 1:niters){
+  
+  
+  z1 <- sum(x[1:n])
+  if(n == N){
+    z2 <- 0
+  }else{
+    z2 <- sum(x[(n+1):N])
+  }
+  theta1 = rbeta(n = 1, shape1 = a + z1, shape2 = b + n - z1)
+  # get value theta2| all other vars
+  theta2 = rbeta(n = 1, shape1 = a + z2, shape2 =N-n-1-z2+b)
+  
+  
+  ## 2 things: 1 - should I be summing all the values over these? 
+  # No - the product is being calculated due to the sum - should be fine
+  n_multi <- rep(0, N)
+  for(steps in 1:N){
+    if(steps==N || theta2 == 1){
+      n_multi[steps] <- log(theta1^sum(x[1:steps]) * (1-theta1)^(steps-sum(x[1:steps])))
+    }else{
+      n_multi[steps] <- log(theta1^sum(x[1:steps]) * (1-theta1)^(steps-sum(x[1:steps]))) +
+        log(theta2^sum(x[(steps + 1):N]) * (1-theta2)^(N-steps-1-sum(x[(steps+1):N])))
+    }
+  }
+  
+  n_multi <- exp(n_multi - max(n_multi))
+  # what about for n? 
+  n <- which(rmultinom(1, 1, n_multi/sum(n_multi))[,1] ==1)
+  if (i >= burnin){
+    params[(i-burnin), ] = c(theta1,theta2, n)
+  }
+}
+
+ds <- data.frame(x = x, theta = c(rep(real_thetas[1],N-change_point),
+                                  rep(real_thetas[2],change_point)), 
+                 sample_index = seq(1:length(x)))
+
+```
+
+
+```{r bernChangePointN, echo = TRUE, warning=FALSE,message=FALSE, fig.cap = 'Estimated Change Point'}
+params_df <- as.data.frame(params)
+names(params_df) <- c('theta1', 'theta2', 'change_point')
+
+ggplot(params_df, aes(x = change_point)) + 
+  geom_histogram(fill="#7A99AC", color ='#1A384A') +
+  theme_minimal() + 
+  geom_vline(xintercept = mean(params_df$change_point), color='#b7091a') +
+  labs(title = 'Change Point Estimate', x='Change Point', y = 'Density') 
+
+```
+
+
+```{r bernChangePointTheta1, echo = TRUE, warning=FALSE,message=FALSE, fig.cap = 'Estimated Theta 1'}
+
+ggplot(params_df, aes(x = theta1)) + 
+  geom_histogram(fill="#7A99AC", color ='#1A384A' ) + 
+  theme_minimal() + 
+  geom_vline(xintercept = mean(params_df$theta1), color='#b7091a') +
+  labs(title = expression(theta[1]~Estimate), x=expression(theta[1]), y = 'Density') 
+
+```
+
+```{r bernChangePointTheta2, echo = TRUE, warning=FALSE,message=FALSE, fig.cap = 'Estimated Theta 2'}
+ggplot(params_df, aes(x = theta2)) + 
+  geom_histogram(fill="#7A99AC", color ='#1A384A' ) + 
+  theme_minimal() + 
+  geom_vline(xintercept = mean(params_df$theta2), color='#b7091a') +
+  labs(title = expression(theta[2]~Estimate), x=expression(theta[2]), y = 'Density') 
+
+```
 
 
 ## Summary
