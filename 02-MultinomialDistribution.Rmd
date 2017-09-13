@@ -81,8 +81,87 @@ You can see this looks a bit more like equation 21 if the case were _k_=2 and _n
 
 ## Conjugate Prior: Dirichlet
 The conjugate prior for the multinomial distribution is the Dirichlet distribution. Similar
-to the beta distribution, it can be though of as a distribution of distributions. Let's first 
-take a look at the distribution of both the multinomial and Dirichlet distribution and see if we can find a similar pattern. Remember, conjugate priors have the same form as the estimated posterior of the original distribution. 
+to the beta distribution, it can be though of as a distribution of distributions. Also note that the beta distribution is the special case of a Dirichlet distribution where the number of possible outcome is 2. 
+
+The probability distribution function for the Dirichlet distribution is shown in equation 23. 
+
+$$
+Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
+{ 
+  {\Gamma {\bigl (}\sum _{i=1}^{K}\alpha _{i}{\bigr )}}
+  \over{\prod _{i=1}^{K}\Gamma (\alpha _{i})}
+
+}
+\prod _{i=1}^{K}x_{i}^{\alpha _{i}-1}
+\tag{23}
+$$
+
+The Dirichlet distribution is an extension of the beta distribution for <i>k</i> categories. To get a better sense of what the distributions look like let's visualize a few examples at <i>k</i>=3 with varying alpha values. In both of the box plots below 10,000 random samples were drawn from a Dirichlet distribution where <i>k</i>=3 and \U03B8 is the same for each <i>k</i> in the given plot.  The first plot shows the distribution of values drawn when \U03B8 = 100.  
+
+```{r DirichletAlpha100, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Sampling from Dirichlet - \U03B8=100' }
+alpha <- c(100,100,100)
+trials <- 10000
+x <- rdirichlet(trials, alpha)
+colnames(x) <- c('theta_1', 'theta_2', 'theta_3')
+ds <- cbind(as.tibble(x), trial = 1:trials) %>% 
+  gather(theta, word, -trial)
+
+# ggplot(ds, aes(color = theta, x = word)) + geom_line(stat='density') + 
+#   theme_minimal()
+
+ggplot(ds, aes(color = theta, fill = theta, x = theta, y = word)) + geom_boxplot(alpha = 0.3) + 
+  theme_minimal() + 
+  labs(y='\U03B8', x = '', title = paste0("\U03B1 = ",unique(alpha)) ) + 
+  scale_x_discrete(labels = c(expression("\U03B1"[1]),
+                              expression("\U03B1"[2]),
+                              expression("\U03B1"[3]))) + 
+  scale_fill_discrete(guide = FALSE) + 
+  scale_color_discrete(guide = FALSE)+ 
+  scale_y_continuous(limits = c(0,1))
+```
+
+Below the process is repeated, but this time the \U03B8 values are set to 1 for each category. We can see the range of distribution of values sampled with the higher \U03B8 value is much narrower than the distribution of values sampled using \U03B8 values of 1. This is the same pattern we saw with the beta distribution, as the shape parameters increased the distribution became narrower.  
+
+```{r DirichletAlpha1, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Sampling from Dirichlet - \U03B8=1' }
+alpha <- c(1,1,1)
+  x <- rdirichlet(trials, alpha)
+colnames(x) <- c('theta_1', 'theta_2', 'theta_3')
+ds <- cbind(as.tibble(x), trial = 1:trials) %>% 
+  gather(theta, word, -trial)
+
+ggplot(ds, aes(color = theta, fill = theta, x = theta, y = word)) + geom_boxplot(alpha = 0.3) + 
+  theme_minimal() + 
+  labs(y='\U03B8', x = '', title = paste0("\U03B1 = ",unique(alpha)) ) + 
+  scale_x_discrete(labels = c(expression("\U03B1"[1]),
+                              expression("\U03B1"[2]),
+                              expression("\U03B1"[3]))) + 
+  scale_fill_discrete(guide = FALSE) + 
+  scale_color_discrete(guide = FALSE) + 
+  scale_y_continuous(limits = c(0,1))
+```
+
+So what happens when the $\alpha$ values are not the same, i.e. the distribution is non-symmetrical? In the histogram below, you can see the distribution of values sampled from the dirichlet distribution for each category. Drawing a parallel to the beta distribution, you recall the value of $\theta$ drawn from the distribution was very often close to the ratio of $\alpha$ to $\beta$. 
+
+```{r DirichletAlphaMixed, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Sampling from Dirichlet - \U03B8=[10,50,20]'}
+alpha <- c(10,50,20)
+alpha_prop <- alpha/sum(alpha)
+x <- rdirichlet(trials, alpha)
+colnames(x) <- c('theta_1', 'theta_2', 'theta_3')
+ds <- cbind(as.tibble(x), trial = 1:trials) %>% 
+  gather(theta, word, -trial)
+
+ggplot(ds, aes(color = theta, fill=theta, x = word)) + geom_histogram(position='identity', alpha = 0.1) +
+  # geom_line(stat='density') + 
+  theme_minimal() + 
+  labs(x = "\U03B8", y = "Count") + 
+  scale_color_discrete(label = alpha,
+                       name = "\U03B1" ) +
+  scale_fill_discrete(label = alpha,
+                       name = "\U03B1" )
+
+```
+
+
 
 General notes on Dirichlet: higher values of beta (or whatever parameter name is), 
 the more uniform the probability for each class, the lower the more more likely a specific class is going to be much larger than the rest. 
