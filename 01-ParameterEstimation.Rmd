@@ -109,6 +109,24 @@ ggplot(ds, aes(x = x, y = y, color=parameters)) + geom_line() +
 ```
 
 
+The probability distribution function for the beta distribution can be found below. 
+
+$$
+f(\theta;a,b) ={{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}
+$$
+
+Quick Notes: 
+
+* The *Beta* function is the ratio of the product of the gamma function of each parameter divided by the gamma function of the sum of the parameters. The *Beta* function is *not* the same as the beta distribution. 
+$$
+\beta(a,b) = {\Gamma(a)\Gamma(b) \over{\Gamma(a+b)}}
+$$
+* The *Gamma* function is the factorial of the parameter minus 1. 
+$$
+\Gamma(a) = (a-1)!
+$$
+
+
 ## Inference: The Building Blocks
 
 The equation below is a fundamental building block on the way we think about inference. 

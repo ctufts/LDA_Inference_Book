@@ -85,17 +85,22 @@ to the beta distribution, it can be though of as a distribution of distributions
 
 The probability distribution function for the Dirichlet distribution is shown in equation 23. 
 
+
 $$
 Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
 { 
   {\Gamma {\bigl (}\sum _{i=1}^{K}\alpha _{i}{\bigr )}}
   \over{\prod _{i=1}^{K}\Gamma (\alpha _{i})}
-
 }
 \prod _{i=1}^{K}x_{i}^{\alpha _{i}-1}
 \tag{23}
 $$
 
+Quick Note:
+The Gamma function is the factorial of the parameter minus 1. 
+$$
+\Gamma (\alpha _{i}) = (\alpha_{i}-1)!
+$$
 The Dirichlet distribution is an extension of the beta distribution for <i>k</i> categories. To get a better sense of what the distributions look like let's visualize a few examples at <i>k</i>=3 with varying alpha values. In both of the box plots below 10,000 random samples were drawn from a Dirichlet distribution where <i>k</i>=3 and \U03B8 is the same for each <i>k</i> in the given plot.  The first plot shows the distribution of values drawn when \U03B8 = 100.  
 
 ```{r DirichletAlpha100, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Sampling from Dirichlet - \U03B8=100' }
@@ -140,7 +145,10 @@ ggplot(ds, aes(color = theta, fill = theta, x = theta, y = word)) + geom_boxplot
   scale_y_continuous(limits = c(0,1))
 ```
 
-So what happens when the $\alpha$ values are not the same, i.e. the distribution is non-symmetrical? In the histogram below, you can see the distribution of values sampled from the dirichlet distribution for each category. Drawing a parallel to the beta distribution, you recall the value of $\theta$ drawn from the distribution was very often close to the ratio of $\alpha$ to $\beta$. 
+So what happens when the $\alpha$ values are not the same, i.e. the distribution is non-symmetrical? In the histogram below, you can see the distribution of values sampled from the dirichlet distribution for each category. We recall the beta distribution shape skews as the difference between the two parameters grows. You recall we only need to estimate one value, $\theta_{1}$ generated from the beta distribution with 2 parameters because we can infer $\theta_{2}$ from this value ($\theta_{2} = 1-\theta_{1}$). 
+
+
+Trying to make the point that all draws sum to 1 - not sure of best way to describe this, maybe some drawings???
 
 ```{r DirichletAlphaMixed, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Sampling from Dirichlet - \U03B8=[10,50,20]'}
 alpha <- c(10,50,20)
@@ -176,6 +184,10 @@ this makes more sense]
 ## Gibbs Sampling - Multinomial & Dirichlet
 
 Prior to getting into an example of Gibbs sampling as it applies to inferring the parameters of a multinomial distribution, let's first describe a model which generates words for a single document. As you can imagine this would be modeled as a multinomial distribution with parameters $\overrightarrow{\theta} = \theta_{1}, \theta_{2}, ... \theta_{n}$ for words 1 to n. The model would be capable of generating a bag of words representation of a document. The term <i>'bag of words'</i> refers to words in no particular order, i.e. the document we would be generating would not have structured sentences, but would contain all the components of the document. 
+
+
+
+
 
 Let's start by defining our model. Let's start with a basic composition for our ideal document. We are going to have a document with only 3 distinct words `r '\U1F4D8'`,`r '\U1F4D5'`,`r '\U1F4D7'`. Remember a document is just a mixture of words, obviously this is not a fine work of literature and has a very limited vocabulary, but it is meant as a basic example of document composition. 
 
@@ -267,6 +279,9 @@ As we can see each document composition is similar, but the word counts and orde
 
 So now onto inferernce ....
 
+
+
+
 The process above is known as a generative model. We created documents using a model with a given set of parameters. Inference is going to take this general concept and look at it from a different angle. Instead of generating documents with our model we are going to take a series of pre-existing documents and infer what model created them. We are going to make the assumption that the structure of the model is the same as the generative example, i.e. all documents are generated based on the same word mixture ratios. 
 
 Let's use the 10 documents we previously generated as our basis and see if we can infer the parameters used to generate them. 
@@ -306,6 +321,28 @@ ggplot(df, aes(y=theta, x = word)) + geom_violin()
 # apply(thetas, 2, median)
 # n/sum(n)
 ```
+
+
+### Derivation of Gibbs Sampling Solution of Word Distribution (Single Doc)
+
+Below is a general overview of how inferrence can be carried out using Gibbs sampling. Recall conjugate priors have the same posterior form as their conjugate distribution. In equation 24 we start with the now familiar proportional solution for estimating a posterior through sampling. We need the likelihood, which is derived from the multinomial distribution, and the prior, which is derived from the dirichlet distribution. Once we plug in the prior and likelihood and simplify, we find that we are left with a Dirichlet PDF with the input parameters of $\overrightarrow{\alpha} + \overrightarrow{n}$ where _n_ are the observed word counts.  
+
+$$
+\begin{align*}
+p(\theta|D) &\propto p(D|\theta)p(\theta)\\
+&\propto \prod _{i=1}^{K}\theta^{n(k)} { 
+  {\Gamma {\bigl (}\sum _{i=1}^{K}\alpha _{i}{\bigr )}}
+  \over{\prod _{i=1}^{K}\Gamma (\alpha _{i})}
+}
+\prod _{i=1}^{K}\theta_{i}^{\alpha _{i}-1} \\
+&\propto{ 
+  {\Gamma {\bigl (}\sum _{i=1}^{K}\alpha _{i}{\bigr )}}
+  \over{\prod _{i=1}^{K}\Gamma (\alpha _{i})}
+}\prod _{i=1}^{K}\theta_{i}^{\alpha _{i}+n_{k}-1} \\
+&\propto Dir(\overrightarrow{\alpha} + \overrightarrow{n})
+\end{align*}
+\tag{24}
+$$
 
 
 We can see our mixture estimates are significantly different from the real model used to generate the documents. So why is this? One of the issues here is that our sample are documents with only 10 words. Therefore an average document has 8 ..., 1 ..., and 1..., but it is not unusual to see a slight variation which causes mixture shifts of 10% or more. And with  Let's try the same example but this time instead of only generating 5 documents we will genertate 500 and use this as our sample to draw inference from.  

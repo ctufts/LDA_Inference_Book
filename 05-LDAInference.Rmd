@@ -1,0 +1,188 @@
+# LDA Inference
+
+
+### Static/Known Parameters
+
+In the case of LDA as a generative model, the static components are the model parameters. The goal of using LDA as a generative model is to create documents containing words. Therefore this means we know everything except the words in the documents and the number of words from each topic in each document. 
+
+Both of the parameters below are used as the parameters for a dirichlet distribution. Remember, the dirichlet distribution is a distribution of distributions, so the resulting value of a dirichlet distribution is parameter values we can use in a multinomial distribution. 
+
+Is there a way to say this more simply? 
+
+to generate the <i>prior</i>
+<i>Alphas ( $\overrightarrow{\alpha}$ )</i>
+
+are used as the prior to the document/topic mixtures
+
+<i>Betas ( $\overrightarrow{\beta}$ )</i>
+
+The $\beta$ parameters are used to inform the prior when calculating the distribution of words in a topic, $\phi$
+
+Let's start with the static components of LDA. We have words and we have documents. Words are somewhat self explanatory - they are the words we find in the documents. The definition of a document is a bit more tricky. A document can be any collection of text: a book, an article, a blog post, a tweet, a movie script, etc. 
+
+### Latent Structures
+
+<b>Latent</b> Dirichlet Allocation is used to infer <b>latent</b> structures in the documents. Those latent structures are referred to as topics. A topic is probability distribiton of words. What does that mean? If  we know the word distributions of a topic we can generate words based on the this topic. This is the basis of the unigram generative model from the previous section. We have a probability for each word and we can generate a document based on these probabilities. This can be extended to multiple topics. 
+
+Wait, multiple topics? How does that work? That brings us to the next <b>latent</b> structure - topic mixtures. Topic mixtures are the proportion of each topic in each document. This can also be stated as the distribution of topics in a given document. In the following section we will incorporate this into a more complex generative model, similar to the unigram model, but with the addition of different topic mixtures for each topic. 
+
+### Priors
+
+
+
+
+
+
+----- Give general description of pseudo code 
+- go through each doc, each word, get probability of topic, assign topic, repeat
+  - this all gets lost in the math - it really is that simple, all the confusing components 
+come from the derivation of the probability calculation ....
+
+
+What if I don't want to generate docuements. What if my goal is to infer what topics are present in each document and what words belong to each topic? This is were LDA for inference comes into play.
+
+Before going through any derivations of how we infer the document topic distributions and the word distributions of each topic, I want to go over the process of inference more generally. 
+
+<b>The General Idea of the Inference Process</b>
+
+1. <b>Initialization:</b> Randomly select a topic for each word in each document from a multinomial distribution. 
+2. <b>Gibbs Sampling:</b>  
+* For <i>i</i> iterations
+* For document d in documents:
+* For each word in document d:
+* <i>assign a topic to the current word based on probability of the topic given the topic of all other words (except the current word)</i>   
+
+If you recall from the previous chapters on Gibbs sampling to infer the value of each $\theta$ we calculate the value of of 
+$p(\theta_{}|)
+
+Use Darling as an outline for the derivation process .... cite carpenter and heinrich (same as Darling does). 
+
+
+Below is a toy example that creates a set of documents based on the 3 word (emoji) vocabulary. Each of the 10 documents has a differnt topic mixture and is assigned a random lenght. Our aim with inferrence is to infer the topic mixture of each document and the word distributions of each topic. 
+
+```{r}
+get_topic <- function(k){ 
+which(rmultinom(1,size = 1,rep(1/k,k))[,1] == 1)
+} 
+
+
+k <- 2 # number of topics
+M <- 10 # let's create 10 documents
+vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
+alphas <- rep(1,k) # topic document dirichlet parameters
+beta <- 1
+
+
+phi <- matrix(c(0.1, 0, 0.9,
+                0.4, 0.4, 0.2), 
+              nrow = k, 
+              ncol = length(vocab), 
+              byrow = TRUE)
+
+
+xi <- 100 # average document length 
+N <- rpois(M, xi) #words in each document
+ds <-tibble(doc_id = rep(0,sum(N)), 
+            word   = rep('', sum(N)),
+            topic  = rep(0, sum(N)), 
+            theta_a = rep(0, sum(N)),
+            theta_b = rep(0, sum(N))
+) 
+
+row_index <- 1
+for(m in 1:M){
+  theta <-  rdirichlet(1, alphas)
+  
+  for(n in 1:N[m]){
+    # sample topic index , i.e. select topic
+    topic <- which(rmultinom(1,1,theta)==1)
+    # sample word from topic
+    new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
+    ds[row_index,] <- c(m,new_word, topic,theta)
+    row_index <- row_index + 1
+  }
+}
+
+ds$doc_id <- as.numeric(ds$doc_id)
+
+
+
+ds %>% group_by(doc_id) %>% summarise(
+  tokens = paste(word, collapse = ' '), 
+  topic_a = round(as.numeric(unique(theta_a)), 2), 
+  topic_b = round(as.numeric(unique(theta_b)), 2) 
+) %>% kable()
+
+
+######### Inference ############### 
+
+
+
+current_state <- ds %>% dplyr::select(doc_id, word, topic)
+current_state$topic <- NA
+
+
+t <- length(unique(current_state$word))
+
+# n_doc_topic_count  
+n_doc_topic_count <- matrix(0, nrow = m, ncol = k)
+# document_topic_sum
+n_doc_topic_sum  <- rep(0,m)
+# topic_term_count
+n_topic_term_count <- matrix(0, nrow = k, ncol = t)
+colnames(n_topic_term_count) <- unique(current_state$word)
+# topic_term_sum
+n_topic_sum  <- rep(0,k)
+p <- rep(0, k)
+# initialize topics
+for( i in 1:nrow(current_state)){
+  current_state$topic[i] <- get_topic(k)
+  n_doc_topic_count[current_state$doc_id[i],current_state$topic[i]] <- n_doc_topic_count[current_state$doc_id[i],current_state$topic[i]] + 1
+  n_doc_topic_sum[current_state$doc_id[i]] <- n_doc_topic_sum[current_state$doc_id[i]] + 1
+  n_topic_term_count[current_state$topic[i] , current_state$word[i]] <- n_topic_term_count[current_state$topic[i] ,
+                                                                                           current_state$word[i]] + 1
+  n_topic_sum[current_state$topic[i]] = n_topic_sum[current_state$topic[i]] + 1
+  
+}
+
+
+
+# topics mixtures keep converging to 1 an 0, this is incorrect,
+# or it is a result fo the topics (word distributions) being too similar? 
+# gibbs
+for (iter in 1:100){
+  
+  for(j in 1:nrow(current_state)){
+    
+    # decrement counts
+    cs_topic <- current_state$topic[j]
+    cs_doc   <- current_state$doc_id[j]
+    cs_word  <- current_state$word[j]
+    
+    n_doc_topic_count[cs_doc,cs_topic] <- n_doc_topic_count[cs_doc,cs_topic] - 1
+    n_doc_topic_sum[cs_doc] <- n_doc_topic_sum[cs_doc] - 1
+    n_topic_term_count[cs_topic , cs_word] <- n_topic_term_count[cs_topic , cs_word] - 1
+    n_topic_sum[cs_topic] = n_topic_sum[cs_topic] -1
+    
+    # get probability for each topic, select topic with highest prob
+    for(topic in 1:k){
+      p[topic] <- (n_topic_term_count[topic, cs_word] + beta) *
+        (n_doc_topic_count[cs_doc,topic] + alphas[k])/
+        sum(n_topic_term_count[topic,] + beta)
+    }
+    new_topic <- which.max(p)
+    
+    # update counts
+    n_doc_topic_count[cs_doc,new_topic] <- n_doc_topic_count[cs_doc,new_topic] + 1
+    n_doc_topic_sum[cs_doc] <- n_doc_topic_sum[cs_doc] + 1
+    n_topic_term_count[new_topic , cs_word] <- n_topic_term_count[new_topic , cs_word] + 1
+    n_topic_sum[new_topic] = n_topic_sum[new_topic] + 1
+    
+    
+    # update current_state
+    current_state$topic[j] <- new_topic
+  }
+}
+```
+
+

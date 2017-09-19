@@ -1,0 +1,33 @@
+
+Before getting into code examples and the math, let's talk about what LDA is in more general terms. We've went over a model to generate a document based on predefined word proportions. LDA is essentially a more complicated extension of this example. It has two levels of latent structures: topic mixtures for each document and word mixtures for each topic. Based on these latent structures we can create a model for generating documents that are a combination of topics which have predefined word distributions. 
+
+Edwin Chen's general explanation of how gibbs sampling is working in a practical sense. 
+
+Pseudo code break down - nesting of for loops so that we can display 
+for each topic, for each document ... 
+
+Generally speaking LDA works as follows:
+1) Initialization: For each document, go through each word and randomly assign a topic. To be clear the same word in different documents can have different assignments. 
+2) Gibbs Sampling/Inference:
+Until some condition for convergence is met:
+
+Repeat the following:
+Go through each document:
+Go through each word in the document:
+Whatever the last topic assignment for that word was - decrement it
+Now using the decremented/updated counts sample a multinomial distriubution (i.e.
+this is our gibbs sampling) to determing the word's next topic assignment. 
+
+3) Calculate the values of phi (p(term|topic = k)) and theta (p(topic|document = d)). These are what we want for inference. I now know how likely a word is to show up given a specific topic and the probability of a topic given a specific document. We can think of this as the topic distribution over each document and the word distribution in each topic. From this I can do all kinds of cool things like create topic features for a document - i.e. dimensionality reduction.  
+Now comes the nightmare fuel of this book:
+  The gibbs sampling derivation. If calculus is not your strongest suit, it might be wise to move ahead (provide a link to another section). If you want to see all the nuts and bolts then stick around.....
+
+
+Gibbs sampling derivation, but needs to be accompanied with some other insight that makes it relatively less horrible to follow along if calculus is not your strength.
+
+
+Discussion of Gibbs sampling used in LDA inference task 
+Make the following points:
+  This though is somewhat incoherent and needs to be cleaned up, but this is how to drive home the point of what is actually happening without tons of calculus. 
+
+1) This is similar to what we did in the bernoulli example as well as the change detection example. We identify our estimate for the posterior and plug in our counts and parameter values during each iteration. For example in the bernoulli/beta example, we estimate theta 1, then theta 2, then move to the next iteration and repeat. In the timeseries example it is a bit more complicated as our parameter estimations often feed the next parameter estimation. This was shown in the change point detection example. This is very similar to what is happening in each iteration of gibbs sampling for our topic assignment. This is the reason for the decrement in each step - we can't use the current parameter in the estimation of our current parameter, it has to be taken out of the equation. However we are going to use the new topic assignment given to all the other words during our estimations. 

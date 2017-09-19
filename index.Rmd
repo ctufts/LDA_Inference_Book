@@ -6,8 +6,9 @@ bibliography:
 - packages.bib
 output:
   bookdown::pdf_book: default
-  bookdown::gitbook: default
-link-citations: yes
+  bookdown::gitbook: 
+    split_bib: no
+link-citations: true
 documentclass: book
 site: bookdown::bookdown_site
 biblio-style: apalike
