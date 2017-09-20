@@ -1,4 +1,9 @@
 
+IMPORTANT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+(NOTE: You need to figure out a way to connect the code example of generating words/docs back to the math (or at least one of the other symbolic representations). This is necesary for explaining how to flip to inferenece. It is fine if the inference part leaves out the long process of derivation, but you need to be able to unstack the generative model so that the transfer to inference makes sense - this has been covered at the end of chapter 2 in the multinomial/dirichlet example, but should be expanded to show how plate diagrams work.....ugh I hate these)
+
+
 Before getting into code examples and the math, let's talk about what LDA is in more general terms. We've went over a model to generate a document based on predefined word proportions. LDA is essentially a more complicated extension of this example. It has two levels of latent structures: topic mixtures for each document and word mixtures for each topic. Based on these latent structures we can create a model for generating documents that are a combination of topics which have predefined word distributions. 
 
 Edwin Chen's general explanation of how gibbs sampling is working in a practical sense. 
