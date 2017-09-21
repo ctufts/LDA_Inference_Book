@@ -312,6 +312,7 @@ The LDA generative process for each document is shown below[@darling2011theoreti
 
 $$
 p(w,z,\theta,\phi|\alpha, B) = p(\phi|B)p(\theta|\alpha)p(z|\theta)p(w|\phi_{z})
+\tag{25}
 $$
 
 

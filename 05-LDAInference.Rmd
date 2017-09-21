@@ -1,34 +1,48 @@
 # LDA Inference
 
+Now it is time to flip the problem around. What happens when I have a bunch of documents and I want to know what topics are present in each document and what words are present (most probable) in each topic? In terms of math, the values we need to answer the questions above are:
 
-### Static/Known Parameters
-
-In the case of LDA as a generative model, the static components are the model parameters. The goal of using LDA as a generative model is to create documents containing words. Therefore this means we know everything except the words in the documents and the number of words from each topic in each document. 
-
-Both of the parameters below are used as the parameters for a dirichlet distribution. Remember, the dirichlet distribution is a distribution of distributions, so the resulting value of a dirichlet distribution is parameter values we can use in a multinomial distribution. 
-
-Is there a way to say this more simply? 
-
-to generate the <i>prior</i>
-<i>Alphas ( $\overrightarrow{\alpha}$ )</i>
-
-are used as the prior to the document/topic mixtures
-
-<i>Betas ( $\overrightarrow{\beta}$ )</i>
-
-The $\beta$ parameters are used to inform the prior when calculating the distribution of words in a topic, $\phi$
-
-Let's start with the static components of LDA. We have words and we have documents. Words are somewhat self explanatory - they are the words we find in the documents. The definition of a document is a bit more tricky. A document can be any collection of text: a book, an article, a blog post, a tweet, a movie script, etc. 
-
-### Latent Structures
-
-<b>Latent</b> Dirichlet Allocation is used to infer <b>latent</b> structures in the documents. Those latent structures are referred to as topics. A topic is probability distribiton of words. What does that mean? If  we know the word distributions of a topic we can generate words based on the this topic. This is the basis of the unigram generative model from the previous section. We have a probability for each word and we can generate a document based on these probabilities. This can be extended to multiple topics. 
-
-Wait, multiple topics? How does that work? That brings us to the next <b>latent</b> structure - topic mixtures. Topic mixtures are the proportion of each topic in each document. This can also be stated as the distribution of topics in a given document. In the following section we will incorporate this into a more complex generative model, similar to the unigram model, but with the addition of different topic mixtures for each topic. 
-
-### Priors
+$$
+p(\theta, \phi, z|w, \alpha, \beta) = {p(\theta, \phi, z, w|\alpha, \beta) \over p(w|\alpha, \beta)}
+\tag{26}
+$$
+Equation 26 says the following:   
+The probability of the topic proportion, the word distribution of each topic, and the topic label given a word (in a document) and the hyperparameters $\alpha$ and $\beta$. In a more basic term this means the probability of a specific topic _z_ given the word _w_ (and our prior assumptions, i.e. hyperparameters), once the topic label of a word is known, then we can answer derive $\phi$ and $\theta$.
 
 
+Let's take a step from the math and just map out things we know versus the things we don't know in our current scenario:
+
+*Known Parameters*
+
+* *Documents:* We have a set number of documents we want to identify the topic strucutres in. 
+* *Words:* We have a collection of words and word counts for each document which we place in a document word matrix. 
+* *Vocabulary:* The unique list of words across all documents. 
+* *Hyperparemeters:*
+    * $\overrightarrow{\alpha}$
+    * $\overrightarrow{\beta}$
+
+And on to the parts we don't know....
+
+* Unknown (Latent) Parameters * 
+
+* *Number of Topics:* We need to determine the number of topics we assume are present in the documents. For the purposes of this book I'm going to skip how to estimate this number properly. If you are interested in learning more about how to estimate the number of topics present in a document see REFERENCE LIST. 
+* *Document Topic Mixture:* We need to determine the topic distribution in each document. 
+* *Word Distribution of Each Topic:* We need to know the distribution of words in each topic. Obviously some words are going to occur very often in a topic while others may have zero probability of occurring in a topic. 
+* *Word topic assignment:* This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture and the word distribution of each topic. 
+
+
+Quick note:   
+Equation 26 is based on the following statistical property
+$$
+p(A, B | C) = {p(A,B,C) \over p(C)}
+$$
+
+The derivation connecting equation 26 to the actual Gibbs sampling solution to determine _z_ for each word in eacch document, $\overrightarrow{\theta}$, and 
+$\overrightarrow{\phi}$ is very complicated and I'm just going to gloss over a few steps. For complete derivations see (site heinrich and that other one from darling). 
+
+
+
+Edwin Chen style overview, make a graphic of this.... 
 
 
 
