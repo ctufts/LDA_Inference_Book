@@ -12,27 +12,29 @@ The probability of the topic proportion, the word distribution of each topic, an
 
 Let's take a step from the math and just map out things we know versus the things we don't know in our current scenario:
 
-*Known Parameters*
+**Known Parameters**
 
-* *Documents:* We have a set number of documents we want to identify the topic strucutres in. 
-* *Words:* We have a collection of words and word counts for each document which we place in a document word matrix. 
-* *Vocabulary:* The unique list of words across all documents. 
-* *Hyperparemeters:*
+* **Documents:** We have a set number of documents we want to identify the topic strucutres in. 
+* **Words:** We have a collection of words and word counts for each document which we place in a document word matrix. 
+* **Vocabulary:** The unique list of words across all documents. 
+* **Hyperparemeters:**
     * $\overrightarrow{\alpha}$
     * $\overrightarrow{\beta}$
 
 And on to the parts we don't know....
 
-* Unknown (Latent) Parameters * 
+** Unknown (Latent) Parameters **
 
-* *Number of Topics:* We need to determine the number of topics we assume are present in the documents. For the purposes of this book I'm going to skip how to estimate this number properly. If you are interested in learning more about how to estimate the number of topics present in a document see REFERENCE LIST. 
-* *Document Topic Mixture:* We need to determine the topic distribution in each document. 
-* *Word Distribution of Each Topic:* We need to know the distribution of words in each topic. Obviously some words are going to occur very often in a topic while others may have zero probability of occurring in a topic. 
-* *Word topic assignment:* This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture and the word distribution of each topic. 
+* **Number of Topics:** We need to determine the number of topics we assume are present in the documents. For the purposes of this book I'm going to skip how to estimate this number properly. If you are interested in learning more about how to estimate the number of topics present in a document see REFERENCE LIST. 
+* **Document Topic Mixture:** We need to determine the topic distribution in each document. 
+* **Word Distribution of Each Topic:** We need to know the distribution of words in each topic. Obviously some words are going to occur very often in a topic while others may have zero probability of occurring in a topic. 
+* **Word topic assignment:** This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture, $\theta$, and the word distribution, $\phi$, of each topic. 
 
-
+```
 Quick note:   
 Equation 26 is based on the following statistical property
+```
+
 $$
 p(A, B | C) = {p(A,B,C) \over p(C)}
 $$
@@ -40,8 +42,33 @@ $$
 The derivation connecting equation 26 to the actual Gibbs sampling solution to determine _z_ for each word in eacch document, $\overrightarrow{\theta}$, and 
 $\overrightarrow{\phi}$ is very complicated and I'm just going to gloss over a few steps. For complete derivations see (site heinrich and that other one from darling). 
 
+As stated previously, the main goal of inference in LDA is to determine the topic of each word, $z_{i}$ (topic of word _i_), in each document. 
+
+$$
+p(z_{i}|z_{\neg i}, \alpha, \beta, w)
+\tag{27}
+$$
 
 
+Notice that we are interested in identifying the topic of the current word, $z_{i}$ based on the topic assignments of all other words, $z_{\neg i}$. [@darling2011theoretical]
+
+$$
+p(z_{i}|z_{\neg i}, \alpha, \beta, w) = {p(z_{i},z_{\neg i}, w, | \alpha, \beta) \over p(z_{\neg i},w | \alpha, \beta)}
+\propto p(z_{i}, z_{\neg i}, w | \alpha, \beta) = p(z,w|\alpha, \beta)
+\tag{28}
+$$
+
+As with previous examples in this book we are now going to expand equation 28, plug in our conjugate priors, and get to a point where we can use a gibbs sampler to estimate our solution. 
+$$
+\begin{align*}
+p(w,z|\alpha, \beta) &= \int \int p(z, w, \theta, \phi|\alpha, \beta)d\theta d\phi \\
+
+
+&= \int \int p(\phi|\beta)p(\theta|\alpha)p(z|\theta)p(w|\phi_{z})d\theta d\phi \\
+&= \int p(z|\theta)p(\theta|\alpha)d \theta \int p(w|\phi_{z})p(\phi|\beta)d\phi
+\end{align*}
+\tag{29}
+$$
 Edwin Chen style overview, make a graphic of this.... 
 
 
@@ -74,7 +101,7 @@ Use Darling as an outline for the derivation process .... cite carpenter and hei
 
 Below is a toy example that creates a set of documents based on the 3 word (emoji) vocabulary. Each of the 10 documents has a differnt topic mixture and is assigned a random lenght. Our aim with inferrence is to infer the topic mixture of each document and the word distributions of each topic. 
 
-```{r}
+```{r ldaInference, cache = TRUE}
 get_topic <- function(k){ 
 which(rmultinom(1,size = 1,rep(1/k,k))[,1] == 1)
 } 

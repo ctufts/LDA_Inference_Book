@@ -493,7 +493,7 @@ $$
 ### Bias of Two Coins
 Code example of 2 coins
 
-```{r 2coins, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Bias of Two Coins: Theta 1'}
+```{r 2coins, echo = TRUE, warning=FALSE, message=FALSE, cache = TRUE, fig.cap = 'Bias of Two Coins: Theta 1'}
 a = 2
 b = 2
 
@@ -540,7 +540,7 @@ What if the problem we are solving is more complicated. Let's say I flip a coin 
 IMAGE PLACE HOLDER - MAKE A DRAWING OF FLIPPING TWO COINS ON A TIME SCALE
 
 
-```{r bern_change_point, echo = TRUE, warning=FALSE,message=FALSE}
+```{r bern_change_point, echo = TRUE, warning=FALSE,message=FALSE, cache = TRUE}
 real_thetas <- c(0.2, 0.6)
 N <- 300
 a = 2
