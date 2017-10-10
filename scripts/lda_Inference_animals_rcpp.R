@@ -42,7 +42,7 @@ cat(vocab)
 # 0 - animals that are not possible
 # 1 - for shared
 # 4 - non-shared
-shared <- 1
+shared <- 2
 non_shared <- 4
 not_present <- 0
 
@@ -111,31 +111,15 @@ thetas <- thetas[rep(1:nrow(thetas), times = N), ]
 new_words <- t(apply(thetas, 1, function(x) get_word(x,phi)))
 
 
-ds <-tibble(doc_id = rep(0,sum(N)), 
-            word   = rep(0, sum(N)),
-            topic  = rep(0, sum(N)), 
-            theta_a = rep(0, sum(N)),
-            theta_b = rep(0, sum(N)),
-            theta_c = rep(0, sum(N))
+ds <-tibble(doc_id = rep(1:length(N), times = N), 
+            word   = new_words[,1],
+            topic  = new_words[,2], 
+            theta_a = thetas[,1],
+            theta_b = thetas[,2],
+            theta_c = thetas[,3]
 ) 
 
-# topics <- apply(t(rmultinom(10,1,theta)), 1, function(x)which(x==1))
 
-for(m in 1:M){
-  theta <-  rdirichlet(1, alphas)
-  
-  for(n in 1:N[m]){
-    # sample topic index , i.e. select topic
-    topic <- which(rmultinom(1,1,theta)==1)
-    # sample word from topic
-    # new_word <- vocab[which(rmultinom(1,1,phi[topic, ])==1)]
-    new_word <- which(rmultinom(1,1,phi[topic, ])==1)
-    ds[row_index,] <- c(m,new_word, topic,theta)
-    row_index <- row_index + 1
-  }
-}
-
-ds$doc_id <- as.numeric(ds$doc_id)
 
 
 
@@ -161,9 +145,9 @@ current_state$topic <- NA
 t <- length(unique(current_state$word))
 
 # n_doc_topic_count  
-n_doc_topic_count <- matrix(0, nrow = m, ncol = k)
+n_doc_topic_count <- matrix(0, nrow = M, ncol = k)
 # document_topic_sum
-n_doc_topic_sum  <- rep(0,m)
+n_doc_topic_sum  <- rep(0,M)
 # topic_term_count
 n_topic_term_count <- matrix(0, nrow = k, ncol = t)
 # colnames(n_topic_term_count) <- unique(current_state$word)
@@ -172,15 +156,16 @@ n_topic_sum  <- rep(0,k)
 p <- rep(0, k)
 # initialize topics
 
+current_state$topic <- replicate(nrow(current_state),get_topic(k))
+
+
 
 for( i in 1:nrow(current_state)){
-  current_state$topic[i] <- get_topic(k)
   n_doc_topic_count[current_state$doc_id[i],current_state$topic[i]] <- n_doc_topic_count[current_state$doc_id[i],current_state$topic[i]] + 1
   n_doc_topic_sum[current_state$doc_id[i]] <- n_doc_topic_sum[current_state$doc_id[i]] + 1
   n_topic_term_count[current_state$topic[i] , current_state$word[i]] <- n_topic_term_count[current_state$topic[i] ,
                                                                                            current_state$word[i]] + 1
   n_topic_sum[current_state$topic[i]] = n_topic_sum[current_state$topic[i]] + 1
-  
 }
 
 
