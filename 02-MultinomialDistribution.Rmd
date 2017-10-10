@@ -96,11 +96,32 @@ Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
 \tag{23}
 $$
 
-Quick Note:
-The Gamma function is the factorial of the parameter minus 1. 
+A few notes about equation 23.
+
+1. The Gamma function is the factorial of the parameter minus 1.    
+
 $$
 \Gamma (\alpha _{i}) = (\alpha_{i}-1)!
 $$
+
+2. The Dirichlet distribution function is often written using the Beta function in place of the first term as seen below:   
+
+$$
+Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
+{ 
+  1 \over B(\alpha)
+}
+\prod _{i=1}^{K}x_{i}^{\alpha _{i}-1} 
+$$
+
+Where: 
+$$
+{1\over B(\alpha)}={ 
+  {\Gamma {\bigl (}\sum _{i=1}^{K}\alpha _{i}{\bigr )}}
+  \over{\prod _{i=1}^{K}\Gamma (\alpha _{i})}
+}
+$$
+
 The Dirichlet distribution is an extension of the beta distribution for <i>k</i> categories. To get a better sense of what the distributions look like let's visualize a few examples at <i>k</i>=3 with varying alpha values. In both of the box plots below 10,000 random samples were drawn from a Dirichlet distribution where <i>k</i>=3 and \U03B8 is the same for each <i>k</i> in the given plot.  The first plot shows the distribution of values drawn when \U03B8 = 100.  
 
 ```{r DirichletAlpha100, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Sampling from Dirichlet - \U03B8=100' }
@@ -343,6 +364,7 @@ p(\theta|D) &\propto p(D|\theta)p(\theta)\\
 \end{align*}
 \tag{24}
 $$
+
 
 
 We can see our mixture estimates are significantly different from the real model used to generate the documents. So why is this? One of the issues here is that our sample are documents with only 10 words. Therefore an average document has 8 ..., 1 ..., and 1..., but it is not unusual to see a slight variation which causes mixture shifts of 10% or more. And with  Let's try the same example but this time instead of only generating 5 documents we will genertate 500 and use this as our sample to draw inference from.  

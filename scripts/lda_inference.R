@@ -60,7 +60,7 @@ ds %>% group_by(doc_id) %>% summarise(
 
 
 
-current_state <- ds %>% select(doc_id, word, topic)
+current_state <- ds %>% dplyr::select(doc_id, word, topic)
 current_state$topic <- NA
 
 # clean up the names of some of these variables so it is easier to follow the 

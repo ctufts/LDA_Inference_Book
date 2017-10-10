@@ -50,7 +50,7 @@ p(z_{i}|z_{\neg i}, \alpha, \beta, w)
 $$
 
 
-Notice that we are interested in identifying the topic of the current word, $z_{i}$ based on the topic assignments of all other words, $z_{\neg i}$. [@darling2011theoretical]
+Notice that we are interested in identifying the topic of the current word, $z_{i}$, based on the topic assignments of all other words (not including word _i_), $z_{\neg i}$. [@darling2011theoretical]
 
 $$
 p(z_{i}|z_{\neg i}, \alpha, \beta, w) = {p(z_{i},z_{\neg i}, w, | \alpha, \beta) \over p(z_{\neg i},w | \alpha, \beta)}
@@ -58,7 +58,9 @@ p(z_{i}|z_{\neg i}, \alpha, \beta, w) = {p(z_{i},z_{\neg i}, w, | \alpha, \beta)
 \tag{28}
 $$
 
-As with previous examples in this book we are now going to expand equation 28, plug in our conjugate priors, and get to a point where we can use a gibbs sampler to estimate our solution. 
+You may notice $p(z,w|\alpha, \beta)$ looks very similar to the definition of the generative process of LDA (cite Darling) from the previous chapter (equation - 25). The only difference is the absence of $\theta$ and $\phi$. This means we can swap in equation 25 and integrate out $\theta$ and $\phi$. 
+
+
 $$
 \begin{align*}
 p(w,z|\alpha, \beta) &= \int \int p(z, w, \theta, \phi|\alpha, \beta)d\theta d\phi \\
@@ -69,6 +71,23 @@ p(w,z|\alpha, \beta) &= \int \int p(z, w, \theta, \phi|\alpha, \beta)d\theta d\p
 \end{align*}
 \tag{29}
 $$
+
+As with previous examples in this book we are now going to expand equation 28, plug in our conjugate priors, and get to a point where we can use a gibbs sampler to estimate our solution. ADD IN A NOTE ABOUT GIBBS SAMPLING FOR THE UNITIATED - PAPER - this follows the exact steps laid out in that paper. 
+
+
+topic assignment/topic proportion of documents. i - documents, k - topics
+
+Below you will see the derivation for the first term of equation 29. The conjugate prior is utilized. The result is a dirichlet distribution with the parameter comprised of the sum of the number of words assigned each topic and the alpha value for that topic. (This needs to be more clear...)
+$$
+\begin{align*}
+\int p(z|\theta)p(\theta|\alpha)d \theta &= \int \prod_{i}{\theta_{d_{i},z_{i}}{1\over B(\alpha)}}\prod_{k}\theta_{d,k}^{\alpha k}\theta_{d} \\
+&={1\over B(\alpha)} \int  \prod_{k}\theta_{d,k}^{n_{d,k} + \alpha k} \\
+&={B(n_{d},. + \alpha) \over B(\alpha)}
+\end{align*}
+$$
+
+
+
 Edwin Chen style overview, make a graphic of this.... 
 
 

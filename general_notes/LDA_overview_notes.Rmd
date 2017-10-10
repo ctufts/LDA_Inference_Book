@@ -36,3 +36,12 @@ Make the following points:
   This though is somewhat incoherent and needs to be cleaned up, but this is how to drive home the point of what is actually happening without tons of calculus. 
 
 1) This is similar to what we did in the bernoulli example as well as the change detection example. We identify our estimate for the posterior and plug in our counts and parameter values during each iteration. For example in the bernoulli/beta example, we estimate theta 1, then theta 2, then move to the next iteration and repeat. In the timeseries example it is a bit more complicated as our parameter estimations often feed the next parameter estimation. This was shown in the change point detection example. This is very similar to what is happening in each iteration of gibbs sampling for our topic assignment. This is the reason for the decrement in each step - we can't use the current parameter in the estimation of our current parameter, it has to be taken out of the equation. However we are going to use the new topic assignment given to all the other words during our estimations. 
+
+
+
+Issues: 
+Need to understand conditional independence as it relates to words/topics in LDA. I get the concept from here: 
+https://en.wikipedia.org/wiki/Conditional_independence
+but need to make a connection back to how/why it applies here. 
+
+Looking at the loops for the generative model makes this pretty straight forward, you can see the selected topic is only dependent on the document/topic distributions which are preselected based on a prior. The same can be said about the word selected as it is only dependent on the topic selected, not the any of the 'non-selected' topics. This is my intuition, but I need to make sure this actually works as an explanation. 
