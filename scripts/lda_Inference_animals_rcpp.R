@@ -158,15 +158,20 @@ p <- rep(0, k)
 
 current_state$topic <- replicate(nrow(current_state),get_topic(k))
 
+n_doc_topic_count <- current_state %>% group_by(doc_id, topic) %>%
+  summarise(
+    count = n()
+  ) %>% spread(key = topic, value = count) %>% as.matrix()
 
+n_topic_sum <- current_state %>% group_by(topic) %>%
+  summarise(
+    count = n()
+  )  %>% select(count) %>% as.matrix() %>% as.vector()
 
-for( i in 1:nrow(current_state)){
-  n_doc_topic_count[current_state$doc_id[i],current_state$topic[i]] <- n_doc_topic_count[current_state$doc_id[i],current_state$topic[i]] + 1
-  n_doc_topic_sum[current_state$doc_id[i]] <- n_doc_topic_sum[current_state$doc_id[i]] + 1
-  n_topic_term_count[current_state$topic[i] , current_state$word[i]] <- n_topic_term_count[current_state$topic[i] ,
-                                                                                           current_state$word[i]] + 1
-  n_topic_sum[current_state$topic[i]] = n_topic_sum[current_state$topic[i]] + 1
-}
+n_topic_term_count <- current_state %>% group_by(topic, word) %>% 
+  summarise(
+    count = n()
+  ) %>% spread(word, count) %>% as.matrix()
 
 
 
@@ -182,7 +187,7 @@ for( i in 1:nrow(current_state)){
 cppFunction(
   'List gibbsLda(  NumericVector topic, NumericVector doc_id, NumericVector word,
                    NumericMatrix n_doc_topic_count,NumericMatrix n_topic_term_count,
-                   NumericVector n_topic_sum){
+                   NumericVector n_topic_sum, NumericVector n_doc_word_count){
   
   int alpha = 1;
   int beta  = 1;
@@ -191,12 +196,16 @@ cppFunction(
   int cs_word  = 0;
   int new_topic = 0;
   int n_topics = max(topic)+1;
-  double p = 0;
-  double p_new = 0;
+  int vocab_length = n_topic_term_count.ncol();
+  double p_sum = 0;
+  double num_doc, denom_doc, denom_term, num_term;
+  NumericVector p_new(n_topics);
+  IntegerVector topic_sample(n_topics);
   //NumericVector n_topic_sum(topic.size());
 
-  for (int iter  = 0; iter < 5000; iter++){
+  for (int iter  = 0; iter < 1000; iter++){
     for (int j = 0; j < topic.size(); ++j){
+    //for (int j = 0; j < 10; ++j){
       //Rcout << j << std::endl;
       // change values outside of function to prevent confusion
       cs_topic = topic[j];
@@ -209,19 +218,43 @@ cppFunction(
       n_topic_sum[cs_topic] = n_topic_sum[cs_topic] -1;
     
       // get probability for each topic, select topic with highest prob
-      new_topic = 0;
-      p = 0;
-      for(int probs = 0; probs < n_topics; probs++){
-        p_new = (n_topic_term_count(probs, cs_word) + beta) * (n_doc_topic_count(cs_doc,probs) + alpha)/((n_topic_sum[probs]) + beta);
+      for(int tpc = 0; tpc < n_topics; tpc++){
+
+        // word cs_word topic tpc + beta
+        num_term   = n_topic_term_count(tpc, cs_word) + beta;
+        // sum of all word counts w/ topic tpc + vocab length*beta
+        denom_term = n_topic_sum[tpc] + vocab_length*beta;
+
+        
+        // count of topic tpc in cs_doc + alpha
+        num_doc    = n_doc_topic_count(cs_doc,tpc) + alpha;
+        // total word count in cs_doc + n_topics*alpha
+        denom_doc = n_doc_word_count[cs_doc] + n_topics*alpha;
+        
+        //Rcout << "The value is " << denom_doc << std::endl;
       
-        if(p_new > p){
+      
+      
+      
+        p_new[tpc] = (num_term/denom_term) * (num_doc/denom_doc);
+        
           // offset for indexing in R
-          // Rcout << "The value is " << p_new << std::endl;
-          new_topic = probs;
-          p = p_new;
-        }
+
+
+        
       }
+      p_sum = std::accumulate(p_new.begin(), p_new.end(), 0.0);
+      for(int tpc = 0; tpc < n_topics; tpc++){
+        p_new[tpc] = p_new[tpc]/p_sum;
+      }
+      // sample based on probs
+      R::rmultinom(1, p_new.begin(), n_topics, topic_sample.begin());
       
+      for(int tpc = 0; tpc < n_topics; tpc++){
+          if(topic_sample[tpc]==1){
+            new_topic = tpc;
+          }
+      }
       
       // print(new_topic)
       // update counts
@@ -232,7 +265,6 @@ cppFunction(
 
       
   
-      // Rcout << "The value is " << new_topic << std::endl;
       
       
       // update current_state
@@ -250,6 +282,8 @@ return List::create(
 
 
 # minus 1 in, add 1 out
-gibbsLda( current_state$topic-1 , current_state$doc_id-1, current_state$word-1,
-           n_doc_topic_count, n_topic_term_count, n_topic_sum)
+temp <- gibbsLda( current_state$topic-1 , current_state$doc_id-1, current_state$word-1,
+           n_doc_topic_count[,-1], n_topic_term_count[,-1], n_topic_sum, N)
+
+
 
