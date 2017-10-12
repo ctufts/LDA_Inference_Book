@@ -106,8 +106,8 @@ get_word <- function(theta, phi){
 }
 
 
-thetas <- rdirichlet(M, alphas)
-thetas <- thetas[rep(1:nrow(thetas), times = N), ]
+theta_samples <- rdirichlet(M, alphas)
+thetas <- theta_samples[rep(1:nrow(theta_samples), times = N), ]
 new_words <- t(apply(thetas, 1, function(x) get_word(x,phi)))
 
 
@@ -203,10 +203,8 @@ cppFunction(
   IntegerVector topic_sample(n_topics);
   //NumericVector n_topic_sum(topic.size());
 
-  for (int iter  = 0; iter < 1000; iter++){
-    for (int j = 0; j < topic.size(); ++j){
-    //for (int j = 0; j < 10; ++j){
-      //Rcout << j << std::endl;
+  for (int iter  = 0; iter < 100; iter++){
+    for (int j = 0; j < word.size(); ++j){
       // change values outside of function to prevent confusion
       cs_topic = topic[j];
       cs_doc   = doc_id[j];
@@ -238,16 +236,13 @@ cppFunction(
       
         p_new[tpc] = (num_term/denom_term) * (num_doc/denom_doc);
         
-          // offset for indexing in R
-
-
-        
       }
+      // normalize the posteriors
       p_sum = std::accumulate(p_new.begin(), p_new.end(), 0.0);
       for(int tpc = 0; tpc < n_topics; tpc++){
         p_new[tpc] = p_new[tpc]/p_sum;
       }
-      // sample based on probs
+      // sample new topic based on the posterior distribution
       R::rmultinom(1, p_new.begin(), n_topics, topic_sample.begin());
       
       for(int tpc = 0; tpc < n_topics; tpc++){
@@ -282,8 +277,21 @@ return List::create(
 
 
 # minus 1 in, add 1 out
-temp <- gibbsLda( current_state$topic-1 , current_state$doc_id-1, current_state$word-1,
+lda_counts <- gibbsLda( current_state$topic-1 , current_state$doc_id-1, current_state$word-1,
            n_doc_topic_count[,-1], n_topic_term_count[,-1], n_topic_sum, N)
 
 
+# calculate phi and theta's
 
+# phi - row apply to lda_counts[[1]]
+
+# rewrite this function and normalize by row so that they sum to 1
+phi_est <- apply(lda_counts[[1]], 1, function(x) (x + beta)/(sum(x)+length(vocab)*beta) )
+print(t(phi))
+print(round(phi_est,2))
+
+# theta
+theta_est <- apply(lda_counts[[2]],2, function(x)(x+alphas[1])/(sum(x) + k*alphas[1]))
+theta_est <- t(apply(theta_est, 1, function(x) x/sum(x)))
+print(head(theta_est))
+(head(theta_samples))
