@@ -1,5 +1,10 @@
 # LDA Inference
 
+## General Overview
+We have talked about LDA as a generative model, but now it is time to flip the problem around. What if I have a bunch of documents and I want to infer topics? To figure out a problem like this we are first going to assume the documents were generated using a generative model similar to the ones we created in the previous section. 
+
+
+
 Now it is time to flip the problem around. What happens when I have a bunch of documents and I want to know what topics are present in each document and what words are present (most probable) in each topic? In terms of math, the values we need to answer the questions above are:
 
 $$
@@ -87,7 +92,7 @@ $$
 $$
 
 
-
+Add in the equations for the solution from [@steyvers2007probabilistic]
 Edwin Chen style overview, make a graphic of this.... 
 
 

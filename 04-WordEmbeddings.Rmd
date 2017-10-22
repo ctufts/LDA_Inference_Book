@@ -3,7 +3,13 @@
 This chapter offers a general overview of how documents and words are viewed and processed during topic modeling. 
 
 ## Bag of Words
-LDA processes documents as a 'bag of words'. Bag of words means you view the frequency of the words in a document with no regard for the order the words appeared in. Obviously there is going to be some information lost in this process, but our goal with topic modeling is to be able to view the 'big picture' from a large number of documents. Alternate way of thinking about it:  I have a vocabulary of 100k words used across 1 million documents, then I use LDA to look 500 topics. I just narrowed down my feature space from 100k features to 500 features (dimensionality reduction). 
+LDA processes documents as a 'bag of words'. Bag of words means you view the frequency of the words in a document with no regard for the order the words appeared in. 
+
+```{r BagOfWords, echo = FALSE, fig.cap = 'Bag of Words Representation'}
+knitr::include_graphics("Images/BagOfWords.png")
+```
+
+Obviously there is going to be some information lost in this process, but our goal with topic modeling is to be able to view the 'big picture' from a large number of documents. Alternate way of thinking about it:  I have a vocabulary of 100k words used across 1 million documents, then I use LDA to look 500 topics. I just narrowed down my feature space from 100k features to 500 features (dimensionality reduction). 
 
 Possible examples: 
 Scrabble in reverse

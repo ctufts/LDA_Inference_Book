@@ -2,7 +2,7 @@ rm(list = ls())
 library(MCMCpack)
 library(tidyverse)
 library(Rcpp)
-
+library(knitr)
 
 get_topic <- function(k){ 
   which(rmultinom(1,size = 1,rep(1/k,k))[,1] == 1)
@@ -91,6 +91,17 @@ alphas <- rep(1,k) # topic document dirichlet parameters
 
 phi <- matrix(c(land_phi, sea_phi, air_phi), nrow = k, ncol = length(vocab), 
               byrow = TRUE, dimnames = list(c('land', 'sea', 'air')))
+
+
+##### Plot Phi
+
+# phi_ds <- cbind(as.tibble(t(phi)), vocab)
+# emoji_text=element_text(family="OpenSansEmoji", size=20)
+# ggplot(phi_ds, aes(x = vocab, y = sea)) + geom_point() + theme(axis.text.x = emoji_text )
+####
+
+
+
 
 xi <- 100 # average document length 
 N <- rpois(M, xi) #words in each document
@@ -191,17 +202,12 @@ cppFunction(
   
   int alpha = 1;
   int beta  = 1;
-  int cs_topic = 0;
-  int cs_doc   = 0;
-  int cs_word  = 0;
-  int new_topic = 0;
+  int cs_topic,cs_doc, cs_word, new_topic;
   int n_topics = max(topic)+1;
   int vocab_length = n_topic_term_count.ncol();
-  double p_sum = 0;
-  double num_doc, denom_doc, denom_term, num_term;
+  double p_sum = 0,num_doc, denom_doc, denom_term, num_term;
   NumericVector p_new(n_topics);
   IntegerVector topic_sample(n_topics);
-  //NumericVector n_topic_sum(topic.size());
 
   for (int iter  = 0; iter < 100; iter++){
     for (int j = 0; j < word.size(); ++j){
@@ -228,11 +234,6 @@ cppFunction(
         num_doc    = n_doc_topic_count(cs_doc,tpc) + alpha;
         // total word count in cs_doc + n_topics*alpha
         denom_doc = n_doc_word_count[cs_doc] + n_topics*alpha;
-        
-        //Rcout << "The value is " << denom_doc << std::endl;
-      
-      
-      
       
         p_new[tpc] = (num_term/denom_term) * (num_doc/denom_doc);
         
@@ -287,11 +288,16 @@ lda_counts <- gibbsLda( current_state$topic-1 , current_state$doc_id-1, current_
 
 # rewrite this function and normalize by row so that they sum to 1
 phi_est <- apply(lda_counts[[1]], 1, function(x) (x + beta)/(sum(x)+length(vocab)*beta) )
-print(t(phi))
-print(round(phi_est,2))
+rownames(phi_est) <- vocab
+colnames(phi) <- vocab
+kable(round(phi_est, 2))
+kable(t(round(phi,2)))
 
 # theta
 theta_est <- apply(lda_counts[[2]],2, function(x)(x+alphas[1])/(sum(x) + k*alphas[1]))
 theta_est <- t(apply(theta_est, 1, function(x) x/sum(x)))
+
+# figure out a way to visualize the theta distributions - probably have to first match them 
+# somehow
 print(head(theta_est))
 (head(theta_samples))

@@ -1,0 +1,414 @@
+---
+  output:
+  pdf_document: default
+  html_document: default
+---
+  
+# What is LDA?
+  
+Latent Dirichlet Allocation (LDA) is a generative probablistic model for collections of discrete data developed by Blei, Ng, and Jordan. [@blei2003latent] One of the most common uses of LDA is for modeling collections of text. The general idea is that each document is generated from a mixture of topics and each of those topics is a mixture of words. This is known as a hierarchical model since it is built on distributions of topics built on top of distributions of words. 
+
+In regards to the model name, you can think of it as follows:
+
+* <b>Latent</b>: Topic structures in a document are 'latent' meaning they are hidden structures in the text. 
+* <b>Dirichlet</b>: The Dirichlet distribution is used as the prior for both the topic distributions and the word distributions. If you have no idea what a Dirichlet distribution or a prior is do not despair. We will be going through all of this in the upcoming chapters. 
+* <b>Allocation</b>: Allocation of words to a given topic. 
+
+So to review: we have latent structures in a corpus (topics), taking into account Dirichlet priors for the word and topic distributions, to allocate words to a given topic and topics to a given document. 
+
+Throughout this book I will work through all of the building blocks which make LDA possible, but to help get an understanding of what LDA is and why it is useful, I will offer a quick example first. 
+
+
+## Animal Generator
+
+The majority of this book is about words, topics, and documents, but lets start with something a bit different: animals. One of the ways you can classify animals is by where they spend the majority of their time - land, air, sea. Obviously there are some animals that only dwell in one place, for example a cow only lives on land. However, there are other animals, such as some birds, that split their time between land, sea, and air.
+
+You are probably asking yourself where I'm going with this. We can think of land, air, and sea as topics that contain a distribution of animals. In this case we can equate animals with words. For example, on land I am much more likely to see a cow than a whale, but in the sea it would be the reverse. If I quantify these probabilities into a distribution over all the animals (words) for each type of habitat (land,sea, air - topics) I can use them to generate sets of animals(words) to populate a given location (document) which may contain a mix of land, sea, and air (topics).   
+
+So let's move on to generating a specific location. We know that different locations will vary in terms of which habitats are present. For example, a beach contains land, sea, and air, but some areas inland may only contain air and land, for instance a desert.  We can define the mixture of these types of habitats in each location. For example, an example beach is 1/3 land, 1/3 sea, and 1/3 air. We can think of these more specific locations as documents. To review: a given location (document) contains a mixture of land, air, and sea (topics) and each of those contain different mixtures of animals (words).  
+
+
+
+Let's work through some examples using our animals and habitats. The examples provided in this chapter are oversimplified so that we can get a general idea of what is going on with LDA. The rest of the book will handle all the nuts and bolts of the model, but for now let's try and get a handle on how this works.
+
+
+We'll start by generating a beach location with 1/3 land animals, 1/3 sea animals, and 1/3 air animals. Below you can see our collection of animals and their probability in each topic. Note that some animals have zero probabilities in a given topic, a cow is never in the ocean, where some have higher probabilities than others (a crab is in the sea sometimes, but a fish is always in the sea). You may notice that there is only 1 animal in the air category. There are several birds, but only 1 of them is cabable of flight in our vocabulary. 
+
+
+```{r animalVocab, echo = FALSE, warning=FALSE, message=FALSE}
+rm(list = ls())
+library(MCMCpack)
+library(tidyverse)
+library(Rcpp)
+library(knitr)
+library(kableExtra) 
+
+# 3 topics - land sea & air
+# birds and amphibious have cross over
+# fish - sea 100
+# land animals 100 land
+
+k <- 3
+beta <- 1
+# whale1, whale2, FISH1, FISH2,OCTO
+sea_animals <- c('\U1F40B', '\U1F433','\U1F41F', '\U1F420', '\U1F419')
+
+# crab, alligator, TURTLE,SNAKE
+amphibious  <- c('\U1F980', '\U1F40A', '\U1F422', '\U1F40D')
+
+# CHICKEN, TURKEY, DUCK, PENGUIN
+birds       <- c('\U1F413','\U1F983','\U1F426','\U1F427')
+# SQUIRREL, ELEPHANT, COW, RAM, CAMEL
+land_animals<- c('\U1F43F','\U1F418','\U1F402','\U1F411','\U1F42A')
+
+vocab <- c(sea_animals, amphibious, birds, land_animals) 
+
+
+# equal probability 1/18
+# 0 - animals that are not possible
+# 1 - for shared
+# 4 - non-shared
+shared <- 2
+non_shared <- 4
+not_present <- 0
+
+land_phi <- c(rep(not_present, length(sea_animals)),
+              rep(shared, length(amphibious)),
+              rep(non_shared, 2), # turkey and chicken can't fly
+              rep(shared, 2), # regular bird and pengiun
+              rep(non_shared, length(land_animals)))
+land_phi <- land_phi/sum(land_phi)
+
+
+sea_phi <- c(rep(non_shared, length(sea_animals)),
+             rep(shared, length(amphibious)),
+             rep(not_present, 2), # turkey and chicken can't fly 
+             rep(shared, 2), # regular bird and pengiun 
+             rep(not_present, length(land_animals)))
+sea_phi <- sea_phi/sum(sea_phi)
+
+air_phi <- c(rep(not_present, length(sea_animals)),
+             rep(not_present, length(amphibious)),
+             rep(not_present, 2), # turkey and chicken can't fly 
+             non_shared, # regular bird
+             not_present, # penguins can't fly
+             rep(not_present, length(land_animals)))
+air_phi <- air_phi/sum(air_phi)
+
+
+k <- 3 # number of topics
+phi <- matrix(c(land_phi, sea_phi, air_phi), nrow = k, ncol = length(vocab), 
+              byrow = TRUE, dimnames = list(c('land', 'sea', 'air'),vocab))
+
+
+phi_ds <- as.tibble(cbind(vocab,t(round(phi,2))))
+phi_ds$land <- as.numeric(phi_ds$land)
+phi_ds$sea <- as.numeric(phi_ds$sea)
+phi_ds$air <- as.numeric(phi_ds$air)
+phi_ds %>% kable() %>% kable_styling(bootstrap_options = "striped",
+                full_width = F)
+```
+
+
+And so if we want to generate a document based off this we would use those probabilities in a straightforward manner:
+
+```{r}
+words_per_topic <- 3
+equal_doc <- c(vocab[sample.int(length(vocab),words_per_topic, prob=phi_ds$land, replace = T)],
+               vocab[sample.int(length(vocab),words_per_topic, prob=phi_ds$sea, replace = T)],
+               vocab[sample.int(length(vocab),words_per_topic, prob=phi_ds$air, replace = T)])
+cat(equal_doc)
+               
+
+```
+
+
+
+Ok, now let's make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be %50 sea, %50 air, and %0 land. 
+
+```{r}
+words_per_topic <- 3
+ocean_doc <- c(vocab[sample.int(length(vocab),words_per_topic, prob=phi_ds$sea, replace = T)],
+               vocab[sample.int(length(vocab),words_per_topic, prob=phi_ds$air, replace = T)])
+cat(ocean_doc)
+               
+
+```
+
+
+Ok, so we saw that we can generate these collections of animals that are representative of the given location. What if we have thousands of locations and we want to know the mixture of land, air, and sea that are present? And what if we had no idea where each animal spends its time? LDA allows us to infer both of these peices of information.   Similar to the locations (documents) I generated above, I will create 1000 random documents with varying length. 
+
+```{r echo=FALSE}
+rm(list = ls())
+
+get_topic <- function(k){ 
+  which(rmultinom(1,size = 1,rep(1/k,k))[,1] == 1)
+} 
+
+get_word <- function(theta, phi){
+  topic <- which(rmultinom(1,1,theta)==1)
+  # sample word from topic
+  new_word <- which(rmultinom(1,1,phi[topic, ])==1)
+  return(c(new_word, topic))  
+}
+
+cppFunction(
+  'List gibbsLda(  NumericVector topic, NumericVector doc_id, NumericVector word,
+  NumericMatrix n_doc_topic_count,NumericMatrix n_topic_term_count,
+  NumericVector n_topic_sum, NumericVector n_doc_word_count){
+  
+  int alpha = 1;
+  int beta  = 1;
+  int cs_topic,cs_doc, cs_word, new_topic;
+  int n_topics = max(topic)+1;
+  int vocab_length = n_topic_term_count.ncol();
+  double p_sum = 0,num_doc, denom_doc, denom_term, num_term;
+  NumericVector p_new(n_topics);
+  IntegerVector topic_sample(n_topics);
+  
+  for (int iter  = 0; iter < 100; iter++){
+  for (int j = 0; j < word.size(); ++j){
+  // change values outside of function to prevent confusion
+  cs_topic = topic[j];
+  cs_doc   = doc_id[j];
+  cs_word  = word[j];
+  
+  // decrement counts      
+  n_doc_topic_count(cs_doc,cs_topic) = n_doc_topic_count(cs_doc,cs_topic) - 1;
+  n_topic_term_count(cs_topic , cs_word) = n_topic_term_count(cs_topic , cs_word) - 1;
+  n_topic_sum[cs_topic] = n_topic_sum[cs_topic] -1;
+  
+  // get probability for each topic, select topic with highest prob
+  for(int tpc = 0; tpc < n_topics; tpc++){
+  
+  // word cs_word topic tpc + beta
+  num_term   = n_topic_term_count(tpc, cs_word) + beta;
+  // sum of all word counts w/ topic tpc + vocab length*beta
+  denom_term = n_topic_sum[tpc] + vocab_length*beta;
+  
+  
+  // count of topic tpc in cs_doc + alpha
+  num_doc    = n_doc_topic_count(cs_doc,tpc) + alpha;
+  // total word count in cs_doc + n_topics*alpha
+  denom_doc = n_doc_word_count[cs_doc] + n_topics*alpha;
+  
+  p_new[tpc] = (num_term/denom_term) * (num_doc/denom_doc);
+  
+  }
+  // normalize the posteriors
+  p_sum = std::accumulate(p_new.begin(), p_new.end(), 0.0);
+  for(int tpc = 0; tpc < n_topics; tpc++){
+  p_new[tpc] = p_new[tpc]/p_sum;
+  }
+  // sample new topic based on the posterior distribution
+  R::rmultinom(1, p_new.begin(), n_topics, topic_sample.begin());
+  
+  for(int tpc = 0; tpc < n_topics; tpc++){
+  if(topic_sample[tpc]==1){
+  new_topic = tpc;
+  }
+  }
+  
+  // print(new_topic)
+  // update counts
+  n_doc_topic_count(cs_doc,new_topic) = n_doc_topic_count(cs_doc,new_topic) + 1;
+  n_topic_term_count(new_topic , cs_word) = n_topic_term_count(new_topic , cs_word) + 1;
+  n_topic_sum[new_topic] = n_topic_sum[new_topic] + 1;
+  
+  
+  // update current_state
+  topic[j] = new_topic;
+  
+  }
+  
+  }
+  return List::create(
+  n_topic_term_count,
+  n_doc_topic_count);
+  }
+  ')
+
+```
+
+```{r}
+# 3 topics - land sea & air
+# birds and amphibious have cross over
+# fish - sea 100
+# land animals - 100 land
+
+beta <- 1
+k <- 3 # number of topics
+M <- 100 # let's create 10 documents
+alphas <- rep(1,k) # topic document dirichlet parameters
+xi <- 100 # average document length 
+N <- rpois(M, xi) #words in each document
+
+
+# whale1, whale2, FISH1, FISH2,OCTO
+sea_animals <- c('\U1F40B', '\U1F433','\U1F41F', '\U1F420', '\U1F419')
+
+# crab, alligator, TURTLE,SNAKE
+amphibious  <- c('\U1F980', '\U1F40A', '\U1F422', '\U1F40D')
+
+# CHICKEN, TURKEY, DUCK, PENGUIN
+birds       <- c('\U1F413','\U1F983','\U1F426','\U1F427')
+# SQUIRREL, ELEPHANT, COW, RAM, CAMEL
+land_animals<- c('\U1F43F','\U1F418','\U1F402','\U1F411','\U1F42A')
+
+vocab <- c(sea_animals, amphibious, birds, land_animals)
+
+# equal probability 1/18
+# 0 - animals that are not possible
+# 1 - for shared
+# 4 - non-shared
+shared <- 2
+non_shared <- 4
+not_present <- 0
+
+land_phi <- c(rep(not_present, length(sea_animals)),
+              rep(shared, length(amphibious)),
+              rep(non_shared, 2), # turkey and chicken can't fly
+              rep(shared, 2), # regular bird and pengiun
+              rep(non_shared, length(land_animals)))
+land_phi <- land_phi/sum(land_phi)
+
+
+sea_phi <- c(rep(non_shared, length(sea_animals)),
+             rep(shared, length(amphibious)),
+             rep(not_present, 2), # turkey and chicken can't fly 
+             rep(shared, 2), # regular bird and pengiun 
+             rep(not_present, length(land_animals)))
+sea_phi <- sea_phi/sum(sea_phi)
+
+air_phi <- c(rep(not_present, length(sea_animals)),
+             rep(not_present, length(amphibious)),
+             rep(not_present, 2), # turkey and chicken can't fly 
+             non_shared, # regular bird
+             not_present, # penguins can't fly
+             rep(not_present, length(land_animals)))
+air_phi <- air_phi/sum(air_phi)
+
+# calculate topic word distributions
+phi <- matrix(c(land_phi, sea_phi, air_phi), nrow = k, ncol = length(vocab), 
+              byrow = TRUE, dimnames = list(c('land', 'sea', 'air')))
+
+theta_samples <- rdirichlet(M, alphas)
+thetas <- theta_samples[rep(1:nrow(theta_samples), times = N), ]
+new_words <- t(apply(thetas, 1, function(x) get_word(x,phi)))
+
+ds <-tibble(doc_id = rep(1:length(N), times = N), 
+            word   = new_words[,1],
+            topic  = new_words[,2], 
+            theta_a = thetas[,1],
+            theta_b = thetas[,2],
+            theta_c = thetas[,3]
+) 
+
+ds %>% filter(doc_id < 3) %>% group_by(doc_id) %>% summarise(
+  tokens = paste(vocab[word], collapse = ' ')
+) %>% kable(col.names = c('Document', 'Animals'))
+```
+
+```{r }
+ds %>% filter(doc_id < 3) %>% group_by(doc_id) %>% select(doc_id, theta_a, theta_b, theta_c) %>% distinct() %>% 
+  kable(col.names = c('Document', 'Land', 'Sea', 'Air'))
+
+```
+
+
+With the help of LDA we can go through all of our documents and estimate the topic/word distributions and the topic/document distributions. 
+
+This is our estimated values and our resulting values:
+
+```{r echo= FALSE}
+######### Inference ############### 
+current_state <- ds %>% dplyr::select(doc_id, word, topic)
+current_state$topic <- NA
+t <- length(unique(current_state$word))
+
+# n_doc_topic_count  
+n_doc_topic_count <- matrix(0, nrow = M, ncol = k)
+# document_topic_sum
+n_doc_topic_sum  <- rep(0,M)
+# topic_term_count
+n_topic_term_count <- matrix(0, nrow = k, ncol = t)
+# colnames(n_topic_term_count) <- unique(current_state$word)
+# topic_term_sum
+n_topic_sum  <- rep(0,k)
+p <- rep(0, k)
+# initialize topics
+
+current_state$topic <- replicate(nrow(current_state),get_topic(k))
+
+# get word, topic, and document counts (used during inference process)
+n_doc_topic_count <- current_state %>% group_by(doc_id, topic) %>%
+  summarise(
+    count = n()
+  ) %>% spread(key = topic, value = count) %>% as.matrix()
+
+n_topic_sum <- current_state %>% group_by(topic) %>%
+  summarise(
+    count = n()
+  )  %>% select(count) %>% as.matrix() %>% as.vector()
+
+n_topic_term_count <- current_state %>% group_by(topic, word) %>% 
+  summarise(
+    count = n()
+  ) %>% spread(word, count) %>% as.matrix()
+
+
+
+# minus 1 in, add 1 out
+lda_counts <- gibbsLda( current_state$topic-1 , current_state$doc_id-1, current_state$word-1,
+                        n_doc_topic_count[,-1], n_topic_term_count[,-1], n_topic_sum, N)
+
+
+# calculate estimates for phi and theta
+
+# phi - row apply to lda_counts[[1]]
+
+# rewrite this function and normalize by row so that they sum to 1
+phi_est <- apply(lda_counts[[1]], 1, function(x) (x + beta)/(sum(x)+length(vocab)*beta) )
+rownames(phi_est) <- vocab
+colnames(phi) <- vocab
+theta_est <- apply(lda_counts[[2]],2, function(x)(x+alphas[1])/(sum(x) + k*alphas[1]))
+theta_est <- t(apply(theta_est, 1, function(x) x/sum(x)))
+kable(round(phi_est, 2),col.names = c('Topic 1', 'Topic 2', 'Topic 3'),caption = 'Estimated word distribution for each topic')
+```
+
+```{r echo=FALSE}
+kable(t(round(phi,2)),caption = 'The word distribution for each topic used to build the documents')
+```
+
+
+The document topic mixture estimates are shown below for the first 5 documents:
+
+```{r echo=FALSE}
+print(head(round(theta_est,2)))
+```
+
+
+Here are our real mixtures for comparison: 
+```{r}
+colnames(theta_samples) <- c('Land', 'Sea', 'Air')
+(head(round(theta_samples,2))) %>% kable() 
+```
+
+
+
+We describe latent Dirichlet allocation (LDA), a generative probabilistic model for collections of
+discrete data such as text corpora. LDA is a three-level hierarchical Bayesian model, in which each
+item of a collection is modeled as a finite mixture over an underlying set of topics. Each topic is, in
+turn, modeled as an infinite mixture over an underlying set of topic probabilities. In the context of
+text modeling, the topic probabilities provide an explicit representation of a document. We present
+efficient approximate inference techniques based on variational methods and an EM algorithm for
+empirical Bayes parameter estimation. We report results in document modeling, text classification,
+and collaborative filtering, comparing to a mixture of unigrams model and the probabilistic LSI
+model. [@blei2003latent]
+
+
+
+
+Some other information you should keep in mind:
+1. A word can part of multiple different topics.  In the case of a penguin, it would belong to the sea and land topics, but would have a probability of zero in an air topic. 
+2. 

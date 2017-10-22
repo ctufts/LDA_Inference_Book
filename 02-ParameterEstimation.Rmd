@@ -21,13 +21,9 @@ You will often see Bernoulli distribution mentioned as a special case of the Bin
 
 To clarify, if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However if I want to know the probability of getting 2 heads in a row, this is where the binomial distribution comes in. Keep this in mind while reviewing the upcoming examples as I will be referencing our probability of getting a __single__ heads during a coin flip even though I am using 100 coin flips for reference. 
 
-------------Image Placeholder-----------------------
-
-Single coin outcome - probability of single flip 
-Multi flip outcome  - probability of getting 3 heads in a row and 0 tails
-
-------------Image Placeholder-----------------------
-
+```{r BernVSBin, echo = FALSE, fig.cap = 'Bernoulli and Binomial Distributions'}
+knitr::include_graphics("Images/Bern_Binomial.png")
+```
 
 #### Bernoulli - Distribution Notation
 The probability mass function of the bernoulli distribution is shown below. 
