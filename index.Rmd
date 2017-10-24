@@ -22,13 +22,15 @@ The purpose of this book is to provide a step by step guide of LDA utilizing Gib
 heavily inspired by the Gregor Heinrich's _Parameter Estimation for Text Analysis_[@heinrich2008parameter]. 
 
 # Background {-}
-I've often found that resources covering LDA are either hard to follow do to a heavy reliance on calculus derivations or the resources are extremely high level so you get the idea of what LDA accomplishes, but you never fully grasp how it works. My goal is to offer a comprehensive overview of all the components of LDA and the principles it is built on. Obviously if you don't know what Gibbs sampling is, LDA using Gibbs Sampling is going to difficult to understand. 
+I've often found that resources covering LDA are either hard to follow, do to a heavy reliance on calculus derivations, or the resources are extremely high level so you get the idea of what LDA accomplishes, but you never fully grasp how it works. The book focuses on LDA for inference via Gibbs Sampling. To aid in understanding both LDA and Gibbs sampling all probability distributions used in LDA will be reviewed along with a variety of different approaches for parameter estimation. Following the introduction of these components, LDA will be presented as a generative model.  This will lay the groundwork for understanding how LDA can be used for inference of topics in a corpus.   
 
 # Layout of Book {-}
 
+* What is LDA? - High level overview
 * Parameter Estimation Methods (general overview using Bernoulli distribution) - ML, MAP, Bayesian Inference, Gibbs Sampling
 * Multinomial Distribution - Explains the relationship of Bernoulli to Multinomial, then goes into Gibbs Sampling 
-* Word Embeddings - Very light overview of how we get from words to multinomial...? not sure this is necessary, also covers bag of words
-* LDA - Generative Model examples, Inference
+* Word/Document Structures - Bag of Words, Word Document Matrix
+* LDA - A Generative Model
+* LDA - Inference
 
 

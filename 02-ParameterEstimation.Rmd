@@ -6,20 +6,20 @@ output:
 
 # Parameter Estimation
 
-I'm going to build off of a simple example which can be extended through the 
-remainder of this tutorial - a coin flip. A coin flip has 2 possible outcomes:   
-heads or tails. 
+LDA is a generative probabilistic model, so to understand exactly how this works we need to understand the underlying probability distibutions. In this chapter we will focus on the Bernoulli distribution and the Beta distribution. Both of these distributions are very closely related to (and also special cases of) the multinomial and Dirichlet distributions utilized by LDA, but they are a bit easier to comprehend. Once we have made our way through Bernoulli and beta, the following chapter will go into detail about multinomial and Dirichlet distributions and how all these peices are connected. 
+
+Throughout the chapter I'm going to build off of a simple example - a single coin flip. Let's begin. 
 
 ## Distributions
 ### Bernoulli
 When you flip a coin you get either heads or tails. This single coin flip is known 
-as a Bernoulli trial.  You can think of any <i>single</i> trial with two possible outcomes as a Bernoulli trial. The Bernoulli distribution is the probability distribution of Bernoulli trials, basically a model of the coin flip.  
+as a Bernoulli trial.  You can think of any <i>single</i> trial with two possible outcomes as a Bernoulli trial. The Bernoulli distribution is the probability distribution of Bernoulli trials, basically a model of the single coin flip.  
 
 
 #### Bernoulli: A Special Case of the Binomial Distribution
 You will often see Bernoulli distribution mentioned as a special case of the Binomial distribution. The binomial model consists of _n_ bernoulli trials, where each trial is independent and the probability of success does not change between trials.[@kerns2010introduction]. The bernoulli distribution is the case of a single trial or _n_=1. 
 
-To clarify, if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However if I want to know the probability of getting 2 heads in a row, this is where the binomial distribution comes in. Keep this in mind while reviewing the upcoming examples as I will be referencing our probability of getting a __single__ heads during a coin flip even though I am using 100 coin flips for reference. 
+To clarify, if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However, if I want to know the probability of getting 2 heads (or more) in a row, this is where the binomial distribution comes in. For our purposes we are only concerned about the outcome of a single coin flip and will therefore stick to the Bernoulli distribution. 
 
 ```{r BernVSBin, echo = FALSE, fig.cap = 'Bernoulli and Binomial Distributions'}
 knitr::include_graphics("Images/Bern_Binomial.png")
@@ -489,7 +489,7 @@ $$
 ### Bias of Two Coins
 Code example of 2 coins
 
-```{r 2coins, echo = TRUE, warning=FALSE, message=FALSE, cache = TRUE, fig.cap = 'Bias of Two Coins: Theta 1'}
+```{r 2coins, echo = TRUE, warning=FALSE, message=FALSE, cache = FALSE, fig.cap = 'Bias of Two Coins: Theta 1'}
 a = 2
 b = 2
 
@@ -536,7 +536,7 @@ What if the problem we are solving is more complicated. Let's say I flip a coin 
 IMAGE PLACE HOLDER - MAKE A DRAWING OF FLIPPING TWO COINS ON A TIME SCALE
 
 
-```{r bern_change_point, echo = TRUE, warning=FALSE,message=FALSE, cache = TRUE}
+```{r bern_change_point, echo = TRUE, warning=FALSE,message=FALSE, cache = FALSE}
 real_thetas <- c(0.2, 0.6)
 N <- 300
 a = 2

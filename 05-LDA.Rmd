@@ -66,7 +66,7 @@ library(kableExtra)
 
 
 
-```{r ldaGenerativeAllStatic, echo=TRUE, warning=FALSE, message=FALSE, cache=TRUE} 
+```{r ldaGenerativeAllStatic, echo=TRUE, warning=FALSE, message=FALSE, cache=FALSE} 
 
 k <- 2 # number of topics
 M <- 10 # let's create 10 documents
@@ -128,7 +128,7 @@ This next example is going to be very similar, but it now allows for varying doc
         + *Select word based on topic z's word distribution * 
         + $w_{i}$ ~ Multinomial($\phi^{(z_{i})}$)
 
-```{r ldaGenerativeVariedLength, cache=TRUE} 
+```{r ldaGenerativeVariedLength, cache=FALSE} 
 k <- 2 # number of topics
 M <- 10 # let's create 10 documents
 vocab <- c('\U1F4D8', '\U1F4D5', '\U1F4D7')
@@ -189,7 +189,7 @@ For d = 1 to D where number of documents is D
 
 
 
-```{r ldaGenerativeVaryTDLength, echo = TRUE, warning=FALSE, message=FALSE, cache = TRUE}
+```{r ldaGenerativeVaryTDLength, echo = TRUE, warning=FALSE, message=FALSE, cache = FALSE}
 
 k <- 2 # number of topics
 M <- 10 # let's create 10 documents
@@ -257,7 +257,7 @@ We are finally at the full generative model for LDA. The word distributions for 
         + $w_{i}$ ~ Multinomial($\phi^{(z_{i})}$)
 
 
-```{r ldaGenerative, cache=TRUE}
+```{r ldaGenerative, cache=FALSE}
 
 k <- 2 # number of topics
 M <- 10 # let's create 10 documents
