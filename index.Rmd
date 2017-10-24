@@ -5,7 +5,8 @@ bibliography:
 - books.bib
 - packages.bib
 output:
-  bookdown::pdf_book: default
+  bookdown::pdf_book:
+    latex_engine: xelatex
   bookdown::gitbook: 
     split_bib: no
 link-citations: true

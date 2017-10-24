@@ -349,7 +349,7 @@ ggplot(df, aes(y=theta, x = word)) + geom_violin()
 Below is a general overview of how inferrence can be carried out using Gibbs sampling. Recall conjugate priors have the same posterior form as their conjugate distribution. In equation 24 we start with the now familiar proportional solution for estimating a posterior through sampling. We need the likelihood, which is derived from the multinomial distribution, and the prior, which is derived from the dirichlet distribution. Once we plug in the prior and likelihood and simplify, we find that we are left with a Dirichlet PDF with the input parameters of $\overrightarrow{\alpha} + \overrightarrow{n}$ where _n_ are the observed word counts.  
 
 $$
-\begin{align*}
+\begin{aligned}
 p(\theta|D) &\propto p(D|\theta)p(\theta)\\
 &\propto \prod _{i=1}^{K}\theta^{n(k)} { 
   {\Gamma {\bigl (}\sum _{i=1}^{K}\alpha _{i}{\bigr )}}
@@ -361,7 +361,7 @@ p(\theta|D) &\propto p(D|\theta)p(\theta)\\
   \over{\prod _{i=1}^{K}\Gamma (\alpha _{i})}
 }\prod _{i=1}^{K}\theta_{i}^{\alpha _{i}+n_{k}-1} \\
 &\propto Dir(\overrightarrow{\alpha} + \overrightarrow{n})
-\end{align*}
+\end{aligned}
 \tag{24}
 $$
 
