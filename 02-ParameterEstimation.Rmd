@@ -1,7 +1,7 @@
 ---
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 # Parameter Estimation
@@ -173,12 +173,7 @@ L(\theta) &= \prod\limits_{n=1}^{10} \theta^{x}(1-\theta)^{1-x}
 \end{aligned}
 \tag{6}
 $$
-What is shown in the equations above is the joint probability mass function. Each coin flip is independent so we calculate the product of the PMF's for each trial. This is known as the likelihood function - the likelihood of $\theta$ given our observed data. 
-
--------FIND A TEXT SOURCE-------
-https://onlinecourses.science.psu.edu/stat414/node/191
-
-
+What is shown in the equations above is the joint probability mass function. Each coin flip is independent so we calculate the product of the PMF's for each trial. This is known as the likelihood function - the likelihood of a value of $\theta$ given our observed data. 
 
 Back to the maximum likelihood....
 
@@ -192,13 +187,16 @@ $$
 \end{aligned}
 \tag{7}
 $$
+
 Differentiate with respect to $\theta$:
 
 $$
 {d\mathcal{L} \over d\theta} =  {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta}
 \tag{8}
 $$
+
 Set it equal to zero and solve:
+
 $$
 \begin{aligned}
 {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} &= 0  \\ \\
@@ -208,7 +206,6 @@ n^{(1)} &= \theta(n^{(1)} + n^{0}) \\ \\
 \theta &= {n^{(1)} \over N}
 \end{aligned}
 \tag{9}
-
 $$
 
 The value of $\theta$ that maximizes the likelihood is the number of heads over the 
@@ -251,13 +248,14 @@ $$
 \tag{11}
 $$
 
+
 The evidence term is dropped during the calculation of $\theta_{MAP}$ since it is not a function of $\theta$ and our only concern is maximizing the posterior based on $\theta$. Similar to calculating the Likelhood, the first step is to apply the log function to the remaining terms. 
+
 
 $$
 \begin{aligned}
 \theta_{MAP} &=\underset{\theta}{\operatorname{argmax}}p(D|\theta)p(\theta) \\\\
 &= \mathcal{L}(\theta|D) + log(p(\theta))
-
 \end{aligned}
 \tag{12}
 $$
@@ -268,15 +266,15 @@ $$
 p(\theta|\alpha,\beta) = {\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \beta)}}
 \tag{13}
 $$
+
 Plugging in the PDF of the beta distribution for the prior:
+
 
 $$
 \begin{aligned}
 \theta_{MAP}&= \mathcal{L}(\theta|D) + log(p(\theta)) \\\\
 \theta_{MAP}&= n^{(1)}log(\theta) + n^{(0)}log(1-\theta) + log({\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \beta)}}) \\\\
 \theta_{MAP}&= n^{(1)}log(\theta) + n^{(0)}log(1-\theta) + log({\theta^{\alpha-1}) + log((1-\theta)^{\beta-1})-log({B(\alpha, \beta)}}) \\\\
-
-
 {d \over d\theta} \mathcal{L}(\theta|D) + log(p(\theta)) &= {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} + {\alpha - 1\over\theta} - {\beta - 1 \over 1-\theta}
 \\\\
 0 &= {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} + {\alpha - 1\over\theta} - {\beta - 1 \over 1-\theta}
@@ -286,7 +284,12 @@ $$
 \tag{14}
 $$
 
-Now that we know how to calculate the parameter $\theta$ that maximizes the posterior, lets take a look at how choices of different priors effects our outcome. 
+Now that we know how to calculate the parameter $\theta$ that maximizes the posterior, lets take a look at how choices of different priors and different number of observed trials effects our outcome.  
+
+In the figure below we see MAP estimation of $\theta$ with a relatively uninformed prior and a small number of observed experiments (n=20). Uninformed means we are going to make a weak assumption about the prior. In more general terms, this means that we don't have a strong intuition that our coin is fair or unfair.  The Beta distribution has $\alpha$ and $\beta$ parameters of 2 resulting in the blue density curve shown below. 
+
+
+__NOTE__: The terms weak and uninformed are often used interchangeably when referencing priors. The same goes for the terms strong and informed. 
 
 ```{r mapSmallnUninformedPrior, echo = TRUE, fig.cap = 'MAP: Small number of experiments and uninformed prior'}
 # description:
@@ -294,8 +297,8 @@ Now that we know how to calculate the parameter $\theta$ that maximizes the post
 # map uses a weak assumption - uniform density for all values of theta
 # this results in a theta_map value very similar to the ml value
 n <- 20
-heads <- 12
-tails <- 8
+heads <- 14
+tails <- 6
 
 
 # ml
@@ -315,6 +318,8 @@ ggplot(beta_ds, aes(x = theta, y = density)) + geom_point(color='#7A99AC') +
 ```
 
 
+In the next example we have the same number of samples, but we assume a much stronger prior. In particular, we assume the coin is most likely fair by selecting $\alpha$ and $\beta$ parameters of 100. These parameters represent a Beta distribution that is centered at 0.5 and is very dense around that point. We can see the resuting MAP estimate is much closer to 0.5, which is the value of $\theta$ where the Beta distribution is most dense. 
+
 ```{r mapSmallnInformedPrior, echo = TRUE, fig.cap = 'MAP: Small number of experiments and informed prior'}
 # description:
 # the strong assumption of a 'fair' coin prior reduces the width of the 
@@ -323,8 +328,8 @@ ggplot(beta_ds, aes(x = theta, y = density)) + geom_point(color='#7A99AC') +
 # small amount of observed evidence
 
 n <- 20
-heads <- 12
-tails <- 8
+heads <- 14
+tails <- 6
 
 
 # ml
@@ -342,6 +347,9 @@ ggplot(beta_ds, aes(x = theta, y = density)) + geom_line(color='#7A99AC') +
   labs(x='\U03B8', y = 'Density') + theme_minimal()
 
 ```
+
+What happens when we have a much larger number of observed experiments and an uninformed prior? In general, the MAP estimate gives us a value that is very close to a likelihood, heads divide by number of trials. 
+
 
 ```{r mapLargenUninformedPrior, echo = TRUE, fig.cap = 'MAP: Large number of experiments and uninformed prior'}
 # description
@@ -363,9 +371,12 @@ possible_theta <- seq(0,1,0.001)
 beta_ds <- data.frame(theta = possible_theta, density = dbeta(possible_theta, alpha,B))
 ggplot(beta_ds, aes(x = theta, y = density)) + geom_line(color='#7A99AC') + 
   geom_vline(xintercept=map_theta, color = '#ba0223') + 
-  annotate("text", x = map_theta + 0.2, y=1.2, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
+  annotate("text", x = map_theta + 0.1, y=1.2, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
   labs(x='\U03B8', y = 'Density') + theme_minimal()
 ```
+
+Now let's assume a much stronger prior that the coin is fair while using the same number of experiments. Notice that when we use a larger number of experiments it overpowers the strong prior and gives us a very similar MAP estimate in comparison to the example with the uninformed prior and the same number of experiments. 
+
 
 ```{r mapLargeInformedPrior, echo = TRUE, fig.cap = 'MAP: Large number of experiments and informed prior'}
 
@@ -385,14 +396,93 @@ map_theta <- (heads + alpha - 1)/(heads + tails + alpha + B -2)
 ggplot(beta_ds, aes(x = theta, y = density)) + 
   geom_line(color='#7A99AC') + 
   geom_vline(xintercept=map_theta, color = '#ba0223') + 
-  annotate("text", x = map_theta + 0.1, y=1.2, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
+  annotate("text", x = map_theta + 0.1, y=8.2, label= paste("\U03B8[MAP]==", round(map_theta,2)), parse=T)+
   labs(x='\U03B8', y = 'Density') + theme_minimal()
 ```
 
+In summary:
+
+* The stronger your prior assumptions are, the more observations you will need to overcome an incorrect prior.
+* Stronger prior  - MAP estimate moves toward most dense area of prior distribution
+* Weaker prior    - MAP looks more like a maximum likelihood
+
+
 ## Bayesian Inference
 
-Where does the evidence term go? 
+Another option we have for estimating parameters is to estimate the posterior of the distribution via Bayesian inference. In MAP estimation we included prior assumptions as part of our calculation. We are going to do the same via Bayesian Inference however instead of a point estimate of $\theta$, we will be calculating the posterior distribution over all possible values of $\theta$. From this we can take the expected value of $\theta$ as our estimated parameter. 
 
+
+In the case of the coin flip, Bayesian inference can be solved analytically. We have reviewed the likelihood and the prior, but when estimating the posterior we need to include the evidence term. This is somewhat tricky.
+
+$$
+\underbrace{p(\theta|D)}_{posterior} = { p(D|\theta)
+  p(\theta) \over \underbrace{p(D)}_{evidence}}
+\tag{15}
+$$
+
+$$
+p(D) = \int_{\theta}p(D|\theta)p(\theta)d\theta
+\tag{16}
+$$
+
+$$
+{p(\theta|z,N)} = {\overbrace{\theta^z(1-\theta)^{(N-z)}}^{likelihood} \overbrace{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}^{prior}\over{\underbrace{\int_{0}^1 \theta^z(1-\theta)^{(N-z)}{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}d\theta}_{Evidence}}}
+\tag{17}
+$$
+
+Note that the evidence term is actually a constant value since it is an integral over all values of $\theta$. Since it is a constant we can drop it from our equation. 
+
+$$
+\begin{aligned}
+p(\theta|z, N) &= \theta^{z}(1-\theta)^{(N-z)}{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)} \\\\
+ &= {\theta^{(z+a-1)}(1-\theta)^{(N-z+b-1)} \over \beta(z+a, N-z+b)}\\\\
+ &= Beta(z+a, N-z+b)
+\end{aligned}
+\tag{18}
+$$
+
+To estimate $\theta$, we calculate the expected value of a Beta distribution as shown in Equation 19. 
+
+$$
+E[\theta]={\alpha \over \alpha + \beta}
+$$
+
+Plugging in our parameters as per the derivation in Equation 18: 
+
+$$
+\begin{aligned}
+E[\theta] &= {z+a \over {z+a + n-z+b}}\\\\
+&={z+a \over {a+N+b}}\\\\
+\end{aligned}
+$$
+
+
+```{r BISmallUninformedPrior, echo = TRUE, fig.cap = 'Bayesian Inference: Analytical Solution (n=20)'}
+
+n <- 20
+heads <- 14
+tails <- n-heads
+
+
+# ml
+ml_theta <- heads/n
+# map
+B <- 2
+alpha <- 2
+possible_theta <- seq(0,1,0.001)
+beta_ds <- data.frame(theta = possible_theta, density = dbeta(possible_theta, alpha,B))
+map_theta <- (heads + alpha)/(alpha + n + B) 
+ggplot(beta_ds, aes(x = theta, y = density)) + 
+  geom_line(color='#7A99AC') + 
+  geom_vline(xintercept=map_theta, color = '#ba0223') + 
+  annotate("text", x = map_theta + 0.08, y=1.4, label= paste("\U03B8[BI]==", round(map_theta,2)), parse=T)+
+  labs(x='\U03B8', y = 'Density') + theme_minimal()
+```
+
+Keep in mind Bayesian inference is effected by the selection of a prior and the number of observations in the same way MAP estimation is. 
+
+
+Where does the evidence term go? 
 
 Make an example of this and cite Krutchke - I assume in the earlier chapters there is something present. 
 
