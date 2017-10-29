@@ -1,3 +1,32 @@
+
+
+# BI/GIBBS
+
+Where does the evidence term go? 
+
+Make an example of this and cite Krutchke - I assume in the earlier chapters there is something present. 
+
+For explanation #1 you can use the metropolis hastings algorithm examples. You are 
+sampling from a posterior without a normalizing factor, but you use the proportions
+ of the samples to determine the probability (i.e. you infer the normalization 
+ term through sampling - it is basically built in at that point.)
+[Explanation 1: The normalizing constant is not interesting, this is very common in bayesian statistics, . With Gibbs sampling, Metropolis-Hasting or any other Monte Carlo method, what you are doing is drawing samples from this posterior. That is, the more density around a point, the more samples you'll get there.
+
+Then, once you have enough samples from this posterior distribution, you know that the normalized density at some point xx is the proportion of samples that felt at that point.
+
+You can even plot an histogram on the samples to see the (unnormalized) posterior.
+
+In other words, if I give you the samples 1,3,4,5,1.....,3,4,16,11,3,4,5,1.....,3,4,16,1 and I tell you these are samples from a density function, you know to compute the probability of every value.
+
+
+..... Explanation 3 If you use conjugate priors for the individual variables, the denominator of their conditional probability will be always nice and familiar, and you will know what the normalizing constant in the denominator is. This is why Gibbs sampling is so popular when the joint probability is ugly but the conditional probabilities are nice.](https://stats.stackexchange.com/questions/138644/confusion-in-gibbs-sampling#138648)
+
+For explanation #3 use the coin flip example... 
+p(theta1, theta2|D) show how denominator p(d) drops out. 
+
+
+# LDA
+
 * Ways to explain LDA: 
   * generative to inference - this gets done regardless in the LDA chapters. I would open with the 
     animal example, then preface it by saying 'we are going to go through all the steps it takes to get to     this

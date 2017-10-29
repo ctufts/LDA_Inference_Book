@@ -430,21 +430,26 @@ $$
 \tag{17}
 $$
 
-Note that the evidence term is actually a constant value since it is an integral over all values of $\theta$. Since it is a constant we can drop it from our equation. 
+Note that the evidence term is actually a constant value since it is an integral over all values of $\theta$. The evidence term is used as a scaling factor to ensure our probabilities sum to 1. We will plug in a generic placeholder of our evidence value since we have established that it is a constant.
 
 $$
 \begin{aligned}
-p(\theta|z, N) &= \theta^{z}(1-\theta)^{(N-z)}{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)} \\\\
+p(\theta|z, N) &= {\theta^{z}(1-\theta)^{(N-z)}{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}\over{C}} \\\\
  &= {\theta^{(z+a-1)}(1-\theta)^{(N-z+b-1)} \over \beta(z+a, N-z+b)}\\\\
  &= Beta(z+a, N-z+b)
 \end{aligned}
 \tag{18}
 $$
 
+Notice what happens in the second step of equation 18. I combine the Beta function term and the constant evidence term. The Beta function in this equation is also a constant value. Therefore when we combine the likelihood and prior we alter the Beta function's parameters and drop the constant for the evidence term. This leaves us with a Beta distribution for our posterior that includse our observed experiments and our prior's hyperparameters.
+
+????????????? Possibly rephrase the above to specify that we are preserving the scaling of the posterior... ??????????????
+
 To estimate $\theta$, we calculate the expected value of a Beta distribution as shown in Equation 19. 
 
 $$
 E[\theta]={\alpha \over \alpha + \beta}
+\tag{19}
 $$
 
 Plugging in our parameters as per the derivation in Equation 18: 
@@ -454,6 +459,7 @@ $$
 E[\theta] &= {z+a \over {z+a + n-z+b}}\\\\
 &={z+a \over {a+N+b}}\\\\
 \end{aligned}
+\tag{20}
 $$
 
 
@@ -482,77 +488,69 @@ ggplot(beta_ds, aes(x = theta, y = density)) +
 Keep in mind Bayesian inference is effected by the selection of a prior and the number of observations in the same way MAP estimation is. 
 
 
-Where does the evidence term go? 
-
-Make an example of this and cite Krutchke - I assume in the earlier chapters there is something present. 
-
-For explanation #1 you can use the metropolis hastings algorithm examples. You are 
-sampling from a posterior without a normalizing factor, but you use the proportions
- of the samples to determine the probability (i.e. you infer the normalization 
- term through sampling - it is basically built in at that point.)
-[Explanation 1: The normalizing constant is not interesting, this is very common in bayesian statistics, . With Gibbs sampling, Metropolis-Hasting or any other Monte Carlo method, what you are doing is drawing samples from this posterior. That is, the more density around a point, the more samples you'll get there.
-
-Then, once you have enough samples from this posterior distribution, you know that the normalized density at some point xx is the proportion of samples that felt at that point.
-
-You can even plot an histogram on the samples to see the (unnormalized) posterior.
-
-In other words, if I give you the samples 1,3,4,5,1.....,3,4,16,11,3,4,5,1.....,3,4,16,1 and I tell you these are samples from a density function, you know to compute the probability of every value.
-
-
-..... Explanation 3 If you use conjugate priors for the individual variables, the denominator of their conditional probability will be always nice and familiar, and you will know what the normalizing constant in the denominator is. This is why Gibbs sampling is so popular when the joint probability is ugly but the conditional probabilities are nice.](https://stats.stackexchange.com/questions/138644/confusion-in-gibbs-sampling#138648)
-
-For explanation #3 use the coin flip example... 
-p(theta1, theta2|D) show how denominator p(d) drops out. 
-
-
+### The Issue of Intractability
+The coin flip example solved via Bayesian inference was capable of being solved analytically. However in many cases of Bayesian inference this is not possible due to the intractability of solving for the marginal likelihood (evidence term). We do have other options for solutions such as Gibbs sampling, expectation-maximization, and Metropolis-Hastings methods. This book will only focus on Gibbs Sampling, but be aware other types of solvers are used for Bayesian inference, and in particular LDA.
 
 ### Conjugate Priors
 
+Before wading into the deeper water that is Gibbs sampling I need to touch on the concept of conjugate priors. 
 The general premise of conjugate priors is that the prior has the same form 
 as the posterior distribution. Ok, but what does that mean for us? In a pragmatic 
-sense it means we need to look for a __pattern__ when solving for our posterior. 
+sense, it means we need to look for a __pattern__ when solving for our posterior. 
 
 __PATTERN MATCHING__
 
-Let's take the coin flip example. We want to estimate the posterior, the 
-probability of $\theta$ given the observed data. Obviously we don't have observed 
-data so we will need to use the likelihood and the prior to estimate the posterior. 
-For this case we will use the beta distribution to estimate the prior with the 
-form:
 
-[BETA DISTRIBUTION - use overbraces to show the pattern ]
+????????? Double check the 'observed data' statement here ???????????????
+
+Let's take the coin flip example. We want to estimate the posterior, the 
+probability of $\theta$ given the the results of all experiments (this includes experiments that we haven't yet completed). Obviously we don't have data which does not yet exist (i.e. all experiments) so we will need to use the likelihood and the prior to estimate the posterior. 
 
 #### Bernoulli & Beta
-The beta distribution serves as the conjugate prior for the bernoulli distribution.
 
-Putting the conjugate prior to use....estimating the posterior
+In previous example we have used the Beta distribution to calculate the prior. What I did not point out is that the Beta distribution is the conjugate prior of the Bernoulli distribution. 
+
+We start with our base relationship between posterior, likelihood, prior, and posterior. 
 
 $$
 \underbrace{p(\theta|D)}_{posterior} = {\overbrace{p(D|\theta)}^{likelihood}
   \overbrace{p(\theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
-\tag{15}
+\tag{21}
 $$
-When estimating the posterior, the evidence term is dropped out...scaling factor, blah blah
+
+When estimating the posterior we drop out the evidence term. To reiterate, we can drop out the evidence term because it is constant and is used as a normalizing factor for scaling our probabilities to so that they sum to 1. We will see in the upcoming section that Gibbs sampling accounts for the scaling issue and allows us to infer probabilities at the correct scale. 
 
 $$
 \underbrace{p(\theta|D)}_{posterior}  \propto  {\overbrace{p(D|\theta)}^{likelihood}
   \overbrace{p(\theta)}^{prior}}
-\tag{16}
+\tag{22}
 $$
-To estimate the posterior of the bernoulli distribution 
+
+To estimate the posterior of the bernoulli distribution we plug in our likelihood and prior (_Beta distribution_) equations. 
+
+
+
 $$
 p(\theta|z,N) \propto \overbrace{\theta^z(1-\theta)^{(N-z)}}^{likelihood} \overbrace{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}^{prior}
-\tag{17}
+\tag{23}
 $$
-After combining terms we get....
+
+After combining terms we get the following equation. Note that the Beta function parameters were not altered in Equation 24 which is different from the BI example (_Equation 18_). In the BI example we needed to conserve the scaling of the posterior estimate, but with Gibbs Sampling this is not necessary. 
+
 $$
-p(\theta|z,N) \propto \overbrace{\theta^{(a + z -1)}(1-\theta)^{(N-z+b-1)}}^{Same \hspace{1 mm} Pattern \hspace{1 mm} as \hspace{1 mm} Likelihood}
-\tag{18}
+p(\theta|z,N) \propto {\overbrace{\theta^{(a + z -1)}(1-\theta)^{(N-z+b-1)}}^{Same \hspace{1 mm} Pattern \hspace{1 mm} as \hspace{1 mm} Prior}\over{\beta(a,b)}}
+\tag{24}
 $$
 
 ### Gibbs Sampling
-This should include a drawing of sampling from two different jars
-At each iteration the jar is changed (the parameters of the distribution)
+
+Gibbs sampling is a Markov Chain Monte Carlo technique that can be used for estimating parameters by walking through a given parameter space.
+
+::ADD IN :: 
+BACKGROUND ABOUT MCMC
+::
+
+A very generalized way to think of Gibbs sampling is estimating a given parameter based on what we currently know about all other parameters. You may be thinking 'What other parameters?'. Gibbs sampling is only really applicable when you are trying to estimate multiple parameters. The coin flip example will now be expanded a bit: we are going to compare the bias of two coins to see if the there is any discernable difference between the two coins. 
 
 Mathematical representation of what happens in Gibbs Sampling:
 
@@ -564,9 +562,10 @@ $$
 &................................ \\ 
 &p(\theta_{n}^{i+1}) \sim p(\theta_{n}^{i}|\theta_{1}^{i+1}, \theta_{2}^{i+1},..., \theta_{n-1}^{i+1}) \\
 \end{aligned}
-\tag{19}
+\tag{25}
 $$
 
+In Equation 25 we see the next estimate, _i+1_, of $\theta_{1}$ is based on all other current parameter values. When estimating $\theta_{2}$ the _i+1_ value of $\theta__{1}$ is used along with all of the current (_i_) parameter values. The is continues for all parameter values. After the the _nth_ parameter is estimated, the process starts all over again until a specific stopping criteria is met. 
 
 ### Bias of Two Coins
 Code example of 2 coins
@@ -611,6 +610,13 @@ ggplot(ds, aes(x=theta2)) + geom_histogram(aes(y=..density..),color='#1A384A', f
   theme_minimal()
 
 ```
+
+
+::ADD IN::
+Discussion of example, possibly code example of expected value? I think this is important so that we can provide a probability of theta given the data - i.e. how many samples are in range of theta = 0.5 - 0.6 - i.e. confidence intervals....
+Regardless you need to hit on the way that Gibbs sampling takes care of scaling. 
+::
+
 
 ### Change Point Example
 What if the problem we are solving is more complicated. Let's say I flip a coin repeatedly, but at some point I switch to another coin with a different bias ($\theta$). I want to detect the point in time when coin 1 was swapped out for coin 2. 
@@ -717,12 +723,4 @@ ggplot(params_df, aes(x = theta2)) +
 
 ```
 
-
-## Summary
-
-* ML
-* MAP
-* Bayesian Inference 
-* Gibbs Sampling
-* Evidence Term 
 
