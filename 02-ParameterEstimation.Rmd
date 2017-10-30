@@ -491,6 +491,23 @@ Keep in mind Bayesian inference is effected by the selection of a prior and the 
 ### The Issue of Intractability
 The coin flip example solved via Bayesian inference was capable of being solved analytically. However in many cases of Bayesian inference this is not possible due to the intractability of solving for the marginal likelihood (evidence term). We do have other options for solutions such as Gibbs sampling, expectation-maximization, and Metropolis-Hastings methods. This book will only focus on Gibbs Sampling, but be aware other types of solvers are used for Bayesian inference, and in particular LDA.
 
+### A Tale of Two MC's
+Gibbs Sampling is a Markov Chain Monte Carlo (MCMC) technique for parameter estimation.  Let's break down the two MC's. A markov chain is a process where the next state is determined by the current state. More importantly it does not rely on any information prior to the current state. 
+?????
+1. This needs a diagram and possibly a general example. 
+2. LETS MAKE SURE TO REITERATE THIS AFTER SHOWING THE GENERAL GIBBS SAMPLING MATH AND DIAGRAM 
+????
+The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of $\pi$. All we need is some chalk and a bucket of rice. I draw a circle on the ground. I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. From here I can infer the value of $\pi$ as follows:
+
+$$
+\begin{aligned}
+{Rice_{circle}\over Rice_{circle + square}} &= {\pi r^{2} \over (2r)^{2}}\\\\
+\pi &\approx {4Rice_{circle}\over Rice_{circle + square}}
+\end{aligned}
+$$
+
+
+
 ### Conjugate Priors
 
 Before wading into the deeper water that is Gibbs sampling I need to touch on the concept of conjugate priors. 
