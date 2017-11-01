@@ -28,24 +28,28 @@ knitr::include_graphics("Images/Bern_Binomial.png")
 ```
 
 #### Bernoulli - Distribution Notation
-The probability mass function of the bernoulli distribution is shown in Equation 1. 
+The probability mass function of the bernoulli distribution is shown in Equation \@ref(eq:bernPMF). 
 
 $$
-f_{x}(x)=P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\} 
-\tag{1}
+\begin{equation}
+  f_{x}(x)=P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\} 
+  (\#eq:bernPMF)
+\end{equation}
 $$
 
-The only parameter of the bernoulli distribution is $\theta$, which defines the probability of success during a bernoulli trial. The value of _x_ is 0 for a failure and 1 for a success. In a practical example you can think of this as 0 for tails and 1 for heads during a coin flip. In Equation 2 the value of $\theta$ is set to 0.7. We can see the probability of getting a success is 0.7, while the probability of failure is 0.3. 
+The only parameter of the bernoulli distribution is $\theta$, which defines the probability of success during a bernoulli trial. The value of _x_ is 0 for a failure and 1 for a success. In a practical example you can think of this as 0 for tails and 1 for heads during a coin flip. In Equation \@ref(eq:bernPMFExample) the value of $\theta$ is set to 0.7. We can see the probability of getting a success is 0.7, while the probability of failure is 0.3. 
 
 
 $$
+\begin{equation}  
 \begin{aligned}
 P(X=1)&=\theta^{1}(1-\theta)^{1-1}, \hspace{1cm} \theta=0.7 \\
 P(X=1)&=0.7*1=0.7 \\\\
 P(X=0)&=0.7^{0}(1-0.7)^{1-0}\\
 P(X=0)&=0.3
 \end{aligned}
-\tag{2}
+(\#eq:bernPMFExample)
+\end{equation}
 $$
 
 ### Beta Distribution
@@ -101,10 +105,13 @@ ggplot(ds, aes(x = x, y = y, color=parameters)) + geom_line() +
 ```
 
 
-The probability distribution function for the beta distribution can be found below. 
+The probability distribution function for the beta distribution can be found in Equation \@ref(eq:betaPDF). 
 
 $$
+\begin{equation}
 f(\theta;\alpha,\beta) ={{\theta^{(\alpha-1)}(1-\theta)^{(\beta-1)}}\over B(\alpha,\beta)}
+(\#eq:betaPDF)
+\end{equation}
 $$
 
 Quick Note: 
@@ -112,24 +119,32 @@ Quick Note:
 * The _Beta_ function, _B_ is the ratio of the product of the _Gamma_ function, $\Gamma$, of each parameter divided by the _Gamma_ function of the sum of the parameters. The _Beta_ function is __not__ the same as the beta distribution. The _Beta_ function is shown below along with the _Gamma_ function, which is used in the _Beta_ function.  
 
 $$
+\begin{equation}
 \beta(a,b) = {\Gamma(a)\Gamma(b) \over{\Gamma(a+b)}}
+(\#eq:betaFunction)
+\end{equation}
 $$
 
 * The *Gamma* function is the factorial of the parameter minus 1. 
 
 $$
+\begin{equation}
 \Gamma(a) = (a-1)!
+(\#eq:gammaFunction)
+\end{equation}
 $$
 
 
 ## Inference: The Building Blocks
 
-The equation below is a fundamental to understanding parameter estimation and inference. 
+Equation \@ref(eq:posterior) is a fundamental to understanding parameter estimation and inference. 
 
 $$
+\begin{equation}
 \underbrace{p(\theta|D)}_{posterior} = {\overbrace{p(D|\theta)}^{likelihood}
   \overbrace{p(\theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
-\tag{3}
+  (\#eq:posterior)
+\end{equation}
 $$
 
 The 4 components are:
@@ -152,52 +167,65 @@ __Conditioning your brain for LDA__ : We are starting with a coin flip, but the 
 The simplest method of parameter estimation is the maximum likelihood method. Effectively we calculate the parameter that maximizes the likelihood.
 
 
-$$ 
+$$
+\begin{equation}
 \underbrace{p(\theta|D)}_{posterior} = {\overbrace{\bf \Large p(D|\theta)}^{\bf \Large LIKELIHOOD}
   \overbrace{p(\theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
-\tag{4}
+(\#eq:posteriorLIKE)
+\end{equation}
 $$
 
 Let's first discuss what the likelihood is. The likelihood can be described as the probability of getting observed data given a specified value of the parameter, $\theta$.  For example, let's say I've flipped a coin 10 times and got 5 heads, 5 tails. Assuming the coin is fair, $\theta$ equals 0.5, what is the likelihood of observing 5 heads and 5 tails. 
 
 To calculate the likelihood of a parameter given a single outcome we would use the probability mass function:
+
 $$
+\begin{equation}
 P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\} 
-\tag{5}
+(\#eq:bernPMF2)
+\end{equation}
 $$
 Where an outcome of heads equal 1 and tails is 0. Now let's say we have carried out the 10 flips as mentioned previously:
+
 $$
+\begin{equation}
 \begin{aligned}
 P(X_{1}=x_{1},X_{2}=x_{2},...,X_{10}=x_{10}) &= \prod\limits_{n=1}^{10} \theta^{x}(1-\theta)^{1-x}\\
 L(\theta) &= \prod\limits_{n=1}^{10} \theta^{x}(1-\theta)^{1-x}
 \end{aligned}
-\tag{6}
+(\#eq:bernL)
+\end{equation}
 $$
-What is shown in the equations above is the joint probability mass function. Each coin flip is independent so we calculate the product of the PMF's for each trial. This is known as the likelihood function - the likelihood of a value of $\theta$ given our observed data. 
+What is shown in Equation \@ref(eq:bernL) is the joint probability mass function. Each coin flip is independent so we calculate the product of the PMF's for each trial. This is known as the likelihood function - the likelihood of a value of $\theta$ given our observed data. 
 
 Back to the maximum likelihood....
 
 Our goal is to find the value of $\theta$ which maximizes the likelihood of the observed data. To derive the maximum likelihood we start by taking the log of the likelihood, $\mathcal{L}$. 
 
 $$
+\begin{equation}
 \begin{aligned}
 \mathcal{L} &= log \prod\limits_{n=1}^N \theta^{x}(1-\theta)^{1-x} \\\\
  &= \sum\limits_{n=1}^N log(\theta^{x}(1-\theta)^{1-x}) \\\\
  &= n^{(1)}log(\theta) + n^{(0)}log(1-\theta)
 \end{aligned}
-\tag{7}
+(\#eq:bernLogL)
+\end{equation}
 $$
 
 Differentiate with respect to $\theta$:
 
 $$
+\begin{equation}
 {d\mathcal{L} \over d\theta} =  {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta}
-\tag{8}
+(\#eq:bernDiffL)
+\end{equation}
 $$
 
 Set it equal to zero and solve:
 
 $$
+\begin{equation}
 \begin{aligned}
 {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} &= 0  \\ \\
 {n^{(1)}\over\theta} &= {n^{(0)}\over 1-\theta} \\ \\
@@ -205,7 +233,8 @@ $$
 n^{(1)} &= \theta(n^{(1)} + n^{0}) \\ \\
 \theta &= {n^{(1)} \over N}
 \end{aligned}
-\tag{9}
+(\#eq:bernLTheta)
+\end{equation}
 $$
 
 The value of $\theta$ that maximizes the likelihood is the number of heads over the 
@@ -235,17 +264,21 @@ MAP is similar to the method of maximum likelihood estimation, but it also let's
 include information about our prior beliefs. Unlike ML estimation, MAP estimates parameters by trying to maximize the posterior.
 
 $$
+\begin{equation}
 \theta_{MAP}=\underset{\theta}{\operatorname{argmax}} P(\theta|X)
-\tag{10}
+(\#eq:bernMAP)
+\end{equation}
 $$
 
 
 
 $$
+\begin{equation}
 \require{enclose}
 \theta_{MAP}=\underset{\theta}{\operatorname{argmax}}{\overbrace{p(D|\theta)}^{likelihood}
   \overbrace{p(\theta)}^{prior} \over \underbrace{\enclose{horizontalstrike}{p(D)}}_{evidence}}
-\tag{11}
+(\#eq:bernPMFDropEvidence)
+\end{equation}
 $$
 
 
@@ -253,35 +286,42 @@ The evidence term is dropped during the calculation of $\theta_{MAP}$ since it i
 
 
 $$
+\begin{equation}
 \begin{aligned}
 \theta_{MAP} &=\underset{\theta}{\operatorname{argmax}}p(D|\theta)p(\theta) \\\\
 &= \mathcal{L}(\theta|D) + log(p(\theta))
 \end{aligned}
-\tag{12}
+(\#eq:bernMAPLog)
+\end{equation}
 $$
 
-We have already derived the log likelihood during our derivation of the maximum likelihood, so let's now focus on the prior. The prior for the Bernoulli distribution is the Beta distribution and can be used to describe $p(\theta)$. The probability distribution function, PDF, for the Beta distribution is shown below. 
+We have already derived the log likelihood during our derivation of the maximum likelihood, so let's now focus on the prior. The prior for the Bernoulli distribution is the Beta distribution and can be used to describe $p(\theta)$. The probability distribution function, PDF, for the Beta distribution is shown in Equation \@ref(#eq:bernPrior). 
 
 $$
+\begin{equation}
 p(\theta|\alpha,\beta) = {\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \beta)}}
-\tag{13}
+(\#eq:bernPrior)
+\end{equation}
 $$
 
 Plugging in the PDF of the beta distribution for the prior:
 
 
 $$
+\begin{equation}
 \begin{aligned}
 \theta_{MAP}&= \mathcal{L}(\theta|D) + log(p(\theta)) \\\\
 \theta_{MAP}&= n^{(1)}log(\theta) + n^{(0)}log(1-\theta) + log({\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \beta)}}) \\\\
-\theta_{MAP}&= n^{(1)}log(\theta) + n^{(0)}log(1-\theta) + log({\theta^{\alpha-1}) + log((1-\theta)^{\beta-1})-log({B(\alpha, \beta)}}) \\\\
+
+\theta_{MAP}&= n^{(1)}log(\theta) + n^{(0)}log(1-\theta)  + \\ &\quad log({\theta^{\alpha-1}) + log((1-\theta)^{\beta-1}) - log({B(\alpha, \beta)}}) \\\\
 {d \over d\theta} \mathcal{L}(\theta|D) + log(p(\theta)) &= {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} + {\alpha - 1\over\theta} - {\beta - 1 \over 1-\theta}
 \\\\
 0 &= {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} + {\alpha - 1\over\theta} - {\beta - 1 \over 1-\theta}
 \\\\
 \theta_{MAP}&= {{n^{(1)} + \alpha -1} \over {n^{(1)} + n^{0} + \alpha + \beta - 2}}
 \end{aligned}
-\tag{14}
+(\#eq:bernMAPTheta)
+\end{equation}
 $$
 
 Now that we know how to calculate the parameter $\theta$ that maximizes the posterior, lets take a look at how choices of different priors and different number of observed trials effects our outcome.  
@@ -415,30 +455,38 @@ Another option we have for estimating parameters is to estimate the posterior of
 In the case of the coin flip, Bayesian inference can be solved analytically. We have reviewed the likelihood and the prior, but when estimating the posterior we need to include the evidence term. This is somewhat tricky.
 
 $$
+\begin{equation}
 \underbrace{p(\theta|D)}_{posterior} = { p(D|\theta)
   p(\theta) \over \underbrace{p(D)}_{evidence}}
-\tag{15}
+(\#eq:PosteriorBI)
+\end{equation}
 $$
 
 $$
+\begin{equation}
 p(D) = \int_{\theta}p(D|\theta)p(\theta)d\theta
-\tag{16}
+(\#eq:evidence)
+\end{equation}
 $$
 
 $$
+\begin{equation}
 {p(\theta|z,N)} = {\overbrace{\theta^z(1-\theta)^{(N-z)}}^{likelihood} \overbrace{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}^{prior}\over{\underbrace{\int_{0}^1 \theta^z(1-\theta)^{(N-z)}{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}d\theta}_{Evidence}}}
-\tag{17}
+(\#eq:bernBI)
+\end{equation}
 $$
 
 Note that the evidence term is actually a constant value since it is an integral over all values of $\theta$. The evidence term is used as a scaling factor to ensure our probabilities sum to 1. We will plug in a generic placeholder of our evidence value since we have established that it is a constant.
 
 $$
+\begin{equation}
 \begin{aligned}
 p(\theta|z, N) &= {\theta^{z}(1-\theta)^{(N-z)}{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}\over{C}} \\\\
  &= {\theta^{(z+a-1)}(1-\theta)^{(N-z+b-1)} \over \beta(z+a, N-z+b)}\\\\
  &= Beta(z+a, N-z+b)
 \end{aligned}
-\tag{18}
+(\#eq:bernBIFinal)
+\end{equation}
 $$
 
 Notice what happens in the second step of equation 18. I combine the Beta function term and the constant evidence term. The Beta function in this equation is also a constant value. Therefore when we combine the likelihood and prior we alter the Beta function's parameters and drop the constant for the evidence term. This leaves us with a Beta distribution for our posterior that includse our observed experiments and our prior's hyperparameters.
@@ -448,18 +496,22 @@ Notice what happens in the second step of equation 18. I combine the Beta functi
 To estimate $\theta$, we calculate the expected value of a Beta distribution as shown in Equation 19. 
 
 $$
+\begin{equation}
 E[\theta]={\alpha \over \alpha + \beta}
-\tag{19}
+(\#eq:bernBIExp)
+\end{equation}
 $$
 
 Plugging in our parameters as per the derivation in Equation 18: 
 
 $$
+\begin{equation}
 \begin{aligned}
 E[\theta] &= {z+a \over {z+a + n-z+b}}\\\\
 &={z+a \over {a+N+b}}\\\\
 \end{aligned}
-\tag{20}
+(\#eq:bernBIExpFinal)
+\end{equation}
 $$
 
 
@@ -500,10 +552,13 @@ Gibbs Sampling is a Markov Chain Monte Carlo (MCMC) technique for parameter esti
 The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of $\pi$. All we need is some chalk and a bucket of rice. I draw a circle on the ground. I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. From here I can infer the value of $\pi$ as follows:
 
 $$
+\begin{equation}
 \begin{aligned}
 {Rice_{circle}\over Rice_{circle + square}} &= {\pi r^{2} \over (2r)^{2}}\\\\
 \pi &\approx {4Rice_{circle}\over Rice_{circle + square}}
 \end{aligned}
+(\#eq:MCRice)
+\end{equation}
 $$
 
 
@@ -530,17 +585,21 @@ In previous example we have used the Beta distribution to calculate the prior. W
 We start with our base relationship between posterior, likelihood, prior, and posterior. 
 
 $$
+\begin{equation}
 \underbrace{p(\theta|D)}_{posterior} = {\overbrace{p(D|\theta)}^{likelihood}
   \overbrace{p(\theta)}^{prior} \over \underbrace{p(D)}_{evidence}}
-\tag{21}
+(\#eq:posteriorGibbs)
+\end{equation}
 $$
 
 When estimating the posterior we drop out the evidence term. To reiterate, we can drop out the evidence term because it is constant and is used as a normalizing factor for scaling our probabilities to so that they sum to 1. We will see in the upcoming section that Gibbs sampling accounts for the scaling issue and allows us to infer probabilities at the correct scale. 
 
 $$
+\begin{equation}
 \underbrace{p(\theta|D)}_{posterior}  \propto  {\overbrace{p(D|\theta)}^{likelihood}
   \overbrace{p(\theta)}^{prior}}
-\tag{22}
+(\#eq:posteriorPrompto)
+\end{equation}
 $$
 
 To estimate the posterior of the bernoulli distribution we plug in our likelihood and prior (_Beta distribution_) equations. 
@@ -548,15 +607,19 @@ To estimate the posterior of the bernoulli distribution we plug in our likelihoo
 
 
 $$
+\begin{equation}
 p(\theta|z,N) \propto \overbrace{\theta^z(1-\theta)^{(N-z)}}^{likelihood} \overbrace{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}^{prior}
-\tag{23}
+(\#eq:bernGibbs)
+\end{equation}
 $$
 
 After combining terms we get the following equation. Note that the Beta function parameters were not altered in Equation 24 which is different from the BI example (_Equation 18_). In the BI example we needed to conserve the scaling of the posterior estimate, but with Gibbs Sampling this is not necessary. 
 
 $$
+\begin{equation}
 p(\theta|z,N) \propto {\overbrace{\theta^{(a + z -1)}(1-\theta)^{(N-z+b-1)}}^{Same \hspace{1 mm} Pattern \hspace{1 mm} as \hspace{1 mm} Prior}\over{\beta(a,b)}}
-\tag{24}
+(\#eq:bernGibbsFinal)
+\end{equation}
 $$
 
 ### Gibbs Sampling
@@ -572,6 +635,7 @@ A very generalized way to think of Gibbs sampling is estimating a given paramete
 Mathematical representation of what happens in Gibbs Sampling:
 
 $$
+\begin{equation}
 \begin{aligned}
 &p(\theta_{1}^{i+1}) \sim p(\theta_{1}^{i}|\theta_{2}^{i}, \theta_{3}^{i},..., \theta{n}^{i}) \\
 &p(\theta_{2}^{i+1}) \sim p(\theta_{2}^{i}|\theta_{1}^{i+1}, \theta_{3}^{i},..., \theta{n}^{i}) \\
@@ -579,7 +643,8 @@ $$
 &................................ \\ 
 &p(\theta_{n}^{i+1}) \sim p(\theta_{n}^{i}|\theta_{1}^{i+1}, \theta_{2}^{i+1},..., \theta_{n-1}^{i+1}) \\
 \end{aligned}
-\tag{25}
+(\#eq:GibbsGeneral)
+\end{equation}
 $$
 
 In Equation 25 we see the next estimate, _i+1_, of $\theta_{1}$ is based on all other current parameter values. When estimating $\theta_{2}$ the _i+1_ value of $\theta__{1}$ is used along with all of the current (_i_) parameter values. The is continues for all parameter values. After the the _nth_ parameter is estimated, the process starts all over again until a specific stopping criteria is met. 
@@ -639,6 +704,9 @@ Regardless you need to hit on the way that Gibbs sampling takes care of scaling.
 What if the problem we are solving is more complicated. Let's say I flip a coin repeatedly, but at some point I switch to another coin with a different bias ($\theta$). I want to detect the point in time when coin 1 was swapped out for coin 2. 
 
 IMAGE PLACE HOLDER - MAKE A DRAWING OF FLIPPING TWO COINS ON A TIME SCALE
+
+
+ADD IN DERIVATION MATH W/STEPS OF WHAT IS ACTUALLY HAPPENING - GIBBS FOR UNITITIATED & OTHER TUT PAPER AS GUIDE
 
 
 ```{r bern_change_point, echo = TRUE, warning=FALSE,message=FALSE, cache = FALSE}

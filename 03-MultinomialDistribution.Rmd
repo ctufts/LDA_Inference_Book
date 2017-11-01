@@ -43,12 +43,14 @@ Let's think of how this will be used in the case of LDA. If I wanted to generate
 ```
 
 
-As I stated before, the binomial distribution is a special case of the multinomial distribution. The probability mass function for the multinomial distribution is shown below:
+As I stated before, the binomial distribution is a special case of the multinomial distribution. The probability mass function for the multinomial distribution is shown in \@ref(eq:multiPMF):
 
 
 $$
+\begin{equation}
 f(x)=\dfrac{n!}{x_1!x_2!\cdots x_k!}\theta_1^{x_1} \theta_2^{x_2} \cdots \theta_k^{x_k}
-\tag{20}
+(\#eq:multiPMF)
+\end{equation}
 $$
 
 * <i>k</i> - number of sides on the die
@@ -63,37 +65,43 @@ Therefore the multinomial representation of the distributions we've already disc
 
 ## Relationship to Bernoulli 
 
-Let's recall the bernoulli probability mass function from equation 1:
+Let's recall the bernoulli probability mass function:
 
 $$
+\begin{equation}
 f_{x}(x)=P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\}
-\tag{21}
+(\#eq:bernPMFmulti)
+\end{equation}
 $$
 Let's swap in some different terms. We can replace the first term, $\theta$, with $\theta_{1}$ and the second term, $(1-\theta)$ as $\theta_{2}$. Then we have:
 
 $$
+\begin{equation}
 {\theta_{1}}^{x_{1}}{\theta_{2}}^{x_{2}}
-\tag{22}
+(\#eq:bern2Multi)
+\end{equation}
 $$
 
-You can see this looks a bit more like equation 21 if the case were _k_=2 and _n_=1. Since _n_=1, _x_'s can only have a value of  1 or zero. Therefore the factorial is always 1 for the case of a bernoulli trial. Factorial of _n_ is also 1 since it is a single trial, i.e. _n_=1, resulting in what we see in equation 22. 
+You can see this looks a bit more like Equation \@ref(eq:bernPMFmulti) if the case were _k_=2 and _n_=1. Since _n_=1, _x_'s can only have a value of  1 or zero. Therefore the factorial is always 1 for the case of a bernoulli trial. Factorial of _n_ is also 1 since it is a single trial, i.e. _n_=1, resulting in what we see in equation 22. 
 
 
 ## Conjugate Prior: Dirichlet
 The conjugate prior for the multinomial distribution is the Dirichlet distribution. Similar
 to the beta distribution, it can be though of as a distribution of distributions. Also note that the beta distribution is the special case of a Dirichlet distribution where the number of possible outcome is 2. 
 
-The probability distribution function for the Dirichlet distribution is shown in equation 23. 
+The probability distribution function for the Dirichlet distribution is shown in Equation \@ref(eq:dirPDF). 
 
 
 $$
+\begin{equation}
 Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
 { 
   {\Gamma {\bigl (}\sum _{i=1}^{K}\alpha _{i}{\bigr )}}
   \over{\prod _{i=1}^{K}\Gamma (\alpha _{i})}
 }
 \prod _{i=1}^{K}x_{i}^{\alpha _{i}-1}
-\tag{23}
+(\#eq:dirPDF)
+\end{equation}
 $$
 
 A few notes about equation 23.
