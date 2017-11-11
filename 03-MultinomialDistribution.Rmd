@@ -5,8 +5,7 @@
 The binomial distribution is a special case of the multinomial distribution 
 where the number of possible outcomes is 2. A multinomial distribution can 
 have 2 or more outcomes and therefore is normally shown through examples using 
-a 6-sided die. Instead of using a die with numbers on each side, let's label the sides
-with the following words:
+a 6-sided die. Instead of using a die with numbers on each side, let's label the sides with the following words:
 
 "Latent" "Dirichlet" "Allocation" "has" "many" "peices"
 
@@ -17,7 +16,7 @@ Maybe draw a die with those words on it and consider it a 'document'
 
 In the example above we would assume it is a fair die which would result in equal probabilities of 'rolling' any of the 6 unique words. Therefore each word has 1/6 chances of being randomly sampled from the die. 
 
-Here is a quick empirical example where we take each word and assign it to a single side of a fair die. The experiment, a single roll of the die, is repeated 10,000 times. We can see each word comes up roughly as often as the others.  
+Below is an empirical example where we take each word and assign it to a single side of a fair die. The experiment, a single roll of the die, is repeated 10,000 times. We can see each word comes up at roughly the same frequency.  
 
 ```{r echo = FALSE, warning=FALSE, message=FALSE}
 rm(list = ls())
@@ -43,7 +42,7 @@ Let's think of how this will be used in the case of LDA. If I wanted to generate
 ```
 
 
-As I stated before, the binomial distribution is a special case of the multinomial distribution. The probability mass function for the multinomial distribution is shown in \@ref(eq:multiPMF):
+As stated before, the binomial distribution is a special case of the multinomial distribution. The probability mass function for the multinomial distribution is shown in \@ref(eq:multiPMF):
 
 
 $$
@@ -56,7 +55,7 @@ $$
 * <i>k</i> - number of sides on the die
 * <i>n</i> - number of times the die will be rolled
 
-Therefore the multinomial representation of the distributions we've already discussed would use the following parameters:
+Therefore the multinomial representation of the distributions we've already discussed, binomial and bernoulli, would use the following parameters:
 
 * k sided die rolled n times
     * n = 1,  k = 2 is bernoulli distribution 
@@ -65,7 +64,7 @@ Therefore the multinomial representation of the distributions we've already disc
 
 ## Relationship to Bernoulli 
 
-Let's recall the bernoulli probability mass function:
+Time to connect the dots between Bernoulli and Multinomial distributions . Recall the bernoulli probability mass function shown in Equation \@ref(bernPMFmulti). 
 
 $$
 \begin{equation}
@@ -82,12 +81,12 @@ $$
 \end{equation}
 $$
 
-You can see this looks a bit more like Equation \@ref(eq:bernPMFmulti) if the case were _k_=2 and _n_=1. Since _n_=1, _x_'s can only have a value of  1 or zero. Therefore the factorial is always 1 for the case of a bernoulli trial. Factorial of _n_ is also 1 since it is a single trial, i.e. _n_=1, resulting in what we see in equation 22. 
+You can see this looks a bit more like Equation \@ref(eq:bernPMFmulti) if the case were _k_=2 and _n_=1. Since _n_=1, _x_'s can only have a value of  1 or zero. Therefore the factorial is always 1 for the case of a bernoulli trial. Factorial of _n_ is also 1 since it is a single trial, i.e. _n_=1, resulting in what we see in equation \@ref(eq:multiPMF). 
 
 
 ## Conjugate Prior: Dirichlet
 The conjugate prior for the multinomial distribution is the Dirichlet distribution. Similar
-to the beta distribution, it can be though of as a distribution of distributions. Also note that the beta distribution is the special case of a Dirichlet distribution where the number of possible outcome is 2. 
+to the beta distribution, Dirichlet can be though of as a distribution of distributions. Also note that the beta distribution is the special case of a Dirichlet distribution where the number of possible outcome is 2 similar to the connection between the binomial and multinomial distributions. 
 
 The probability distribution function for the Dirichlet distribution is shown in Equation \@ref(eq:dirPDF). 
 
@@ -104,12 +103,16 @@ Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
 \end{equation}
 $$
 
-A few notes about equation 23.
+THINK THIS CAN BE REMOVED - IS IN BETA
+A few notes about equation \@ref(eq:dirPDF).
 
 1. The Gamma function is the factorial of the parameter minus 1.    
 
 $$
+\begin{equation}
 \Gamma (\alpha _{i}) = (\alpha_{i}-1)!
+(\#eq:gammaFunction2)
+\end{equation}
 $$
 
 2. The Dirichlet distribution function is often written using the Beta function in place of the first term as seen below:   
@@ -130,18 +133,15 @@ $$
 }
 $$
 
-The Dirichlet distribution is an extension of the beta distribution for <i>k</i> categories. To get a better sense of what the distributions look like let's visualize a few examples at <i>k</i>=3 with varying alpha values. In both of the box plots below 10,000 random samples were drawn from a Dirichlet distribution where <i>k</i>=3 and \U03B8 is the same for each <i>k</i> in the given plot.  The first plot shows the distribution of values drawn when \U03B8 = 100.  
+The Dirichlet distribution is an extension of the beta distribution for <i>k</i> categories. To get a better sense of what the distributions look like let's visualize a few examples at <i>k</i>=3, think 3 sided die, with varying alpha values. In both of the box plots below 10,000 random samples were drawn from a Dirichlet distribution where <i>k</i>=3 and $\alpha$ is the same for each <i>k</i> in the given plot.  The first plot shows the distribution of values drawn when $\alpha$ = 100.  
 
-```{r DirichletAlpha100, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Sampling from Dirichlet - \U03B8=100' }
+```{r DirichletAlpha100, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Sampling from Dirichlet: \U03B1=100' }
 alpha <- c(100,100,100)
 trials <- 10000
 x <- rdirichlet(trials, alpha)
 colnames(x) <- c('theta_1', 'theta_2', 'theta_3')
 ds <- cbind(as.tibble(x), trial = 1:trials) %>% 
   gather(theta, word, -trial)
-
-# ggplot(ds, aes(color = theta, x = word)) + geom_line(stat='density') + 
-#   theme_minimal()
 
 ggplot(ds, aes(color = theta, fill = theta, x = theta, y = word)) + geom_boxplot(alpha = 0.3) + 
   theme_minimal() + 
@@ -154,7 +154,7 @@ ggplot(ds, aes(color = theta, fill = theta, x = theta, y = word)) + geom_boxplot
   scale_y_continuous(limits = c(0,1))
 ```
 
-Below the process is repeated, but this time the \U03B8 values are set to 1 for each category. We can see the range of distribution of values sampled with the higher \U03B8 value is much narrower than the distribution of values sampled using \U03B8 values of 1. This is the same pattern we saw with the beta distribution, as the shape parameters increased the distribution became narrower.  
+Below the process is repeated, but this time the $\alpha$ values are set to 1 for each category. We can see the range of distribution of values sampled with the higher $\alpha$ value is much narrower than the distribution of values sampled using $\alpha$ values of 1. This is the same pattern we saw with the beta distribution, as the shape parameters increased the distribution became more dense and the shape of the distribution narrowed.  
 
 ```{r DirichletAlpha1, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Sampling from Dirichlet - \U03B8=1' }
 alpha <- c(1,1,1)
@@ -174,10 +174,11 @@ ggplot(ds, aes(color = theta, fill = theta, x = theta, y = word)) + geom_boxplot
   scale_y_continuous(limits = c(0,1))
 ```
 
-So what happens when the $\alpha$ values are not the same, i.e. the distribution is non-symmetrical? In the histogram below, you can see the distribution of values sampled from the dirichlet distribution for each category. We recall the beta distribution shape skews as the difference between the two parameters grows. You recall we only need to estimate one value, $\theta_{1}$ generated from the beta distribution with 2 parameters because we can infer $\theta_{2}$ from this value ($\theta_{2} = 1-\theta_{1}$). 
+So what happens when the $\alpha$ values are not the same, i.e. the distribution is non-symmetrical? In the histogram below, you can see the distribution of values sampled from the dirichlet distribution for each category. Recall the beta distribution shape skews as the difference between the two parameters grows. 
+
+You recall we only need to estimate one value, $\theta_{1}$ generated from the beta distribution with 2 parameters because we can infer $\theta_{2}$ from this value ($\theta_{2} = 1-\theta_{1}$). 
 
 
-Trying to make the point that all draws sum to 1 - not sure of best way to describe this, maybe some drawings???
 
 ```{r DirichletAlphaMixed, echo = TRUE, warning=FALSE, message=FALSE, fig.cap = 'Sampling from Dirichlet - \U03B8=[10,50,20]'}
 alpha <- c(10,50,20)

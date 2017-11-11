@@ -6,7 +6,7 @@ This chapter is going to focus on LDA as a generative model. I'm going to build 
 
 ## General Terminology
 
-Let's get the ugly part out of the way, the symbols that are going to be used in the model. 
+Let's get the ugly part out of the way, the parameters and variables that are going to be used in the model. 
 
 * <b>alpha</b> ($\overrightarrow{\alpha}$) : In order to determine the value of $\theta$, the topic distirbution of the document, we sample from a dirichlet distribution using $\overrightarrow{\alpha}$ as the input parameter.  What does this mean? The $\overrightarrow{\alpha}$ values are our prior information about the topic mixtures for that document. Example: I am creating a document generator to mimic other documents that have topics labeled for each word in the doc. I can use the total number of words from each topic across all documents as the $\overrightarrow{\beta}$ values. 
 
@@ -22,6 +22,13 @@ Let's get the ugly part out of the way, the symbols that are going to be used in
 * <b>z</b> : Topic selected for the next word to be generated. 
 
 Outside of the variables above all the distributions should be familiar from the previous chapter. 
+
+### Selecting Parameters
+
+The intent of this section is not aimed at delving into different methods of parameter estimation for $\alpha$ and $\beta$, but to give a general understanding of how those values effect your model. For ease of understanding I will also stick with an assumption of symmetry, i.e. all values in $\overrightarrow{\alpha}$ are equal to one another and all values in $\overrightarrow{\beta}$ are equal to one another. Symmetry can be thought of as each topic having equal probability in each document for $\alpha$ and each word having an equal probability in $\beta$. 
+
+In previous sections we have outlined how the $alpha$ parameters effect a Dirichlet distribution, but now it is time to connect the dots to how this effects our documents. 
+
 
 ## Generative Model
 

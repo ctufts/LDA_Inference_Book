@@ -1,4 +1,4 @@
-
+rm(list = ls())
 library(MCMCpack)
 library(tidyverse)
 
