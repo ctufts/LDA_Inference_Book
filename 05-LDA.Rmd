@@ -318,8 +318,10 @@ ds %>% group_by(doc_id, topic) %>% summarise(
 The LDA generative process for each document is shown below[@darling2011theoretical]: 
 
 $$
+\begin{equation}
 p(w,z,\theta,\phi|\alpha, B) = p(\phi|B)p(\theta|\alpha)p(z|\theta)p(w|\phi_{z})
-\tag{25}
+(\#eq:generativeLDA)
+\end{equation}
 $$
 
 

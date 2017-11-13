@@ -64,7 +64,7 @@ Therefore the multinomial representation of the distributions we've already disc
 
 ## Relationship to Bernoulli 
 
-Time to connect the dots between Bernoulli and Multinomial distributions . Recall the bernoulli probability mass function shown in Equation \@ref(bernPMFmulti). 
+Time to connect the dots between Bernoulli and Multinomial distributions . Recall the bernoulli probability mass function shown in Equation \@ref(eq:bernPMFmulti). 
 
 $$
 \begin{equation}

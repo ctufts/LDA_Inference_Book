@@ -8,10 +8,12 @@ We have talked about LDA as a generative model, but now it is time to flip the p
 Now it is time to flip the problem around. What happens when I have a bunch of documents and I want to know what topics are present in each document and what words are present (most probable) in each topic? In terms of math, the values we need to answer the questions above are:
 
 $$
+\begin{equation}
 p(\theta, \phi, z|w, \alpha, \beta) = {p(\theta, \phi, z, w|\alpha, \beta) \over p(w|\alpha, \beta)}
-\tag{26}
+(\#eq:LDAInference)
+\end{equation}
 $$
-Equation 26 says the following:   
+Equation \@ref(eq:LDAInference) says the following:   
 The probability of the topic proportion, the word distribution of each topic, and the topic label given a word (in a document) and the hyperparameters $\alpha$ and $\beta$. In a more basic term this means the probability of a specific topic _z_ given the word _w_ (and our prior assumptions, i.e. hyperparameters), once the topic label of a word is known, then we can answer derive $\phi$ and $\theta$.
 
 
@@ -35,65 +37,162 @@ And on to the parts we don't know....
 * **Word Distribution of Each Topic:** We need to know the distribution of words in each topic. Obviously some words are going to occur very often in a topic while others may have zero probability of occurring in a topic. 
 * **Word topic assignment:** This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture, $\theta$, and the word distribution, $\phi$, of each topic. 
 
-```
-Quick note:   
-Equation 26 is based on the following statistical property
-```
+
+_Quick note:   
+Equation \@ref(eq:LDAInference) is based on the following statistical property_
+
 
 $$
+\begin{equation}
 p(A, B | C) = {p(A,B,C) \over p(C)}
+(\#eq:jointConditional)
+\end{equation}
 $$
 
-The derivation connecting equation 26 to the actual Gibbs sampling solution to determine _z_ for each word in eacch document, $\overrightarrow{\theta}$, and 
+The derivation connecting equation \@ref(eq:LDAInference) to the actual Gibbs sampling solution to determine _z_ for each word in each document, $\overrightarrow{\theta}$, and 
 $\overrightarrow{\phi}$ is very complicated and I'm just going to gloss over a few steps. For complete derivations see (site heinrich and that other one from darling). 
 
 As stated previously, the main goal of inference in LDA is to determine the topic of each word, $z_{i}$ (topic of word _i_), in each document. 
 
 $$
+\begin{equation}
 p(z_{i}|z_{\neg i}, \alpha, \beta, w)
-\tag{27}
+(\#eq:zPosteriorCond)
+\end{equation}
 $$
 
 
-Notice that we are interested in identifying the topic of the current word, $z_{i}$, based on the topic assignments of all other words (not including word _i_), $z_{\neg i}$. [@darling2011theoretical]
+Notice that we are interested in identifying the topic of the current word, $z_{i}$, based on the topic assignments of all other words (not including word _i_), $z_{\neg i}$. The following derivations are all from [@darling2011theoretical]
 
 $$
-p(z_{i}|z_{\neg i}, \alpha, \beta, w) = {p(z_{i},z_{\neg i}, w, | \alpha, \beta) \over p(z_{\neg i},w | \alpha, \beta)}
-\propto p(z_{i}, z_{\neg i}, w | \alpha, \beta) = p(z,w|\alpha, \beta)
-\tag{28}
-$$
-
-You may notice $p(z,w|\alpha, \beta)$ looks very similar to the definition of the generative process of LDA (cite Darling) from the previous chapter (equation - 25). The only difference is the absence of $\theta$ and $\phi$. This means we can swap in equation 25 and integrate out $\theta$ and $\phi$. 
-
-
-$$
+\begin{equation}
 \begin{aligned}
-p(w,z|\alpha, \beta) &= \int \int p(z, w, \theta, \phi|\alpha, \beta)d\theta d\phi \\
+p(z_{i}|z_{\neg i}, \alpha, \beta, w) 
+  &= {p(z_{i},z_{\neg i}, w, | \alpha, \beta)    \over p(z_{\neg i},w | \alpha,   
+  \beta)}\\
+&\propto p(z_{i}, z_{\neg i}, w | \alpha, \beta)\\
+&\propto p(z,w|\alpha, \beta)
+\end{aligned}
+(\#eq:zwConditional)
+\end{equation}
+$$
+
+You may notice $p(z,w|\alpha, \beta)$ looks very similar to the definition of the generative process of LDA (cite Darling) from the previous chapter (equation \@ref(eq:generativeLDA)). The only difference is the absence of $\theta$ and $\phi$. This means we can swap in equation \@ref(eq:generativeLDA) and integrate out $\theta$ and $\phi$. 
 
 
+$$
+\begin{equation}
+\begin{aligned}
+p(w,z|\alpha, \beta) &= \int \int p(z, w, \theta, \phi|\alpha, \beta)d\theta d\phi\\
 &= \int \int p(\phi|\beta)p(\theta|\alpha)p(z|\theta)p(w|\phi_{z})d\theta d\phi \\
 &= \int p(z|\theta)p(\theta|\alpha)d \theta \int p(w|\phi_{z})p(\phi|\beta)d\phi
 \end{aligned}
-\tag{29}
+(\#eq:IntegrateOutPhiTheta)
+\end{equation}
 $$
 
-As with previous examples in this book we are now going to expand equation 28, plug in our conjugate priors, and get to a point where we can use a gibbs sampler to estimate our solution. ADD IN A NOTE ABOUT GIBBS SAMPLING FOR THE UNITIATED - PAPER - this follows the exact steps laid out in that paper. 
+As with previous examples in this book we are now going to expand equation \@ref(eq:zwConditional), plug in our conjugate priors, and get to a point where we can use a gibbs sampler to estimate our solution. 
+
+ADD IN A NOTE ABOUT GIBBS SAMPLING FOR THE UNITIATED - PAPER - this follows the exact steps laid out in that paper. 
 
 
 topic assignment/topic proportion of documents. i - documents, k - topics
 
-Below you will see the derivation for the first term of equation 29. The conjugate prior is utilized. The result is a dirichlet distribution with the parameter comprised of the sum of the number of words assigned each topic and the alpha value for that topic. (This needs to be more clear...)
+
+Below you will see the derivation for the first term of equation \@ref(eq:IntegrateOutPhiTheta) which to identify the sampling distribution for the topic distribution in each document. The conjugate prior is utilized. The result is a dirichlet distribution with the parameter comprised of the sum of the number of words assigned each topic and the alpha value for that topic. (This needs to be more clear...)
+
 $$
+\begin{equation}
 \begin{aligned}
 \int p(z|\theta)p(\theta|\alpha)d \theta &= \int \prod_{i}{\theta_{d_{i},z_{i}}{1\over B(\alpha)}}\prod_{k}\theta_{d,k}^{\alpha k}\theta_{d} \\
 &={1\over B(\alpha)} \int  \prod_{k}\theta_{d,k}^{n_{d,k} + \alpha k} \\
-&={B(n_{d},. + \alpha) \over B(\alpha)}
+&={B(n_{d,.} + \alpha) \over B(\alpha)}
 \end{aligned}
+(\#eq:topicDirDerivation)
+\end{equation}
+$$
+
+Similarly we can expand the second term of Equation \@ref(eq:IntegrateOutPhiTheta) and we find a solution with a similar form. 
+
+$$
+\begin{equation}
+\begin{aligned}
+\int p(w|\phi_{z})p(\phi|\beta)d\phi
+  &= \int \prod_{d}\prod_{i}\phi_{z_{d,i},w_{d,i}}
+  \prod_{k}{1 \over B(\beta)}\prod_{w}\phi^{B_{w}}_{k,w}d\phi_{k}\\
+&= \prod_{k}{1\over B(\beta)} \int \prod_{w}\phi_{k,w}^{B_{w} +   
+  n_{k,w}}d\phi_{k}\\
+&=\prod_{k}{B(n_{k,.} + \beta) \over B(\beta)}
+\end{aligned}
+(\#eq:wordDirDeriv)
+\end{equation}
+$$
+
+This leaves us with the following:
+
+$$
+\begin{equation}
+\begin{aligned}
+p(w,z|\alpha, \beta) &= 
+  \prod_{d}{B(n_{d,.} + \alpha) \over B(\alpha)}
+  \prod_{k}{B(n_{k,.} + \beta) \over B(\beta)}
+\end{aligned}
+(\#eq:postConditionalDirs)
+\end{equation}
+$$
+
+The equation necessary for Gibbs sampling can be derived by utilizing \@ref(eq:postConditionalDirs).  This is accomplished via the chain rule. NEED TO ADD IN MORE INFORMATION ON THIS - DEFINITELY HAVE NOTES ABOUT THIS SOMEWHERE. 
+
+$$
+\begin{equation}
+\begin{aligned}
+p(z_{i}|z^{(-i)}, w) &= {p(w,z)\over {p(w,z^{(-i)})}} = {p(z)\over p(z^{(-i)})}{p(w|z)\over p(w^{(-i)}|z^{(-i)})p(w_{i})}\\
+\\
+&\propto \prod_{d}{B(n_{d,.} + \alpha) \over B(n_{d,.}^{(-i)}\alpha)}
+  \prod_{k}{B(n_{k,.} + \beta) \over B(n_{k,.}^{(-i)} + \beta)}\\
+  \\
+&\propto {\Gamma(n_{d,k} + \alpha_{k})
+  \Gamma(\sum_{k=1}^{K} n_{d,k}^{(-i)} + \alpha_{k}) \over 
+  \Gamma(n_{d,k}^{(-i)} + \alpha_{k}) 
+  \Gamma(\sum_{k=1}^{K} n_{d,k}+ \alpha_{k})}
+  {\Gamma(n_{k,w} + \beta_{w})
+  \Gamma(\sum_{w=1}^{W} n_{k,w}^{(-i)} + \beta_{w}) \over 
+  \Gamma(n_{k,w}^{(-i)} + \beta_{w}) 
+  \Gamma(\sum_{w=1}^{W} n_{k,w}+ \beta_{w})}\\
+  \\
+&\propto (n_{d,k}^{(-i)} + \alpha_{k}) {n_{k,w}^{(-i)} + \beta_{w} \over 
+  \sum_{w'} n_{k,w'}^{(-i)} + \beta_{w'}}
+\end{aligned}
+(\#eq:LDAGibbsInference)
+\end{equation}
 $$
 
 
-Add in the equations for the solution from [@steyvers2007probabilistic]
-Edwin Chen style overview, make a graphic of this.... 
+Need to explain the difference between primes/non-primes (w's)
+We will now use Equation \@ref(eq:LDAGibbsInference) in the example below to complete the LDA Inference task on a random sample of documents. To calculate our word distributions in each topic we will use:
+(NEED TO SWAP I, J'S WITH K,D,W TO MATCH ABOVE)
+$$
+\begin{equation}
+\begin{aligned}
+\phi_{i}^{j} = {C^{WT}_{ij}  + \beta \over  \sum_{k=1}^{W} C^{WT}_{kj} + W\beta}
+\end{aligned}
+(\#eq:phiEstimation)
+\end{equation}
+$$
+
+The topic distribution in each document is calcuated using:
+
+$$
+\begin{equation}
+\begin{aligned}
+\theta^{(d)}_{j} = {C^{DT}_{dj} + \alpha \over \sum_{k =1}^{T}C_{dk}^{DT} + T\alpha}
+\end{aligned}
+(\#eq:thetaEstimation)
+\end{equation}
+$$
+
+Add in the equations for the solution (phi and theta estimates- eq(4)) from [@steyvers2007probabilistic]
+
 
 
 
