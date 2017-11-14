@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>LDA Tutorial</title>
+  <meta name="description" content="LDA Tutorial">
+  <meta name="generator" content="bookdown 0.4 and GitBook 2.6.7">
+
+  <meta property="og:title" content="LDA Tutorial" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="Davis.jpg" />
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="LDA Tutorial" />
+  <meta name="twitter:site" content="@devlintufts" />
+  
+  <meta name="twitter:image" content="Davis.jpg" />
+
+<meta name="author" content="Chris Tufts">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="word-embeddings-and-representations.html">
+<link rel="next" href="references.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i>Background</a></li>
+<li class="chapter" data-level="" data-path="layout-of-book.html"><a href="layout-of-book.html"><i class="fa fa-check"></i>Layout of Book</a></li>
+<li class="chapter" data-level="1" data-path="parameter-estimation.html"><a href="parameter-estimation.html"><i class="fa fa-check"></i><b>1</b> Parameter Estimation</a><ul>
+<li class="chapter" data-level="1.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#distributions"><i class="fa fa-check"></i><b>1.1</b> Distributions</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bernoulli"><i class="fa fa-check"></i><b>1.1.1</b> Bernoulli</a></li>
+<li class="chapter" data-level="1.1.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#beta-distribution"><i class="fa fa-check"></i><b>1.1.2</b> Beta Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#inference-the-building-blocks"><i class="fa fa-check"></i><b>1.2</b> Inference: The Building Blocks</a></li>
+<li class="chapter" data-level="1.3" data-path="parameter-estimation.html"><a href="parameter-estimation.html#maximum-likelihood"><i class="fa fa-check"></i><b>1.3</b> Maximum Likelihood</a></li>
+<li class="chapter" data-level="1.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#maximum-a-posteriori-map"><i class="fa fa-check"></i><b>1.4</b> Maximum a Posteriori (MAP)</a></li>
+<li class="chapter" data-level="1.5" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bayesian-inference"><i class="fa fa-check"></i><b>1.5</b> Bayesian Inference</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#conjugate-priors"><i class="fa fa-check"></i><b>1.5.1</b> Conjugate Priors</a></li>
+<li class="chapter" data-level="1.5.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#gibbs-sampling"><i class="fa fa-check"></i><b>1.5.2</b> Gibbs Sampling</a></li>
+<li class="chapter" data-level="1.5.3" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bias-of-two-coins"><i class="fa fa-check"></i><b>1.5.3</b> Bias of Two Coins</a></li>
+<li class="chapter" data-level="1.5.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#change-point-example"><i class="fa fa-check"></i><b>1.5.4</b> Change Point Example</a></li>
+</ul></li>
+<li class="chapter" data-level="1.6" data-path="parameter-estimation.html"><a href="parameter-estimation.html#summary"><i class="fa fa-check"></i><b>1.6</b> Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html"><i class="fa fa-check"></i><b>2</b> Multinomial Distribution</a><ul>
+<li class="chapter" data-level="2.1" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#comparison-of-dice-vs.words"><i class="fa fa-check"></i><b>2.1</b> Comparison of Dice vs. Words</a></li>
+<li class="chapter" data-level="2.2" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#relationship-to-bernoulli"><i class="fa fa-check"></i><b>2.2</b> Relationship to Bernoulli</a></li>
+<li class="chapter" data-level="2.3" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#conjugate-prior-dirichlet"><i class="fa fa-check"></i><b>2.3</b> Conjugate Prior: Dirichlet</a></li>
+<li class="chapter" data-level="2.4" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#gibbs-sampling---multinomial-dirichlet"><i class="fa fa-check"></i><b>2.4</b> Gibbs Sampling - Multinomial &amp; Dirichlet</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#derivation-of-gibbs-sampling-solution-of-word-distribution-single-doc"><i class="fa fa-check"></i><b>2.4.1</b> Derivation of Gibbs Sampling Solution of Word Distribution (Single Doc)</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="word-embeddings-and-representations.html"><a href="word-embeddings-and-representations.html"><i class="fa fa-check"></i><b>3</b> Word Embeddings and Representations</a><ul>
+<li class="chapter" data-level="3.1" data-path="word-embeddings-and-representations.html"><a href="word-embeddings-and-representations.html#bag-of-words"><i class="fa fa-check"></i><b>3.1</b> Bag of Words</a></li>
+<li class="chapter" data-level="3.2" data-path="word-embeddings-and-representations.html"><a href="word-embeddings-and-representations.html#word-embeddings"><i class="fa fa-check"></i><b>3.2</b> Word Embeddings</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>4</b> LDA</a><ul>
+<li class="chapter" data-level="4.1" data-path="lda.html"><a href="lda.html#components"><i class="fa fa-check"></i><b>4.1</b> Components</a><ul>
+<li class="chapter" data-level="4.1.1" data-path="lda.html"><a href="lda.html#staticknown-parameters"><i class="fa fa-check"></i><b>4.1.1</b> Static/Known Parameters</a></li>
+<li class="chapter" data-level="4.1.2" data-path="lda.html"><a href="lda.html#latent-structures"><i class="fa fa-check"></i><b>4.1.2</b> Latent Structures</a></li>
+<li class="chapter" data-level="4.1.3" data-path="lda.html"><a href="lda.html#priors"><i class="fa fa-check"></i><b>4.1.3</b> Priors</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="lda.html"><a href="lda.html#generative-model"><i class="fa fa-check"></i><b>4.2</b> Generative Model</a><ul>
+<li class="chapter" data-level="4.2.1" data-path="lda.html"><a href="lda.html#generating-documents"><i class="fa fa-check"></i><b>4.2.1</b> Generating Documents</a></li>
+<li class="chapter" data-level="4.2.2" data-path="lda.html"><a href="lda.html#lda-generative-model"><i class="fa fa-check"></i><b>4.2.2</b> LDA Generative Model</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="lda.html"><a href="lda.html#inference"><i class="fa fa-check"></i><b>4.3</b> Inference</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">LDA Tutorial</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="lda" class="section level1">
+<h1><span class="header-section-number">4</span> LDA</h1>
+<p>To get a sense of what LDA is I’m going to build on the unigram generation example from the last chapter. First I’m going to talk a bit about the components of LDA by breaking them into two different categories: data we have (static/known parameters) and data we are guessing about (latent structures). Then I will provide examples where we generate documents, but each example will be a bit more complicated than the last. After getting a grasp of LDA as a generative model the focus will change to working backwards to answer the following question: “If I have a bunch of documents, how do I infer topic information (word distributions, topic mixtures) from them?”</p>
+<div id="components" class="section level2">
+<h2><span class="header-section-number">4.1</span> Components</h2>
+<div id="staticknown-parameters" class="section level3">
+<h3><span class="header-section-number">4.1.1</span> Static/Known Parameters</h3>
+<p>Let’s start with the static components of LDA. We have words and we have documents. Words are somewhat self explanatory - they are the words we find in the documents. The definition of a document is a bit more tricky. A document can be any collection of text: a book, an article, a blog post, a tweet, a movie script, etc.</p>
+</div>
+<div id="latent-structures" class="section level3">
+<h3><span class="header-section-number">4.1.2</span> Latent Structures</h3>
+<p><b>Latent</b> Dirichlet Allocation is used to infer <b>latent</b> structures in the documents. Those latent structures are referred to as topics. A topic is probability distribiton of words. What does that mean? If we know the word distributions of a topic we can generate words based on the this topic. This is the basis of the unigram generative model from the previous section. We have a probability for each word and we can generate a document based on these probabilities. This can be extended to multiple topics.</p>
+<p>Wait, multiple topics? How does that work? That brings us to the next <b>latent</b> structure - topic mixtures. Topic mixtures are the proportion of each topic in each document. This can also be stated as the distribution of topics in a given document. In the following section we will incorporate this into a more complex generative model, similar to the unigram model, but with the addition of different topic mixtures for each topic.</p>
+</div>
+<div id="priors" class="section level3">
+<h3><span class="header-section-number">4.1.3</span> Priors</h3>
+<ul>
+<li>Alphas ( <span class="math inline">\(\overrightarrow{\alpha}\)</span> ) : are used as the prior to the document/topic mixtures</li>
+<li>Betas ( <span class="math inline">\(\overrightarrow{\beta}\)</span> ): Prior for the word distribtion for each topic</li>
+</ul>
+</div>
+</div>
+<div id="generative-model" class="section level2">
+<h2><span class="header-section-number">4.2</span> Generative Model</h2>
+<p>IMPORTANT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</p>
+<p>(NOTE: You need to figure out a way to connect the code example of generating words/docs back to the math (or at least one of the other symbolic representations). This is necesary for explaining how to flip to inferenece. It is fine if the inference part leaves out the long process of derivation, but you need to be able to unstack the generative model so that the transfer to inference makes sense - this has been covered at the end of chapter 2 in the multinomial/dirichlet example, but should be expanded to show how plate diagrams work…..ugh I hate these)</p>
+<p>LDA is know as a generative model. What is a generative model? Approaches that explicitly or implicitly model the distribution of inputs as well as outputs are known as generative models, because by sampling from them it is possible to generate synthetic data points in the input space <span class="citation">(Bishop <a href="references.html#ref-bishop2006pattern">2006</a>)</span>. This means we can create documents with a mixture of topics and a mixture of words based on thosed topics. Let’s start off with a simple example of generating unigrams.</p>
+<div id="generating-documents" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Generating Documents</h3>
+<div id="topic-word-mixtures-document-topic-mixtures-and-document-length-known" class="section level4">
+<h4><span class="header-section-number">4.2.1.1</span> Topic Word Mixtures, Document Topic Mixtures, and Document Length Known</h4>
+<p>Building on the document generating model in chapter two, let’s try to create documents that have words drawn from more than one topic. To clarify the contraints of the model will be:</p>
+<ul>
+<li>set number of topics (2)</li>
+<li>constant topic distributions in each document</li>
+<li>constant word distribution in each topic</li>
+</ul>
+<p>Known values:</p>
+<ul>
+<li>2 topics : word distributions of each topic below
+<ul>
+<li><span class="math inline">\(\phi_{1}\)</span> = [ 📕 = 0.8, 📘 = 0.2, 📗 = 0.0 ]</li>
+<li><span class="math inline">\(\phi_{2}\)</span> = [ 📕 = 0.2, 📘 = 0.1, 📗 = 0.7 ]</li>
+</ul></li>
+<li>All Documents have same topic distribution:
+<ul>
+<li><span class="math inline">\(\theta = [ topic a = 0.5, topic b = 0.5 ]\)</span></li>
+</ul></li>
+<li><p>All Documents contain 10 words</p></li>
+<li>For d = 1 to D where D is the number of documents
+<ul>
+<li>For w = 1 to W where W is the number of words in document <em>d</em>
+<ul>
+<li><em>Select the topic for word w </em></li>
+<li><span class="math inline">\(z_{i}\)</span> ~ Multinomial(<span class="math inline">\(\theta_{d}\)</span>)</li>
+<li><em>Select word based on topic z’s word distribution</em></li>
+<li><span class="math inline">\(w_{i}\)</span> ~ Multinomial(<span class="math inline">\(\phi^{(z_{i})}\)</span>)</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">k &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># number of topics</span>
+M &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># let&#39;s create 10 documents</span>
+vocab &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F4D8&#39;</span>, <span class="st">&#39;\U1F4D5&#39;</span>, <span class="st">&#39;\U1F4D7&#39;</span>)
+alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,k) <span class="co"># topic document dirichlet parameters</span>
+
+phi &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">0.1</span>, <span class="dv">0</span>, <span class="fl">0.9</span>,
+                <span class="fl">0.4</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>), 
+              <span class="dt">nrow =</span> k, 
+              <span class="dt">ncol =</span> <span class="kw">length</span>(vocab), 
+              <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
+
+theta &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)
+
+N &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co">#words in each document</span>
+ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">0</span>,N*M), 
+            <span class="dt">word =</span> <span class="kw">rep</span>(<span class="st">&#39;&#39;</span>, N*M),
+            <span class="dt">topic =</span> <span class="kw">rep</span>(<span class="dv">0</span>, N*M)
+            ) 
+            
+row_index &lt;-<span class="st"> </span><span class="dv">1</span>
+for(m in <span class="dv">1</span>:M){
+  for(n in <span class="dv">1</span>:N){
+    <span class="co"># sample topic index , i.e. select topic</span>
+    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)==<span class="dv">1</span>)
+    <span class="co"># sample word from topic</span>
+    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])==<span class="dv">1</span>)]
+    ds[row_index,] &lt;-<span class="st"> </span><span class="kw">c</span>(m,new_word, topic)
+    row_index &lt;-<span class="st"> </span>row_index +<span class="st"> </span><span class="dv">1</span>
+  }
+}
+
+ds %&gt;%<span class="st"> </span><span class="kw">group_by</span>(doc_id) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(
+  <span class="dt">tokens =</span> <span class="kw">paste</span>(word, <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>)
+) %&gt;%<span class="st"> </span><span class="kw">kable</span>()</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">doc_id</th>
+<th align="left">tokens</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">📘 📕 📗 📘 📘 📘 📗 📘 📗 📗</td>
+</tr>
+<tr class="even">
+<td align="left">10</td>
+<td align="left">📗 📘 📕 📘 📘 📗 📕 📕 📗 📗</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">📗 📗 📘 📗 📗 📗 📗 📗 📘 📗</td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left">📕 📗 📗 📗 📗 📕 📗 📕 📕 📗</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">📗 📘 📗 📗 📗 📗 📕 📗 📘 📗</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">📕 📗 📗 📘 📗 📘 📘 📗 📗 📗</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">📗 📘 📗 📘 📗 📕 📕 📗 📗 📗</td>
+</tr>
+<tr class="even">
+<td align="left">7</td>
+<td align="left">📘 📗 📗 📗 📗 📗 📕 📕 📗 📕</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="left">📗 📗 📗 📗 📗 📗 📘 📕 📗 📕</td>
+</tr>
+<tr class="even">
+<td align="left">9</td>
+<td align="left">📗 📘 📗 📗 📗 📗 📘 📘 📘 📕</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="topic-word-mixtures-document-topic-mixtures-and-document-length-unknown" class="section level4">
+<h4><span class="header-section-number">4.2.1.2</span> Topic Word Mixtures, Document Topic Mixtures, and Document Length Unknown</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">k &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># number of topics</span>
+M &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># let&#39;s create 10 documents</span>
+vocab &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F4D8&#39;</span>, <span class="st">&#39;\U1F4D5&#39;</span>, <span class="st">&#39;\U1F4D7&#39;</span>)
+alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,k) <span class="co"># topic document dirichlet parameters</span>
+
+phi &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">0.1</span>, <span class="dv">0</span>, <span class="fl">0.9</span>,
+                <span class="fl">0.4</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>), 
+              <span class="dt">nrow =</span> k, 
+              <span class="dt">ncol =</span> <span class="kw">length</span>(vocab), 
+              <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
+
+theta &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)
+xi &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># average document length </span>
+N &lt;-<span class="st"> </span><span class="kw">rpois</span>(M, xi) <span class="co">#words in each document</span>
+ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">sum</span>(N)), 
+            <span class="dt">word   =</span> <span class="kw">rep</span>(<span class="st">&#39;&#39;</span>, <span class="kw">sum</span>(N)),
+            <span class="dt">topic  =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N))
+            ) 
+            
+row_index &lt;-<span class="st"> </span><span class="dv">1</span>
+for(m in <span class="dv">1</span>:M){
+  for(n in <span class="dv">1</span>:N[m]){
+    <span class="co"># sample topic index , i.e. select topic</span>
+    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)==<span class="dv">1</span>)
+    <span class="co"># sample word from topic</span>
+    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])==<span class="dv">1</span>)]
+    ds[row_index,] &lt;-<span class="st"> </span><span class="kw">c</span>(m,new_word, topic)
+    row_index &lt;-<span class="st"> </span>row_index +<span class="st"> </span><span class="dv">1</span>
+  }
+}
+
+ds %&gt;%<span class="st"> </span><span class="kw">group_by</span>(doc_id) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(
+  <span class="dt">tokens =</span> <span class="kw">paste</span>(word, <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>)
+) %&gt;%<span class="st"> </span><span class="kw">kable</span>()</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">doc_id</th>
+<th align="left">tokens</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">📗 📘 📗 📘 📗 📗 📗 📕 📕 📗 📗 📘</td>
+</tr>
+<tr class="even">
+<td align="left">10</td>
+<td align="left">📕 📕 📘 📗 📘 📗 📗 📗 📕 📗</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">📗 📗 📗 📗 📗 📕 📗 📘 📗 📕 📗 📘 📗</td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left">📕 📗 📗 📕 📘 📘 📗 📘 📕 📘 📕 📘 📕 📘 📘 📗</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">📗 📕 📕 📗 📘 📗 📘 📘 📘 📕 📗 📘 📗 📕 📘 📕</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">📗 📗 📗 📗 📗 📘 📕 📗 📗 📘 📕 📗 📗 📘 📗</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">📗 📘 📘 📗 📗 📗 📗 📘 📗 📗 📗 📗 📕 📗</td>
+</tr>
+<tr class="even">
+<td align="left">7</td>
+<td align="left">📘 📘 📘 📗 📕 📗 📘 📘 📗 📘 📘 📗 📕 📘 📘 📗 📗 📕 📗 📗 📘 📗</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="left">📘 📗 📗 📕 📕 📗 📗 📕 📗 📗 📗 📕 📗 📗 📗 📕 📕 📕 📘</td>
+</tr>
+<tr class="even">
+<td align="left">9</td>
+<td align="left">📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="static-topic-word-mixtures-varying-document-topic-distributions" class="section level4">
+<h4><span class="header-section-number">4.2.1.3</span> Static Topic Word Mixtures, Varying Document Topic Distributions</h4>
+<p>So this time we will introduce documents with different topic distributions. The document length is still known, as is the topic word mixtures, but we will be randomly sampling the topic distribution of each document. Provide an example of document generation based on a set # of topics, with set topic word distributions and set document topic distributions</p>
+<p>Known values: * 2 topics : word distributions of each topic below * <span class="math inline">\(\phi_{1} = [ , ]\)</span> * <span class="math inline">\(\phi_{2} = [ , ]\)</span> * All Documents have same topic distribution: * <span class="math inline">\(\theta = [ , ]\)</span> * All Documents contain 10 words</p>
+<ul>
+<li>For d = 1 to D where D is the number of documents
+<ul>
+<li>For w = 1 to W where W is the number of words in document <em>d</em>
+<ul>
+<li><em>Select the topic for word w </em></li>
+<li><span class="math inline">\(z_{i}\)</span> ~ Multinomial(<span class="math inline">\(\theta_{d}\)</span>)</li>
+<li><em>Select word based on topic z’s word distribution </em></li>
+<li><span class="math inline">\(w_{i}\)</span> ~ Multinomial(<span class="math inline">\(\phi^{(z_{i})}\)</span>)</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>The generative process for LDA is shown below.</p>
+<ol style="list-style-type: decimal">
+<li>For k = 1 to K where K is the total number of topics
+<ul>
+<li><em>Sample parameters for word distribution of each topic</em></li>
+<li><span class="math inline">\(\phi^{(k)}\)</span> ~ Dirichlet(<span class="math inline">\(\beta\)</span>)</li>
+</ul></li>
+<li>For d = 1 to D where number of documents is D
+<ul>
+<li><em>Sample parameters for document topic distribution</em></li>
+<li><span class="math inline">\(\theta_{d}\)</span> ~ Dirichlet(<span class="math inline">\(\alpha\)</span>)</li>
+<li>For w = 1 to W where W is the number of words in document <em>d</em>
+<ul>
+<li><em>Select the topic for word w </em></li>
+<li><span class="math inline">\(z_{i}\)</span> ~ Multinomial(<span class="math inline">\(\theta_{d}\)</span>)</li>
+<li><em>Select word based on topic z’s word distribution </em></li>
+<li><span class="math inline">\(w_{i}\)</span> ~ Multinomial(<span class="math inline">\(\phi^{(z_{i})}\)</span>)</li>
+</ul></li>
+</ul></li>
+</ol>
+<p>Then change example to be set # of topics, set topic word distributions, but document topic distributions are drawn from dirichlet</p>
+<p>Then go to full LDA (example below)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">k &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># number of topics</span>
+M &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># let&#39;s create 10 documents</span>
+vocab &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F4D8&#39;</span>, <span class="st">&#39;\U1F4D5&#39;</span>, <span class="st">&#39;\U1F4D7&#39;</span>)
+alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,k) <span class="co"># topic document dirichlet parameters</span>
+
+
+
+phi &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">0.1</span>, <span class="dv">0</span>, <span class="fl">0.9</span>,
+                <span class="fl">0.4</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>), 
+              <span class="dt">nrow =</span> k, 
+              <span class="dt">ncol =</span> <span class="kw">length</span>(vocab), 
+              <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
+
+
+xi &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># average document length </span>
+N &lt;-<span class="st"> </span><span class="kw">rpois</span>(M, xi) <span class="co">#words in each document</span>
+ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">sum</span>(N)), 
+            <span class="dt">word   =</span> <span class="kw">rep</span>(<span class="st">&#39;&#39;</span>, <span class="kw">sum</span>(N)),
+            <span class="dt">topic  =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N)), 
+            <span class="dt">theta_a =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N)),
+            <span class="dt">theta_b =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N))
+            ) 
+            
+row_index &lt;-<span class="st"> </span><span class="dv">1</span>
+for(m in <span class="dv">1</span>:M){
+  theta &lt;-<span class="st">  </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>, alphas)
+  
+  for(n in <span class="dv">1</span>:N[m]){
+    <span class="co"># sample topic index , i.e. select topic</span>
+    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)==<span class="dv">1</span>)
+    <span class="co"># sample word from topic</span>
+    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])==<span class="dv">1</span>)]
+    ds[row_index,] &lt;-<span class="st"> </span><span class="kw">c</span>(m,new_word, topic,theta)
+    row_index &lt;-<span class="st"> </span>row_index +<span class="st"> </span><span class="dv">1</span>
+  }
+}
+
+ds %&gt;%<span class="st"> </span><span class="kw">group_by</span>(doc_id) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(
+  <span class="dt">tokens =</span> <span class="kw">paste</span>(word, <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>), 
+  <span class="dt">topic_a =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_a)), <span class="dv">2</span>), 
+  <span class="dt">topic_b =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_b)), <span class="dv">2</span>) 
+) %&gt;%<span class="st"> </span><span class="kw">kable</span>()</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">doc_id</th>
+<th align="left">tokens</th>
+<th align="right">topic_a</th>
+<th align="right">topic_b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">📕 📕 📗 📕 📗 📘 📗 📗 📗 📗 📗</td>
+<td align="right">0.08</td>
+<td align="right">0.92</td>
+</tr>
+<tr class="even">
+<td align="left">10</td>
+<td align="left">📘 📕 📘 📘 📘 📘 📘 📘 📗 📘</td>
+<td align="right">0.11</td>
+<td align="right">0.89</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">📘 📗 📗 📗 📘 📕 📗 📕 📘</td>
+<td align="right">0.39</td>
+<td align="right">0.61</td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left">📗 📗 📗 📗 📗 📗 📘 📗 📘 📗 📗</td>
+<td align="right">0.43</td>
+<td align="right">0.57</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">📗 📘 📕 📕 📘 📗 📗 📕 📘 📕 📗</td>
+<td align="right">0.40</td>
+<td align="right">0.60</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">📗 📘 📘 📗</td>
+<td align="right">0.82</td>
+<td align="right">0.18</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">📘 📗 📘 📕 📗 📕 📘 📘 📕 📗 📗 📕 📗 📘 📕</td>
+<td align="right">0.11</td>
+<td align="right">0.89</td>
+</tr>
+<tr class="even">
+<td align="left">7</td>
+<td align="left">📗 📗 📗 📗 📗 📘 📗</td>
+<td align="right">0.66</td>
+<td align="right">0.34</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="left">📘 📘 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗</td>
+<td align="right">0.68</td>
+<td align="right">0.32</td>
+</tr>
+<tr class="even">
+<td align="left">9</td>
+<td align="left">📕 📘 📕 📘 📗 📘 📗 📕 📘 📗 📘 📕</td>
+<td align="right">0.01</td>
+<td align="right">0.99</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="lda-generative-model" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> LDA Generative Model</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">k &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># number of topics</span>
+M &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># let&#39;s create 10 documents</span>
+vocab &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F4D8&#39;</span>, <span class="st">&#39;\U1F4D5&#39;</span>, <span class="st">&#39;\U1F4D7&#39;</span>)
+alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,k) <span class="co"># topic document dirichlet parameters</span>
+
+
+betas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">length</span>(vocab)) <span class="co"># dirichlet parameters for topic word distributions</span>
+phi &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(k, betas)
+
+
+xi &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># average document length </span>
+N &lt;-<span class="st"> </span><span class="kw">rpois</span>(M, xi) <span class="co">#words in each document</span>
+ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">sum</span>(N)), 
+            <span class="dt">word   =</span> <span class="kw">rep</span>(<span class="st">&#39;&#39;</span>, <span class="kw">sum</span>(N)),
+            <span class="dt">topic  =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N)), 
+            <span class="dt">theta_a =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N)),
+            <span class="dt">theta_b =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N))
+            <span class="co"># , </span>
+            <span class="co"># word_prop = rep(0, sum(N))</span>
+            ) 
+            
+row_index &lt;-<span class="st"> </span><span class="dv">1</span>
+for(m in <span class="dv">1</span>:M){
+  theta &lt;-<span class="st">  </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>, alphas)
+  
+  for(n in <span class="dv">1</span>:N[m]){
+    <span class="co"># sample topic index , i.e. select topic</span>
+    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)==<span class="dv">1</span>)
+    <span class="co"># sample word from topic</span>
+    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])==<span class="dv">1</span>)]
+    ds[row_index,] &lt;-<span class="st"> </span><span class="kw">c</span>(m,new_word, topic,theta)
+    row_index &lt;-<span class="st"> </span>row_index +<span class="st"> </span><span class="dv">1</span>
+  }
+}
+
+ds %&gt;%<span class="st"> </span><span class="kw">group_by</span>(doc_id, topic) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(
+  <span class="dt">tokens =</span> <span class="kw">paste</span>(word, <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>), 
+  <span class="dt">topic_a =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_a)), <span class="dv">2</span>), 
+  <span class="dt">topic_b =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_b)), <span class="dv">2</span>) 
+) %&gt;%<span class="st"> </span><span class="kw">kable</span>() </code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">doc_id</th>
+<th align="left">topic</th>
+<th align="left">tokens</th>
+<th align="right">topic_a</th>
+<th align="right">topic_b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">1</td>
+<td align="left">📕 📘 📘 📕 📗 📘 📘 📕 📕 📗 📕</td>
+<td align="right">0.75</td>
+<td align="right">0.25</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">2</td>
+<td align="left">📕 📕 📘</td>
+<td align="right">0.75</td>
+<td align="right">0.25</td>
+</tr>
+<tr class="odd">
+<td align="left">10</td>
+<td align="left">2</td>
+<td align="left">📘 📘 📘 📘 📘 📘</td>
+<td align="right">0.08</td>
+<td align="right">0.92</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">1</td>
+<td align="left">📕 📕 📗 📕 📕 📗 📘</td>
+<td align="right">0.56</td>
+<td align="right">0.44</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">2</td>
+<td align="left">📕 📘 📗</td>
+<td align="right">0.56</td>
+<td align="right">0.44</td>
+</tr>
+<tr class="even">
+<td align="left">3</td>
+<td align="left">2</td>
+<td align="left">📘 📗 📘 📗 📘 📘 📕 📕 📘</td>
+<td align="right">0.01</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="odd">
+<td align="left">4</td>
+<td align="left">1</td>
+<td align="left">📕</td>
+<td align="right">0.13</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">2</td>
+<td align="left">📕 📘 📗 📗 📕 📕 📘</td>
+<td align="right">0.13</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">1</td>
+<td align="left">📗 📗 📗 📕 📘 📘 📕 📘 📕 📗 📘 📗 📘 📘 📗</td>
+<td align="right">0.87</td>
+<td align="right">0.13</td>
+</tr>
+<tr class="even">
+<td align="left">5</td>
+<td align="left">2</td>
+<td align="left">📘 📕</td>
+<td align="right">0.87</td>
+<td align="right">0.13</td>
+</tr>
+<tr class="odd">
+<td align="left">6</td>
+<td align="left">1</td>
+<td align="left">📕</td>
+<td align="right">0.26</td>
+<td align="right">0.74</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">2</td>
+<td align="left">📘 📘 📕 📗 📘 📘 📕 📘</td>
+<td align="right">0.26</td>
+<td align="right">0.74</td>
+</tr>
+<tr class="odd">
+<td align="left">7</td>
+<td align="left">1</td>
+<td align="left">📘 📕</td>
+<td align="right">0.13</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="even">
+<td align="left">7</td>
+<td align="left">2</td>
+<td align="left">📘 📘 📗 📕 📘 📘 📗</td>
+<td align="right">0.13</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="odd">
+<td align="left">8</td>
+<td align="left">1</td>
+<td align="left">📗 📘 📕 📕 📕 📗 📕</td>
+<td align="right">0.60</td>
+<td align="right">0.40</td>
+</tr>
+<tr class="even">
+<td align="left">8</td>
+<td align="left">2</td>
+<td align="left">📕 📘 📘 📘 📕</td>
+<td align="right">0.60</td>
+<td align="right">0.40</td>
+</tr>
+<tr class="odd">
+<td align="left">9</td>
+<td align="left">1</td>
+<td align="left">📕 📘 📘 📗 📗 📕 📘 📘 📘 📘 📕 📗</td>
+<td align="right">0.77</td>
+<td align="right">0.23</td>
+</tr>
+<tr class="even">
+<td align="left">9</td>
+<td align="left">2</td>
+<td align="left">📘 📗</td>
+<td align="right">0.77</td>
+<td align="right">0.23</td>
+</tr>
+<tr class="odd">
+<td align="left">(NOTE: Sp</td>
+<td align="left">read the</td>
+<td align="left">table so topics are side by sid</td>
+<td align="right">e for each</td>
+<td align="right">doc)</td>
+</tr>
+</tbody>
+</table>
+<p>The LDA generative process for each document is shown below<span class="citation">(Darling <a href="references.html#ref-darling2011theoretical">2011</a>)</span>:</p>
+<p><span class="math display">\[
+p(w,z,\theta,\phi|\alpha, B) = p(\phi|B)p(\theta|\alpha)p(z|\theta)p(w|\phi_{z})
+\]</span></p>
+<p>You may be like me and have a hard time seeing how we get to the equation above and what it even means. If we look back at the pseudo code for the LDA model it is a bit easier to see how we got here. We start by giving a probability of a topic for each word in the vocabulary, <span class="math inline">\(\phi\)</span>. This value is drawn randomly from a dirichlet distribution with the parameter <span class="math inline">\(\beta\)</span> giving us our first term <span class="math inline">\(p(\phi|\beta)\)</span>. The next step is generating documents which starts by calculating the topic mixture of the document, <span class="math inline">\(\theta_{d}\)</span> generated from a dirichlet distribution with the parameter <span class="math inline">\(\alpha\)</span>. This is our second term <span class="math inline">\(p(\theta|\alpha)\)</span>. You can see the following two terms also follow this trend. The topic, <em>z</em>, of the next word is drawn from a multinomial distribuiton with the parameter <span class="math inline">\(\theta\)</span>. Once we know <em>z</em>, we use the distribution of words in topic <em>z</em>, <span class="math inline">\(\phi_{z}\)</span>, to determine the word that is generated.</p>
+</div>
+</div>
+<div id="inference" class="section level2">
+<h2><span class="header-section-number">4.3</span> Inference</h2>
+<p>—– Give general description of pseudo code - go through each doc, each word, get probability of topic, assign topic, repeat - this all gets lost in the math - it really is that simple, all the confusing components come from the derivation of the probability calculation ….</p>
+<p>What if I don’t want to generate docuements. What if my goal is to infer what topics are present in each document and what words belong to each topic? This is were LDA for inference comes into play.</p>
+<p>Before going through any derivations of how we infer the document topic distributions and the word distributions of each topic, I want to go over the process of inference more generally.</p>
+<p><b>The General Idea of the Inference Process</b></p>
+<ol style="list-style-type: decimal">
+<li><b>Initialization:</b> Randomly select a topic for each word in each document from a multinomial distribution.</li>
+<li><b>Gibbs Sampling:</b><br />
+</li>
+</ol>
+<ul>
+<li>For <i>i</i> iterations
+<ul>
+<li>For document d in documents:
+<ul>
+<li>For each word in document d:
+<ul>
+<li><i>assign a topic to the current word based on probability of the topic given the topic of all other words (except the current word)</i></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<p>If you recall from the previous chapters on Gibbs sampling to infer the value of each <span class="math inline">\(\theta\)</span> we calculate the value of of $p(_{}|)</p>
+<p>Use Darling as an outline for the derivation process …. cite carpenter and heinrich (same as Darling does).</p>
+<p>Below is a toy example that creates a set of documents based on the 3 word (emoji) vocabulary. Each of the 10 documents has a differnt topic mixture and is assigned a random lenght. Our aim with inferrence is to infer the topic mixture of each document and the word distributions of each topic.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">get_topic &lt;-<span class="st"> </span>function(k){ 
+  <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dt">size =</span> <span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">1</span>/k,k))[,<span class="dv">1</span>] ==<span class="st"> </span><span class="dv">1</span>)
+} 
+
+
+k &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># number of topics</span>
+M &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># let&#39;s create 10 documents</span>
+vocab &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F4D8&#39;</span>, <span class="st">&#39;\U1F4D5&#39;</span>, <span class="st">&#39;\U1F4D7&#39;</span>)
+alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,k) <span class="co"># topic document dirichlet parameters</span>
+beta &lt;-<span class="st"> </span><span class="dv">1</span>
+
+
+phi &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">0.1</span>, <span class="dv">0</span>, <span class="fl">0.9</span>,
+                <span class="fl">0.4</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>), 
+              <span class="dt">nrow =</span> k, 
+              <span class="dt">ncol =</span> <span class="kw">length</span>(vocab), 
+              <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
+
+
+xi &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># average document length </span>
+N &lt;-<span class="st"> </span><span class="kw">rpois</span>(M, xi) <span class="co">#words in each document</span>
+ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">sum</span>(N)), 
+            <span class="dt">word   =</span> <span class="kw">rep</span>(<span class="st">&#39;&#39;</span>, <span class="kw">sum</span>(N)),
+            <span class="dt">topic  =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N)), 
+            <span class="dt">theta_a =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N)),
+            <span class="dt">theta_b =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N))
+) 
+
+row_index &lt;-<span class="st"> </span><span class="dv">1</span>
+for(m in <span class="dv">1</span>:M){
+  theta &lt;-<span class="st">  </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>, alphas)
+  
+  for(n in <span class="dv">1</span>:N[m]){
+    <span class="co"># sample topic index , i.e. select topic</span>
+    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)==<span class="dv">1</span>)
+    <span class="co"># sample word from topic</span>
+    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])==<span class="dv">1</span>)]
+    ds[row_index,] &lt;-<span class="st"> </span><span class="kw">c</span>(m,new_word, topic,theta)
+    row_index &lt;-<span class="st"> </span>row_index +<span class="st"> </span><span class="dv">1</span>
+  }
+}
+
+ds$doc_id &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(ds$doc_id)
+
+
+
+ds %&gt;%<span class="st"> </span><span class="kw">group_by</span>(doc_id) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(
+  <span class="dt">tokens =</span> <span class="kw">paste</span>(word, <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>), 
+  <span class="dt">topic_a =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_a)), <span class="dv">2</span>), 
+  <span class="dt">topic_b =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_b)), <span class="dv">2</span>) 
+) %&gt;%<span class="st"> </span><span class="kw">kable</span>()</code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="right">doc_id</th>
+<th align="left">tokens</th>
+<th align="right">topic_a</th>
+<th align="right">topic_b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">📘 📘 📕 📗 📕 📗 📗 📘 📗 📗 📘 📗 📗 📘 📘 📗 📕 📗 📕 📕 📗 📕 📕 📘 📘 📗 📗 📗 📗 📗 📗 📕 📘 📗 📘 📗 📗 📕 📘 📗 📕 📘 📗 📘 📗 📘 📕 📕 📗 📕 📗 📗 📗 📘 📕 📕 📘 📗 📗 📗 📗 📗 📘 📗 📕 📕 📘 📘 📘 📗 📘 📕 📘 📘 📗 📘 📗 📗 📕 📘 📘 📗 📘 📘 📕 📗 📗 📘 📕 📗 📕 📕 📗 📗 📕 📘 📗 📘 📗 📕 📕 📘 📗</td>
+<td align="right">0.40</td>
+<td align="right">0.60</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">📗 📗 📕 📗 📗 📗 📗 📗 📗 📗 📗 📗 📘 📗 📕 📘 📗 📗 📗 📗 📘 📗 📗 📗 📗 📗 📘 📗 📗 📗 📘 📕 📘 📗 📗 📗 📗 📘 📕 📕 📗 📘 📘 📗 📗 📗 📗 📗 📗 📕 📘 📘 📕 📗 📗 📕 📗 📗 📘 📗 📗 📕 📘 📗 📗 📕 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📘 📘 📕 📗 📕 📘 📘 📗 📕</td>
+<td align="right">0.57</td>
+<td align="right">0.43</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">📗 📗 📘 📘 📕 📗 📗 📗 📗 📕 📗 📗 📘 📗 📗 📘 📘 📗 📗 📗 📗 📗 📗 📗 📗 📘 📘 📗 📗 📗 📘 📗 📗 📗 📗 📗 📘 📘 📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📕 📘 📘 📕 📘 📘 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📘 📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📘 📕 📕 📗 📗 📗 📗 📘 📗 📗 📘 📗 📗 📗 📗 📗 📗</td>
+<td align="right">0.77</td>
+<td align="right">0.23</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">📕 📗 📗 📗 📕 📘 📗 📗 📘 📕 📗 📗 📗 📗 📕 📗 📘 📗 📗 📗 📗 📘 📗 📗 📕 📗 📕 📗 📕 📘 📗 📘 📕 📘 📗 📗 📗 📕 📕 📘 📗 📘 📗 📕 📗 📕 📘 📕 📗 📘 📕 📗 📗 📕 📘 📘 📘 📗 📗 📗 📗 📘 📗 📕 📗 📘 📕 📘 📗 📗 📗 📗 📗 📗 📘 📗 📘 📗 📗 📗 📗 📗 📗 📗 📗 📘 📘 📗 📗 📗 📗 📗 📘</td>
+<td align="right">0.44</td>
+<td align="right">0.56</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">📗 📗 📗 📗 📗 📗 📗 📕 📗 📘 📗 📗 📗 📗 📕 📗 📗 📗 📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📗 📘 📗 📕 📗 📗 📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📘 📗 📕 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📘 📘 📗 📕 📗 📗 📗 📗 📗 📗 📗 📗</td>
+<td align="right">0.87</td>
+<td align="right">0.13</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">📗 📗 📘 📗 📗 📗 📗 📗 📗 📘 📗 📗 📗 📕 📗 📘 📗 📗 📗 📗 📘 📘 📗 📘 📗 📘 📕 📘 📘 📗 📗 📗 📗 📗 📗 📗 📗 📗 📕 📘 📗 📗 📗 📗 📗 📗 📗 📗 📕 📗 📗 📗 📗 📕 📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📗 📗 📕 📗 📗 📗 📕 📗 📗 📗 📘 📗 📕 📗 📗 📗 📘 📗 📗 📗 📘 📘 📗 📘 📘 📗 📗 📗</td>
+<td align="right">0.71</td>
+<td align="right">0.29</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">📗 📗 📘 📗 📗 📗 📗 📗 📘 📗 📗 📗 📘 📗 📗 📘 📗 📕 📗 📕 📕 📗 📗 📘 📗 📕 📕 📗 📕 📕 📗 📘 📗 📗 📕 📗 📘 📕 📘 📗 📗 📘 📗 📗 📗 📗 📕 📗 📘 📗 📕 📗 📗 📗 📗 📘 📗 📗 📘 📗 📗 📗 📕 📕 📗 📗 📗 📘 📗 📘 📗 📘 📗 📗 📕 📗 📗 📗 📘 📗 📘 📘 📗 📗 📗 📘 📗 📗 📗 📕 📗 📕 📘 📗 📗 📗 📗 📗 📘 📕 📗 📘 📘 📗</td>
+<td align="right">0.56</td>
+<td align="right">0.44</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">📗 📘 📕 📗 📗 📕 📕 📕 📗 📕 📘 📘 📗 📘 📘 📘 📘 📗 📕 📗 📗 📕 📘 📗 📘 📕 📕 📘 📗 📗 📕 📗 📘 📗 📕 📕 📘 📕 📘 📘 📕 📘 📘 📘 📗 📗 📗 📕 📘 📗 📕 📘 📘 📕 📕 📕 📗 📕 📘 📕 📗 📘 📕 📗 📘 📕 📘 📘 📘 📕 📘 📗 📗 📘 📗 📗 📗 📗 📘 📕 📗 📕 📕 📘 📕 📘 📘 📕 📕 📘 📗 📘 📘 📗 📕 📗 📗 📘 📕</td>
+<td align="right">0.29</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">📘 📗 📘 📗 📗 📗 📘 📕 📘 📗 📗 📕 📗 📗 📘 📘 📗 📕 📗 📗 📘 📗 📗 📕 📕 📘 📘 📗 📗 📘 📗 📗 📘 📗 📘 📕 📘 📘 📘 📗 📗 📘 📗 📕 📗 📗 📗 📘 📘 📗 📗 📗 📗 📗 📗 📘 📘 📕 📗 📘 📗 📗 📗 📘 📘 📕 📗 📕 📕 📗 📗 📗 📗 📘 📕 📗 📗 📗 📗 📘 📗 📘 📗 📗 📕 📘 📗 📗 📗 📗 📕 📗 📗 📗 📗 📗 📘 📗 📗 📕 📗 📘 📘 📗 📘 📘 📕 📘</td>
+<td align="right">0.48</td>
+<td align="right">0.52</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📗 📗 📘 📗 📗 📗 📗 📘 📗 📗 📗 📕 📗 📕 📗 📗 📕 📗 📘 📕 📗 📗 📕 📗 📘 📕 📕 📗 📗 📗 📗 📗 📕 📗 📗 📗 📘 📗 📘 📗 📗 📕 📗 📗 📗 📘 📗 📗 📗 📗 📘 📗 📕 📗 📗 📗 📗 📕 📕 📘 📘 📕 📘 📘 📘 📘 📗 📗 📗 📗 📗 📕</td>
+<td align="right">0.56</td>
+<td align="right">0.44</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">######### Inference ############### 
+
+
+
+current_state &lt;-<span class="st"> </span>ds %&gt;%<span class="st"> </span>dplyr::<span class="kw">select</span>(doc_id, word, topic)
+current_state$topic &lt;-<span class="st"> </span><span class="ot">NA</span>
+
+
+t &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(current_state$word))
+
+<span class="co"># n_doc_topic_count  </span>
+n_doc_topic_count &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> m, <span class="dt">ncol =</span> k)
+<span class="co"># document_topic_sum</span>
+n_doc_topic_sum  &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,m)
+<span class="co"># topic_term_count</span>
+n_topic_term_count &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> k, <span class="dt">ncol =</span> t)
+<span class="kw">colnames</span>(n_topic_term_count) &lt;-<span class="st"> </span><span class="kw">unique</span>(current_state$word)
+<span class="co"># topic_term_sum</span>
+n_topic_sum  &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,k)
+p &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, k)
+<span class="co"># initialize topics</span>
+for( i in <span class="dv">1</span>:<span class="kw">nrow</span>(current_state)){
+  current_state$topic[i] &lt;-<span class="st"> </span><span class="kw">get_topic</span>(k)
+  n_doc_topic_count[current_state$doc_id[i],current_state$topic[i]] &lt;-<span class="st"> </span>n_doc_topic_count[current_state$doc_id[i],current_state$topic[i]] +<span class="st"> </span><span class="dv">1</span>
+  n_doc_topic_sum[current_state$doc_id[i]] &lt;-<span class="st"> </span>n_doc_topic_sum[current_state$doc_id[i]] +<span class="st"> </span><span class="dv">1</span>
+  n_topic_term_count[current_state$topic[i] , current_state$word[i]] &lt;-<span class="st"> </span>n_topic_term_count[current_state$topic[i] ,
+                                                               current_state$word[i]] +<span class="st"> </span><span class="dv">1</span>
+  n_topic_sum[current_state$topic[i]] =<span class="st"> </span>n_topic_sum[current_state$topic[i]] +<span class="st"> </span><span class="dv">1</span>
+  
+}
+
+
+
+<span class="co"># topics mixtures keep converging to 1 an 0, this is incorrect,</span>
+<span class="co"># or it is a result fo the topics (word distributions) being too similar? </span>
+<span class="co"># gibbs</span>
+for (iter in <span class="dv">1</span>:<span class="dv">100</span>){
+  
+  for(j in <span class="dv">1</span>:<span class="kw">nrow</span>(current_state)){
+    
+    <span class="co"># decrement counts</span>
+    cs_topic &lt;-<span class="st"> </span>current_state$topic[j]
+    cs_doc   &lt;-<span class="st"> </span>current_state$doc_id[j]
+    cs_word  &lt;-<span class="st"> </span>current_state$word[j]
+    
+    n_doc_topic_count[cs_doc,cs_topic] &lt;-<span class="st"> </span>n_doc_topic_count[cs_doc,cs_topic] -<span class="st"> </span><span class="dv">1</span>
+    n_doc_topic_sum[cs_doc] &lt;-<span class="st"> </span>n_doc_topic_sum[cs_doc] -<span class="st"> </span><span class="dv">1</span>
+    n_topic_term_count[cs_topic , cs_word] &lt;-<span class="st"> </span>n_topic_term_count[cs_topic , cs_word] -<span class="st"> </span><span class="dv">1</span>
+    n_topic_sum[cs_topic] =<span class="st"> </span>n_topic_sum[cs_topic] -<span class="dv">1</span>
+    
+    <span class="co"># get probability for each topic, select topic with highest prob</span>
+    for(topic in <span class="dv">1</span>:k){
+      p[topic] &lt;-<span class="st"> </span>(n_topic_term_count[topic, cs_word] +<span class="st"> </span>beta) *
+<span class="st">        </span>(n_doc_topic_count[cs_doc,topic] +<span class="st"> </span>alphas[k])/
+<span class="st">        </span><span class="kw">sum</span>(n_topic_term_count[topic,] +<span class="st"> </span>beta)
+    }
+    new_topic &lt;-<span class="st"> </span><span class="kw">which.max</span>(p)
+    
+    <span class="co"># update counts</span>
+    n_doc_topic_count[cs_doc,new_topic] &lt;-<span class="st"> </span>n_doc_topic_count[cs_doc,new_topic] +<span class="st"> </span><span class="dv">1</span>
+    n_doc_topic_sum[cs_doc] &lt;-<span class="st"> </span>n_doc_topic_sum[cs_doc] +<span class="st"> </span><span class="dv">1</span>
+    n_topic_term_count[new_topic , cs_word] &lt;-<span class="st"> </span>n_topic_term_count[new_topic , cs_word] +<span class="st"> </span><span class="dv">1</span>
+    n_topic_sum[new_topic] =<span class="st"> </span>n_topic_sum[new_topic] +<span class="st"> </span><span class="dv">1</span>
+
+    
+    <span class="co"># update current_state</span>
+    current_state$topic[j] &lt;-<span class="st"> </span>new_topic
+  }
+}</code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="word-embeddings-and-representations.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>LDA Tutorial</title>
+  <meta name="description" content="LDA Tutorial">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="LDA Tutorial" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="Davis.jpg" />
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="LDA Tutorial" />
+  <meta name="twitter:site" content="@devlintufts" />
+  
+  <meta name="twitter:image" content="Davis.jpg" />
+
+<meta name="author" content="Chris Tufts">
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="layout-of-book.html">
+<link rel="next" href="parameter-estimation.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i>Background</a></li>
+<li class="chapter" data-level="" data-path="layout-of-book.html"><a href="layout-of-book.html"><i class="fa fa-check"></i>Layout of Book</a></li>
+<li class="chapter" data-level="1" data-path="what-is-lda.html"><a href="what-is-lda.html"><i class="fa fa-check"></i><b>1</b> What is LDA?</a><ul>
+<li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a></li>
+<li class="chapter" data-level="1.2" data-path="what-is-lda.html"><a href="what-is-lda.html#inference"><i class="fa fa-check"></i><b>1.2</b> Inference</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="parameter-estimation.html"><a href="parameter-estimation.html"><i class="fa fa-check"></i><b>2</b> Parameter Estimation</a><ul>
+<li class="chapter" data-level="2.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#distributions"><i class="fa fa-check"></i><b>2.1</b> Distributions</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bernoulli"><i class="fa fa-check"></i><b>2.1.1</b> Bernoulli</a></li>
+<li class="chapter" data-level="2.1.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#beta-distribution"><i class="fa fa-check"></i><b>2.1.2</b> Beta Distribution</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#inference-the-building-blocks"><i class="fa fa-check"></i><b>2.2</b> Inference: The Building Blocks</a></li>
+<li class="chapter" data-level="2.3" data-path="parameter-estimation.html"><a href="parameter-estimation.html#maximum-likelihood"><i class="fa fa-check"></i><b>2.3</b> Maximum Likelihood</a></li>
+<li class="chapter" data-level="2.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#maximum-a-posteriori-map"><i class="fa fa-check"></i><b>2.4</b> Maximum a Posteriori (MAP)</a></li>
+<li class="chapter" data-level="2.5" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bayesian-inference"><i class="fa fa-check"></i><b>2.5</b> Bayesian Inference</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#the-issue-of-intractability"><i class="fa fa-check"></i><b>2.5.1</b> The Issue of Intractability</a></li>
+<li class="chapter" data-level="2.5.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#a-tale-of-two-mcs"><i class="fa fa-check"></i><b>2.5.2</b> A Tale of Two MC’s</a></li>
+<li class="chapter" data-level="2.5.3" data-path="parameter-estimation.html"><a href="parameter-estimation.html#conjugate-priors"><i class="fa fa-check"></i><b>2.5.3</b> Conjugate Priors</a></li>
+<li class="chapter" data-level="2.5.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#gibbs-sampling"><i class="fa fa-check"></i><b>2.5.4</b> Gibbs Sampling</a></li>
+<li class="chapter" data-level="2.5.5" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bias-of-two-coins"><i class="fa fa-check"></i><b>2.5.5</b> Bias of Two Coins</a></li>
+<li class="chapter" data-level="2.5.6" data-path="parameter-estimation.html"><a href="parameter-estimation.html#change-point-example"><i class="fa fa-check"></i><b>2.5.6</b> Change Point Example</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html"><i class="fa fa-check"></i><b>3</b> Multinomial Distribution</a><ul>
+<li class="chapter" data-level="3.1" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#comparison-of-dice-vs.words"><i class="fa fa-check"></i><b>3.1</b> Comparison of Dice vs. Words</a></li>
+<li class="chapter" data-level="3.2" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#relationship-to-bernoulli"><i class="fa fa-check"></i><b>3.2</b> Relationship to Bernoulli</a></li>
+<li class="chapter" data-level="3.3" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#conjugate-prior-dirichlet"><i class="fa fa-check"></i><b>3.3</b> Conjugate Prior: Dirichlet</a></li>
+<li class="chapter" data-level="3.4" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#gibbs-sampling---multinomial-dirichlet"><i class="fa fa-check"></i><b>3.4</b> Gibbs Sampling - Multinomial &amp; Dirichlet</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#derivation-of-gibbs-sampling-solution-of-word-distribution-single-doc"><i class="fa fa-check"></i><b>3.4.1</b> Derivation of Gibbs Sampling Solution of Word Distribution (Single Doc)</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="word-embeddings-and-representations.html"><a href="word-embeddings-and-representations.html"><i class="fa fa-check"></i><b>4</b> Word Embeddings and Representations</a><ul>
+<li class="chapter" data-level="4.1" data-path="word-embeddings-and-representations.html"><a href="word-embeddings-and-representations.html#bag-of-words"><i class="fa fa-check"></i><b>4.1</b> Bag of Words</a></li>
+<li class="chapter" data-level="4.2" data-path="word-embeddings-and-representations.html"><a href="word-embeddings-and-representations.html#word-embeddings"><i class="fa fa-check"></i><b>4.2</b> Word Embeddings</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="lda-as-a-generative-model.html"><a href="lda-as-a-generative-model.html"><i class="fa fa-check"></i><b>5</b> LDA as a Generative Model</a><ul>
+<li class="chapter" data-level="5.1" data-path="lda-as-a-generative-model.html"><a href="lda-as-a-generative-model.html#general-terminology"><i class="fa fa-check"></i><b>5.1</b> General Terminology</a><ul>
+<li class="chapter" data-level="5.1.1" data-path="lda-as-a-generative-model.html"><a href="lda-as-a-generative-model.html#selecting-parameters"><i class="fa fa-check"></i><b>5.1.1</b> Selecting Parameters</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="lda-as-a-generative-model.html"><a href="lda-as-a-generative-model.html#generative-model"><i class="fa fa-check"></i><b>5.2</b> Generative Model</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="lda-as-a-generative-model.html"><a href="lda-as-a-generative-model.html#generating-documents"><i class="fa fa-check"></i><b>5.2.1</b> Generating Documents</a></li>
+<li class="chapter" data-level="5.2.2" data-path="lda-as-a-generative-model.html"><a href="lda-as-a-generative-model.html#lda-generative-model"><i class="fa fa-check"></i><b>5.2.2</b> LDA Generative Model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="lda-inference.html"><a href="lda-inference.html"><i class="fa fa-check"></i><b>6</b> LDA Inference</a><ul>
+<li class="chapter" data-level="6.1" data-path="lda-inference.html"><a href="lda-inference.html#general-overview"><i class="fa fa-check"></i><b>6.1</b> General Overview</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">LDA Tutorial</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="what-is-lda" class="section level1">
+<h1><span class="header-section-number">1</span> What is LDA?</h1>
+<p>Latent Dirichlet Allocation (LDA) is a generative probablistic model for collections of discrete data developed by Blei, Ng, and Jordan. <span class="citation">(Blei, Ng, and Jordan <a href="references.html#ref-blei2003latent">2003</a>)</span> One of the most common uses of LDA is for modeling collections of text. The general idea is that each document is generated from a mixture of topics and each of those topics is a mixture of words. This is known as a hierarchical model since it is built on distributions of topics built on top of distributions of words.</p>
+<p>In regards to the model name, you can think of it as follows:</p>
+<ul>
+<li><b>Latent</b>: Topic structures in a document are ‘latent’ meaning they are hidden structures in the text.</li>
+<li><b>Dirichlet</b>: The Dirichlet distribution is used as the prior for both the topic distributions and the word distributions. If you have no idea what a Dirichlet distribution or a prior is do not despair. We will be going through all of this in the upcoming chapters.</li>
+<li><b>Allocation</b>: Allocation of words to a given topic.</li>
+</ul>
+<p>So to review: we have latent structures in a corpus (topics), taking into account Dirichlet priors for the word and topic distributions, to allocate words to a given topic and topics to a given document.</p>
+<p>Throughout this book I will work through all of the building blocks which make LDA possible, but to help get an understanding of what LDA is and why it is useful, I will offer a quick example first.</p>
+<div id="animal-generator" class="section level2">
+<h2><span class="header-section-number">1.1</span> Animal Generator</h2>
+<p>The majority of this book is about words, topics, and documents, but lets start with something a bit different: animals and where they live. One of the ways you can classify animals is by where they spend the majority of their time - land, air, sea. Obviously there are some animals that only dwell in one place, for example a cow only lives on land. However, there are other animals, such as some birds, that split their time between land, sea, and air.</p>
+<p>You are probably asking yourself where I’m going with this. We can think of land, air, and sea as topics that contain a distribution of animals. In this case we can equate animals with words. For example, on land I am much more likely to see a cow than a whale, but in the sea it would be the reverse. If I quantify these probabilities into a distribution over all the animals (<i>words</i>) for each type of habitat (land,sea, air - <i>topics</i>) I can use them to generate sets of animals(<i>words</i>) to populate a given location (<i>document</i>) which may contain a mix of land, sea, and air (<i>topics</i>).</p>
+<p>So let’s move on to generating a specific location. We know that different locations will vary in terms of which habitats are present. For example, a beach contains land, sea, and air, but some areas inland may only contain air and land like a desert. We can define the mixture of these types of habitats in each location. For example, an example beach is 1/3 land, 1/3 sea, and 1/3 air. We can think of the beach as a single document. To review: a given location (document) contains a mixture of land, air, and sea (topics) and each of those contain different mixtures of animals (words).</p>
+<p>Let’s work through some examples using our animals and habitats. The examples provided in this chapter are oversimplified so that we can get a general idea of what is going on with LDA. The rest of the book will handle all the nuts and bolts of the model, but for now let’s try and get a handle on how this works.</p>
+<p>We’ll start by generating a beach location with 1/3 land animals, 1/3 sea animals, and 1/3 air animals. Below you can see our collection of animals and their probability in each topic. Note that some animals have zero probabilities in a given topic, i.e. a cow is never in the ocean, where some have higher probabilities than others (a crab is in the sea sometimes, but a fish is always in the sea). You may notice that there is only 1 animal in the air category. There are several birds, but only 1 of them is cabable of flight in our vocabulary.</p>
+<p>(NOTE: These are the probability of a word <b>given</b> the topic and therefore the probabilities of each habitat(column) sum to 1.)</p>
+<table>
+<caption><span id="tab:animalVocab">Table 1.1: </span>Animal Distributions in Each Habitat</caption>
+<thead>
+<tr class="header">
+<th align="left">vocab</th>
+<th align="right">land</th>
+<th align="right">sea</th>
+<th align="right">air</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">🐋</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">🐳</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">🐟</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">🐠</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">🐙</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">🦀</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">🐊</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">🐢</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">🐍</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">🐓</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">🦃</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">🐦</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">🐧</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">🐿</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">🐘</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">🐂</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">🐑</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">🐪</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>To generate a beach (<i>document</i>) based off the description we would use those probabilities in a straightforward manner:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">words_per_topic &lt;-<span class="st"> </span><span class="dv">3</span>
+equal_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>land, <span class="dt">replace =</span> T)],
+               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
+               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
+<span class="kw">cat</span>(equal_doc)</code></pre></div>
+<pre><code>## 🐦 🐪 🐘 🐟 🐋 🐊 🐦 🐦 🐦</code></pre>
+<p>NOTE: In the above example the topic mixtures are even, so each habitat (<i>topic</i>) contributes 3 animals to the beach.</p>
+<p>Ok, now let’s make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be %50 sea, %50 air, and %0 land.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">words_per_topic &lt;-<span class="st"> </span><span class="dv">3</span>
+ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
+               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
+<span class="kw">cat</span>(ocean_doc)</code></pre></div>
+<pre><code>## 🐠 🐙 🐙 🐦 🐦 🐦</code></pre>
+<p>NOTE: In the example above only the air and land contribute to the ocean location. Therefore they both contribute an equal number of animals to the location.</p>
+</div>
+<div id="inference" class="section level2">
+<h2><span class="header-section-number">1.2</span> Inference</h2>
+<p>We have seen that we can generate collections of animals that are representative of the given location. What if we have thousands of locations and we want to know the mixture of land, air, and sea that are present? And what if we had no idea where each animal spends its time? LDA allows us to infer both of these peices of information. Similar to the locations (<i>documents</i>) generated above, I will create 1000 random documents with varying length and various habitat mixtures.</p>
+<table>
+<caption><span id="tab:unnamed-chunk-4">Table 1.2: </span>Animals at the First Two Locations</caption>
+<thead>
+<tr class="header">
+<th align="right">Document</th>
+<th align="left">Animals</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">🐦 🐍 🐠 🐦 🦀 🐢 🐢 🐠 🐂 🦃 🐳 🐪 🐿 🐦 🐢 🐙 🐦 🐙 🐦 🐦 🐪 🐍 🐦 🐦 🐦 🐦 🐦 🐟 🦀 🐘 🐳 🐦 🐦 🦀 🐘 🐧 🐧 🐠 🐙 🐋 🐦 🦀 🐘 🐢 🐂 🐿 🐦 🦃 🐦 🐦 🐟 🐦 🦀 🐦 🐓 🐳 🐙 🦃 🐪 🐦 🐊 🐦 🐪 🐦 🐦 🐦 🐟 🐓 🐪 🐦 🐙 🐍 🐦 🐦 🐦 🐙 🐦 🐋 🐳 🦃 🐂 🐋 🐟 🐟 🐙 🦀 🐙 🐿 🐓 🐋 🐙 🐦 🐢 🐳 🐑 🐳 🐪 🐋 🐦 🐠 🐦 🐦 🐧 🐧 🐧 🐪</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">🐦 🐦 🐦 🐦 🐦 🐦 🐊 🐊 🐦 🐦 🐦 🐦 🐙 🐦 🐦 🐦 🐘 🐦 🐍 🐦 🐦 🐦 🐦 🐧 🐦 🐦 🐦 🐂 🐑 🐓 🐦 🐿 🐦 🐙 🐦 🐦 🐦 🐦 🐂 🐘 🐦 🐦 🐦 🐦 🐟 🐊 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐠 🐦 🐦 🐦 🐦 🐦 🐦 🦃 🐦 🐦 🐟 🐦 🐦 🐦 🐦 🐦 🐦 🦃 🐦 🐦 🐊 🐦 🐓 🐦 🐦 🐦 🐦 🐿 🐦 🐦</td>
+</tr>
+</tbody>
+</table>
+<p>The habitat (<i>topic</i>) distributions for the first couple of documents:</p>
+<table>
+<caption><span id="tab:unnamed-chunk-5">Table 1.3: </span>Distribution of Habitats in the First Two Locations</caption>
+<thead>
+<tr class="header">
+<th align="right">Document</th>
+<th align="right">Land</th>
+<th align="right">Sea</th>
+<th align="right">Air</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.3579681</td>
+<td align="right">0.4060102</td>
+<td align="right">0.2360217</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">0.2460988</td>
+<td align="right">0.0981821</td>
+<td align="right">0.6557192</td>
+</tr>
+</tbody>
+</table>
+<p>With the help of LDA we can go through all of our documents and estimate the topic/word distributions and the topic/document distributions.</p>
+<p>This is our estimated values and our resulting values:</p>
+<table>
+<caption><span id="tab:unnamed-chunk-6">Table 1.4: </span>Estimated word distribution for each topic</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Topic 1</th>
+<th align="right">Topic 2</th>
+<th align="right">Topic 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>🐋</td>
+<td align="right">0.01</td>
+<td align="right">0.12</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="even">
+<td>🐳</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="odd">
+<td>🐟</td>
+<td align="right">0.01</td>
+<td align="right">0.12</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="even">
+<td>🐠</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="odd">
+<td>🐙</td>
+<td align="right">0.00</td>
+<td align="right">0.14</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="even">
+<td>🦀</td>
+<td align="right">0.05</td>
+<td align="right">0.07</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="odd">
+<td>🐊</td>
+<td align="right">0.04</td>
+<td align="right">0.08</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="even">
+<td>🐢</td>
+<td align="right">0.03</td>
+<td align="right">0.08</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="odd">
+<td>🐍</td>
+<td align="right">0.04</td>
+<td align="right">0.06</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="even">
+<td>🐓</td>
+<td align="right">0.08</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="odd">
+<td>🦃</td>
+<td align="right">0.08</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="even">
+<td>🐦</td>
+<td align="right">0.12</td>
+<td align="right">0.04</td>
+<td align="right">0.90</td>
+</tr>
+<tr class="odd">
+<td>🐧</td>
+<td align="right">0.05</td>
+<td align="right">0.05</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="even">
+<td>🐿</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="odd">
+<td>🐘</td>
+<td align="right">0.09</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="even">
+<td>🐂</td>
+<td align="right">0.09</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="odd">
+<td>🐑</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="even">
+<td>🐪</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><span id="tab:unnamed-chunk-7">Table 1.5: </span>The word distribution for each topic used to build the documents</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">land</th>
+<th align="right">sea</th>
+<th align="right">air</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>🐋</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐳</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐟</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐠</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐙</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🦀</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐊</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐢</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐍</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐓</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🦃</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐦</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td>🐧</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐿</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐘</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐂</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐑</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐪</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>The document topic mixture estimates are shown below for the first 5 documents:</p>
+<pre><code>##      1    2    3
+## 1 0.31 0.37 0.32
+## 2 0.18 0.09 0.73
+## 3 0.64 0.25 0.11
+## 4 0.22 0.46 0.32
+## 5 0.41 0.25 0.34
+## 6 0.50 0.30 0.20</code></pre>
+<p>Here are our real mixtures for comparison:</p>
+<table>
+<caption><span id="tab:unnamed-chunk-9">Table 1.6: </span>The Real Topic Distributions for the First 5 Documents</caption>
+<thead>
+<tr class="header">
+<th align="right">Land</th>
+<th align="right">Sea</th>
+<th align="right">Air</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.36</td>
+<td align="right">0.41</td>
+<td align="right">0.24</td>
+</tr>
+<tr class="even">
+<td align="right">0.25</td>
+<td align="right">0.10</td>
+<td align="right">0.66</td>
+</tr>
+<tr class="odd">
+<td align="right">0.58</td>
+<td align="right">0.27</td>
+<td align="right">0.16</td>
+</tr>
+<tr class="even">
+<td align="right">0.16</td>
+<td align="right">0.58</td>
+<td align="right">0.26</td>
+</tr>
+<tr class="odd">
+<td align="right">0.48</td>
+<td align="right">0.19</td>
+<td align="right">0.32</td>
+</tr>
+<tr class="even">
+<td align="right">0.40</td>
+<td align="right">0.40</td>
+<td align="right">0.20</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="layout-of-book.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="parameter-estimation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": ["_main.pdf"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
