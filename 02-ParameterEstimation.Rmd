@@ -65,7 +65,7 @@ The beta distribution has 2 shape parameters, $\alpha$ and $\beta$. These can be
 
 ```{r betashape, echo = TRUE, fig.cap = 'Beta Distribution'}
 library(tidyverse)
-library(hdi)
+
 a <- c(1, 10, 100)
 b <- c(1, 10, 100)
 params <- cbind(a,b)

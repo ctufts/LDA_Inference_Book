@@ -102,7 +102,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i>Background</a></li>
 <li class="chapter" data-level="" data-path="layout-of-book.html"><a href="layout-of-book.html"><i class="fa fa-check"></i>Layout of Book</a></li>
 <li class="chapter" data-level="1" data-path="what-is-lda.html"><a href="what-is-lda.html"><i class="fa fa-check"></i><b>1</b> What is LDA?</a><ul>
-<li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a></li>
+<li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#generating-the-mixtures"><i class="fa fa-check"></i><b>1.1.1</b> Generating the Mixtures</a></li>
+</ul></li>
 <li class="chapter" data-level="1.2" data-path="what-is-lda.html"><a href="what-is-lda.html#inference"><i class="fa fa-check"></i><b>1.2</b> Inference</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="parameter-estimation.html"><a href="parameter-estimation.html"><i class="fa fa-check"></i><b>2</b> Parameter Estimation</a><ul>
@@ -170,10 +172,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h2><span class="header-section-number">6.1</span> General Overview</h2>
 <p>We have talked about LDA as a generative model, but now it is time to flip the problem around. What if I have a bunch of documents and I want to infer topics? To figure out a problem like this we are first going to assume the documents were generated using a generative model similar to the ones we created in the previous section.</p>
 <p>Now it is time to flip the problem around. What happens when I have a bunch of documents and I want to know what topics are present in each document and what words are present (most probable) in each topic? In terms of math, the values we need to answer the questions above are:</p>
-<p><span class="math display">\[
+<p><span class="math display" id="eq:LDAInference">\[
+\begin{equation}
 p(\theta, \phi, z|w, \alpha, \beta) = {p(\theta, \phi, z, w|\alpha, \beta) \over p(w|\alpha, \beta)}
-\tag{26}
-\]</span> Equation 26 says the following:<br />
+\tag{6.1}
+\end{equation}
+\]</span> Equation <a href="lda-inference.html#eq:LDAInference">(6.1)</a> says the following:<br />
 The probability of the topic proportion, the word distribution of each topic, and the topic label given a word (in a document) and the hyperparameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>. In a more basic term this means the probability of a specific topic <em>z</em> given the word <em>w</em> (and our prior assumptions, i.e. hyperparameters), once the topic label of a word is known, then we can answer derive <span class="math inline">\(\phi\)</span> and <span class="math inline">\(\theta\)</span>.</p>
 <p>Let’s take a step from the math and just map out things we know versus the things we don’t know in our current scenario:</p>
 <p><strong>Known Parameters</strong></p>
@@ -195,43 +199,127 @@ The probability of the topic proportion, the word distribution of each topic, an
 <li><strong>Word Distribution of Each Topic:</strong> We need to know the distribution of words in each topic. Obviously some words are going to occur very often in a topic while others may have zero probability of occurring in a topic.</li>
 <li><strong>Word topic assignment:</strong> This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture, <span class="math inline">\(\theta\)</span>, and the word distribution, <span class="math inline">\(\phi\)</span>, of each topic.</li>
 </ul>
-<pre><code>Quick note:   
-Equation 26 is based on the following statistical property</code></pre>
-<p><span class="math display">\[
+<p><em>Quick note:<br />
+Equation <a href="lda-inference.html#eq:LDAInference">(6.1)</a> is based on the following statistical property</em></p>
+<p><span class="math display" id="eq:jointConditional">\[
+\begin{equation}
 p(A, B | C) = {p(A,B,C) \over p(C)}
+\tag{6.2}
+\end{equation}
 \]</span></p>
-<p>The derivation connecting equation 26 to the actual Gibbs sampling solution to determine <em>z</em> for each word in eacch document, <span class="math inline">\(\overrightarrow{\theta}\)</span>, and <span class="math inline">\(\overrightarrow{\phi}\)</span> is very complicated and I’m just going to gloss over a few steps. For complete derivations see (site heinrich and that other one from darling).</p>
+<p>The derivation connecting equation <a href="lda-inference.html#eq:LDAInference">(6.1)</a> to the actual Gibbs sampling solution to determine <em>z</em> for each word in each document, <span class="math inline">\(\overrightarrow{\theta}\)</span>, and <span class="math inline">\(\overrightarrow{\phi}\)</span> is very complicated and I’m just going to gloss over a few steps. For complete derivations see (site heinrich and that other one from darling).</p>
 <p>As stated previously, the main goal of inference in LDA is to determine the topic of each word, <span class="math inline">\(z_{i}\)</span> (topic of word <em>i</em>), in each document.</p>
-<p><span class="math display">\[
+<p><span class="math display" id="eq:zPosteriorCond">\[
+\begin{equation}
 p(z_{i}|z_{\neg i}, \alpha, \beta, w)
-\tag{27}
+\tag{6.3}
+\end{equation}
 \]</span></p>
-<p>Notice that we are interested in identifying the topic of the current word, <span class="math inline">\(z_{i}\)</span>, based on the topic assignments of all other words (not including word <em>i</em>), <span class="math inline">\(z_{\neg i}\)</span>. <span class="citation">(Darling <a href="references.html#ref-darling2011theoretical">2011</a>)</span></p>
-<p><span class="math display">\[
-p(z_{i}|z_{\neg i}, \alpha, \beta, w) = {p(z_{i},z_{\neg i}, w, | \alpha, \beta) \over p(z_{\neg i},w | \alpha, \beta)}
-\propto p(z_{i}, z_{\neg i}, w | \alpha, \beta) = p(z,w|\alpha, \beta)
-\tag{28}
+<p>Notice that we are interested in identifying the topic of the current word, <span class="math inline">\(z_{i}\)</span>, based on the topic assignments of all other words (not including word <em>i</em>), <span class="math inline">\(z_{\neg i}\)</span>. The following derivations are all from <span class="citation">(Darling <a href="references.html#ref-darling2011theoretical">2011</a>)</span></p>
+<p><span class="math display" id="eq:zwConditional">\[
+\begin{equation}
+\begin{aligned}
+p(z_{i}|z_{\neg i}, \alpha, \beta, w) 
+  &amp;= {p(z_{i},z_{\neg i}, w, | \alpha, \beta)    \over p(z_{\neg i},w | \alpha,   
+  \beta)}\\
+&amp;\propto p(z_{i}, z_{\neg i}, w | \alpha, \beta)\\
+&amp;\propto p(z,w|\alpha, \beta)
+\end{aligned}
+\tag{6.4}
+\end{equation}
 \]</span></p>
-<p>You may notice <span class="math inline">\(p(z,w|\alpha, \beta)\)</span> looks very similar to the definition of the generative process of LDA (cite Darling) from the previous chapter (equation - 25). The only difference is the absence of <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\phi\)</span>. This means we can swap in equation 25 and integrate out <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\phi\)</span>.</p>
-$$
-<span class="math display">\[\begin{aligned}
-p(w,z|\alpha, \beta) &amp;= \int \int p(z, w, \theta, \phi|\alpha, \beta)d\theta d\phi \\
-
-
+<p>You may notice <span class="math inline">\(p(z,w|\alpha, \beta)\)</span> looks very similar to the definition of the generative process of LDA (cite Darling) from the previous chapter (equation <a href="lda-as-a-generative-model.html#eq:generativeLDA">(5.1)</a>). The only difference is the absence of <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\phi\)</span>. This means we can swap in equation <a href="lda-as-a-generative-model.html#eq:generativeLDA">(5.1)</a> and integrate out <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\phi\)</span>.</p>
+<p><span class="math display" id="eq:IntegrateOutPhiTheta">\[
+\begin{equation}
+\begin{aligned}
+p(w,z|\alpha, \beta) &amp;= \int \int p(z, w, \theta, \phi|\alpha, \beta)d\theta d\phi\\
 &amp;= \int \int p(\phi|\beta)p(\theta|\alpha)p(z|\theta)p(w|\phi_{z})d\theta d\phi \\
 &amp;= \int p(z|\theta)p(\theta|\alpha)d \theta \int p(w|\phi_{z})p(\phi|\beta)d\phi
-\end{aligned}\]</span>
-<p> $$</p>
-<p>As with previous examples in this book we are now going to expand equation 28, plug in our conjugate priors, and get to a point where we can use a gibbs sampler to estimate our solution. ADD IN A NOTE ABOUT GIBBS SAMPLING FOR THE UNITIATED - PAPER - this follows the exact steps laid out in that paper.</p>
+\end{aligned}
+\tag{6.5}
+\end{equation}
+\]</span></p>
+<p>As with previous examples in this book we are now going to expand equation <a href="lda-inference.html#eq:zwConditional">(6.4)</a>, plug in our conjugate priors, and get to a point where we can use a gibbs sampler to estimate our solution.</p>
+<p>ADD IN A NOTE ABOUT GIBBS SAMPLING FOR THE UNITIATED - PAPER - this follows the exact steps laid out in that paper.</p>
 <p>topic assignment/topic proportion of documents. i - documents, k - topics</p>
-<p>Below you will see the derivation for the first term of equation 29. The conjugate prior is utilized. The result is a dirichlet distribution with the parameter comprised of the sum of the number of words assigned each topic and the alpha value for that topic. (This needs to be more clear…) <span class="math display">\[
+<p>Below you will see the derivation for the first term of equation <a href="lda-inference.html#eq:IntegrateOutPhiTheta">(6.5)</a> which to identify the sampling distribution for the topic distribution in each document. The conjugate prior is utilized. The result is a dirichlet distribution with the parameter comprised of the sum of the number of words assigned each topic and the alpha value for that topic. (This needs to be more clear…)</p>
+<p><span class="math display" id="eq:topicDirDerivation">\[
+\begin{equation}
 \begin{aligned}
 \int p(z|\theta)p(\theta|\alpha)d \theta &amp;= \int \prod_{i}{\theta_{d_{i},z_{i}}{1\over B(\alpha)}}\prod_{k}\theta_{d,k}^{\alpha k}\theta_{d} \\
 &amp;={1\over B(\alpha)} \int  \prod_{k}\theta_{d,k}^{n_{d,k} + \alpha k} \\
-&amp;={B(n_{d},. + \alpha) \over B(\alpha)}
+&amp;={B(n_{d,.} + \alpha) \over B(\alpha)}
 \end{aligned}
+\tag{6.6}
+\end{equation}
 \]</span></p>
-<p>Add in the equations for the solution from <span class="citation">(Steyvers and Griffiths <a href="references.html#ref-steyvers2007probabilistic">2007</a>)</span> Edwin Chen style overview, make a graphic of this….</p>
+<p>Similarly we can expand the second term of Equation <a href="lda-inference.html#eq:IntegrateOutPhiTheta">(6.5)</a> and we find a solution with a similar form.</p>
+<p><span class="math display" id="eq:wordDirDeriv">\[
+\begin{equation}
+\begin{aligned}
+\int p(w|\phi_{z})p(\phi|\beta)d\phi
+  &amp;= \int \prod_{d}\prod_{i}\phi_{z_{d,i},w_{d,i}}
+  \prod_{k}{1 \over B(\beta)}\prod_{w}\phi^{B_{w}}_{k,w}d\phi_{k}\\
+&amp;= \prod_{k}{1\over B(\beta)} \int \prod_{w}\phi_{k,w}^{B_{w} +   
+  n_{k,w}}d\phi_{k}\\
+&amp;=\prod_{k}{B(n_{k,.} + \beta) \over B(\beta)}
+\end{aligned}
+\tag{6.7}
+\end{equation}
+\]</span></p>
+<p>This leaves us with the following:</p>
+<p><span class="math display" id="eq:postConditionalDirs">\[
+\begin{equation}
+\begin{aligned}
+p(w,z|\alpha, \beta) &amp;= 
+  \prod_{d}{B(n_{d,.} + \alpha) \over B(\alpha)}
+  \prod_{k}{B(n_{k,.} + \beta) \over B(\beta)}
+\end{aligned}
+\tag{6.8}
+\end{equation}
+\]</span></p>
+<p>The equation necessary for Gibbs sampling can be derived by utilizing <a href="lda-inference.html#eq:postConditionalDirs">(6.8)</a>. This is accomplished via the chain rule. NEED TO ADD IN MORE INFORMATION ON THIS - DEFINITELY HAVE NOTES ABOUT THIS SOMEWHERE.</p>
+<p><span class="math display" id="eq:LDAGibbsInference">\[
+\begin{equation}
+\begin{aligned}
+p(z_{i}|z^{(-i)}, w) &amp;= {p(w,z)\over {p(w,z^{(-i)})}} = {p(z)\over p(z^{(-i)})}{p(w|z)\over p(w^{(-i)}|z^{(-i)})p(w_{i})}\\
+\\
+&amp;\propto \prod_{d}{B(n_{d,.} + \alpha) \over B(n_{d,.}^{(-i)}\alpha)}
+  \prod_{k}{B(n_{k,.} + \beta) \over B(n_{k,.}^{(-i)} + \beta)}\\
+  \\
+&amp;\propto {\Gamma(n_{d,k} + \alpha_{k})
+  \Gamma(\sum_{k=1}^{K} n_{d,k}^{(-i)} + \alpha_{k}) \over 
+  \Gamma(n_{d,k}^{(-i)} + \alpha_{k}) 
+  \Gamma(\sum_{k=1}^{K} n_{d,k}+ \alpha_{k})}
+  {\Gamma(n_{k,w} + \beta_{w})
+  \Gamma(\sum_{w=1}^{W} n_{k,w}^{(-i)} + \beta_{w}) \over 
+  \Gamma(n_{k,w}^{(-i)} + \beta_{w}) 
+  \Gamma(\sum_{w=1}^{W} n_{k,w}+ \beta_{w})}\\
+  \\
+&amp;\propto (n_{d,k}^{(-i)} + \alpha_{k}) {n_{k,w}^{(-i)} + \beta_{w} \over 
+  \sum_{w&#39;} n_{k,w&#39;}^{(-i)} + \beta_{w&#39;}}
+\end{aligned}
+\tag{6.9}
+\end{equation}
+\]</span></p>
+<p>Need to explain the difference between primes/non-primes (w’s) We will now use Equation <a href="lda-inference.html#eq:LDAGibbsInference">(6.9)</a> in the example below to complete the LDA Inference task on a random sample of documents. To calculate our word distributions in each topic we will use: (NEED TO SWAP I, J’S WITH K,D,W TO MATCH ABOVE) <span class="math display">\[
+\begin{equation}
+\begin{aligned}
+\phi_{i}^{j} = {C^{WT}_{ij}  + \beta \over  \sum_{k=1}^{W} C^{WT}_{kj} + W\beta}
+\end{aligned}
+(\#eq:phiEstimation)
+\end{equation}
+\]</span></p>
+<p>The topic distribution in each document is calcuated using:</p>
+<p><span class="math display" id="eq:thetaEstimation">\[
+\begin{equation}
+\begin{aligned}
+\theta^{(d)}_{j} = {C^{DT}_{dj} + \alpha \over \sum_{k =1}^{T}C_{dk}^{DT} + T\alpha}
+\end{aligned}
+\tag{6.10}
+\end{equation}
+\]</span></p>
+<p>Add in the equations for the solution (phi and theta estimates- eq(4)) from <span class="citation">(Steyvers and Griffiths <a href="references.html#ref-steyvers2007probabilistic">2007</a>)</span></p>
 <p>—– Give general description of pseudo code - go through each doc, each word, get probability of topic, assign topic, repeat - this all gets lost in the math - it really is that simple, all the confusing components come from the derivation of the probability calculation ….</p>
 <p>What if I don’t want to generate docuements. What if my goal is to infer what topics are present in each document and what words belong to each topic? This is were LDA for inference comes into play.</p>
 <p>Before going through any derivations of how we infer the document topic distributions and the word distributions of each topic, I want to go over the process of inference more generally.</p>
@@ -249,199 +337,565 @@ p(w,z|\alpha, \beta) &amp;= \int \int p(z, w, \theta, \phi|\alpha, \beta)d\theta
 </ul>
 <p>If you recall from the previous chapters on Gibbs sampling to infer the value of each <span class="math inline">\(\theta\)</span> we calculate the value of of $p(_{}|)</p>
 <p>Use Darling as an outline for the derivation process …. cite carpenter and heinrich (same as Darling does).</p>
-<p>Below is a toy example that creates a set of documents based on the 3 word (emoji) vocabulary. Each of the 10 documents has a differnt topic mixture and is assigned a random lenght. Our aim with inferrence is to infer the topic mixture of each document and the word distributions of each topic.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">get_topic &lt;-<span class="st"> </span><span class="cf">function</span>(k){ 
-<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dt">size =</span> <span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span>k,k))[,<span class="dv">1</span>] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)
+<p>Now let’s revisit the animal example from the first section of the book and break down what we see. This time we will also be taking a look at the code used to generate the example documents as well as the inference code.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>())
+
+get_topic &lt;-<span class="st"> </span><span class="cf">function</span>(k){ 
+  <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dt">size =</span> <span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span>k,k))[,<span class="dv">1</span>] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)
 } 
 
-
-k &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># number of topics</span>
-M &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># let&#39;s create 10 documents</span>
-vocab &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F4D8&#39;</span>, <span class="st">&#39;\U1F4D5&#39;</span>, <span class="st">&#39;\U1F4D7&#39;</span>)
-alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,k) <span class="co"># topic document dirichlet parameters</span>
-beta &lt;-<span class="st"> </span><span class="dv">1</span>
-
-
-phi &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="fl">0.1</span>, <span class="dv">0</span>, <span class="fl">0.9</span>,
-                <span class="fl">0.4</span>, <span class="fl">0.4</span>, <span class="fl">0.2</span>), 
-              <span class="dt">nrow =</span> k, 
-              <span class="dt">ncol =</span> <span class="kw">length</span>(vocab), 
-              <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
-
-
-xi &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># average document length </span>
-N &lt;-<span class="st"> </span><span class="kw">rpois</span>(M, xi) <span class="co">#words in each document</span>
-ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">0</span>,<span class="kw">sum</span>(N)), 
-            <span class="dt">word   =</span> <span class="kw">rep</span>(<span class="st">&#39;&#39;</span>, <span class="kw">sum</span>(N)),
-            <span class="dt">topic  =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N)), 
-            <span class="dt">theta_a =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N)),
-            <span class="dt">theta_b =</span> <span class="kw">rep</span>(<span class="dv">0</span>, <span class="kw">sum</span>(N))
-) 
-
-row_index &lt;-<span class="st"> </span><span class="dv">1</span>
-<span class="cf">for</span>(m <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>M){
-  theta &lt;-<span class="st">  </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>, alphas)
-  
-  <span class="cf">for</span>(n <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N[m]){
-    <span class="co"># sample topic index , i.e. select topic</span>
-    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)<span class="op">==</span><span class="dv">1</span>)
-    <span class="co"># sample word from topic</span>
-    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])<span class="op">==</span><span class="dv">1</span>)]
-    ds[row_index,] &lt;-<span class="st"> </span><span class="kw">c</span>(m,new_word, topic,theta)
-    row_index &lt;-<span class="st"> </span>row_index <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-  }
+get_word &lt;-<span class="st"> </span><span class="cf">function</span>(theta, phi){
+  topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)<span class="op">==</span><span class="dv">1</span>)
+  <span class="co"># sample word from topic</span>
+  new_word &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])<span class="op">==</span><span class="dv">1</span>)
+  <span class="kw">return</span>(<span class="kw">c</span>(new_word, topic))  
 }
 
-ds<span class="op">$</span>doc_id &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(ds<span class="op">$</span>doc_id)
+<span class="kw">cppFunction</span>(
+  <span class="st">&#39;List gibbsLda(  NumericVector topic, NumericVector doc_id, NumericVector word,</span>
+<span class="st">  NumericMatrix n_doc_topic_count,NumericMatrix n_topic_term_count,</span>
+<span class="st">  NumericVector n_topic_sum, NumericVector n_doc_word_count){</span>
+<span class="st">  </span>
+<span class="st">  int alpha = 1;</span>
+<span class="st">  int beta  = 1;</span>
+<span class="st">  int cs_topic,cs_doc, cs_word, new_topic;</span>
+<span class="st">  int n_topics = max(topic)+1;</span>
+<span class="st">  int vocab_length = n_topic_term_count.ncol();</span>
+<span class="st">  double p_sum = 0,num_doc, denom_doc, denom_term, num_term;</span>
+<span class="st">  NumericVector p_new(n_topics);</span>
+<span class="st">  IntegerVector topic_sample(n_topics);</span>
+<span class="st">  </span>
+<span class="st">  for (int iter  = 0; iter &lt; 100; iter++){</span>
+<span class="st">  for (int j = 0; j &lt; word.size(); ++j){</span>
+<span class="st">  // change values outside of function to prevent confusion</span>
+<span class="st">  cs_topic = topic[j];</span>
+<span class="st">  cs_doc   = doc_id[j];</span>
+<span class="st">  cs_word  = word[j];</span>
+<span class="st">  </span>
+<span class="st">  // decrement counts      </span>
+<span class="st">  n_doc_topic_count(cs_doc,cs_topic) = n_doc_topic_count(cs_doc,cs_topic) - 1;</span>
+<span class="st">  n_topic_term_count(cs_topic , cs_word) = n_topic_term_count(cs_topic , cs_word) - 1;</span>
+<span class="st">  n_topic_sum[cs_topic] = n_topic_sum[cs_topic] -1;</span>
+<span class="st">  </span>
+<span class="st">  // get probability for each topic, select topic with highest prob</span>
+<span class="st">  for(int tpc = 0; tpc &lt; n_topics; tpc++){</span>
+<span class="st">  </span>
+<span class="st">  // word cs_word topic tpc + beta</span>
+<span class="st">  num_term   = n_topic_term_count(tpc, cs_word) + beta;</span>
+<span class="st">  // sum of all word counts w/ topic tpc + vocab length*beta</span>
+<span class="st">  denom_term = n_topic_sum[tpc] + vocab_length*beta;</span>
+<span class="st">  </span>
+<span class="st">  </span>
+<span class="st">  // count of topic tpc in cs_doc + alpha</span>
+<span class="st">  num_doc    = n_doc_topic_count(cs_doc,tpc) + alpha;</span>
+<span class="st">  // total word count in cs_doc + n_topics*alpha</span>
+<span class="st">  denom_doc = n_doc_word_count[cs_doc] + n_topics*alpha;</span>
+<span class="st">  </span>
+<span class="st">  p_new[tpc] = (num_term/denom_term) * (num_doc/denom_doc);</span>
+<span class="st">  </span>
+<span class="st">  }</span>
+<span class="st">  // normalize the posteriors</span>
+<span class="st">  p_sum = std::accumulate(p_new.begin(), p_new.end(), 0.0);</span>
+<span class="st">  for(int tpc = 0; tpc &lt; n_topics; tpc++){</span>
+<span class="st">  p_new[tpc] = p_new[tpc]/p_sum;</span>
+<span class="st">  }</span>
+<span class="st">  // sample new topic based on the posterior distribution</span>
+<span class="st">  R::rmultinom(1, p_new.begin(), n_topics, topic_sample.begin());</span>
+<span class="st">  </span>
+<span class="st">  for(int tpc = 0; tpc &lt; n_topics; tpc++){</span>
+<span class="st">  if(topic_sample[tpc]==1){</span>
+<span class="st">  new_topic = tpc;</span>
+<span class="st">  }</span>
+<span class="st">  }</span>
+<span class="st">  </span>
+<span class="st">  // print(new_topic)</span>
+<span class="st">  // update counts</span>
+<span class="st">  n_doc_topic_count(cs_doc,new_topic) = n_doc_topic_count(cs_doc,new_topic) + 1;</span>
+<span class="st">  n_topic_term_count(new_topic , cs_word) = n_topic_term_count(new_topic , cs_word) + 1;</span>
+<span class="st">  n_topic_sum[new_topic] = n_topic_sum[new_topic] + 1;</span>
+<span class="st">  </span>
+<span class="st">  </span>
+<span class="st">  // update current_state</span>
+<span class="st">  topic[j] = new_topic;</span>
+<span class="st">  </span>
+<span class="st">  }</span>
+<span class="st">  </span>
+<span class="st">  }</span>
+<span class="st">  return List::create(</span>
+<span class="st">  n_topic_term_count,</span>
+<span class="st">  n_doc_topic_count);</span>
+<span class="st">  }</span>
+<span class="st">  &#39;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># 3 topics - land sea &amp; air</span>
+<span class="co"># birds and amphibious have cross over</span>
+<span class="co"># fish - sea 100</span>
+<span class="co"># land animals - 100 land</span>
+
+beta &lt;-<span class="st"> </span><span class="dv">1</span>
+k &lt;-<span class="st"> </span><span class="dv">3</span> <span class="co"># number of topics</span>
+M &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># let&#39;s create 10 documents</span>
+alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,k) <span class="co"># topic document dirichlet parameters</span>
+xi &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># average document length </span>
+N &lt;-<span class="st"> </span><span class="kw">rpois</span>(M, xi) <span class="co">#words in each document</span>
 
 
+<span class="co"># whale1, whale2, FISH1, FISH2,OCTO</span>
+sea_animals &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F40B&#39;</span>, <span class="st">&#39;\U1F433&#39;</span>,<span class="st">&#39;\U1F41F&#39;</span>, <span class="st">&#39;\U1F420&#39;</span>, <span class="st">&#39;\U1F419&#39;</span>)
 
-ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(doc_id) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(
-  <span class="dt">tokens =</span> <span class="kw">paste</span>(word, <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>), 
-  <span class="dt">topic_a =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_a)), <span class="dv">2</span>), 
-  <span class="dt">topic_b =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_b)), <span class="dv">2</span>) 
-) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</code></pre></div>
+<span class="co"># crab, alligator, TURTLE,SNAKE</span>
+amphibious  &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F980&#39;</span>, <span class="st">&#39;\U1F40A&#39;</span>, <span class="st">&#39;\U1F422&#39;</span>, <span class="st">&#39;\U1F40D&#39;</span>)
+
+<span class="co"># CHICKEN, TURKEY, DUCK, PENGUIN</span>
+birds       &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F413&#39;</span>,<span class="st">&#39;\U1F983&#39;</span>,<span class="st">&#39;\U1F426&#39;</span>,<span class="st">&#39;\U1F427&#39;</span>)
+<span class="co"># SQUIRREL, ELEPHANT, COW, RAM, CAMEL</span>
+land_animals&lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F43F&#39;</span>,<span class="st">&#39;\U1F418&#39;</span>,<span class="st">&#39;\U1F402&#39;</span>,<span class="st">&#39;\U1F411&#39;</span>,<span class="st">&#39;\U1F42A&#39;</span>)
+
+vocab &lt;-<span class="st"> </span><span class="kw">c</span>(sea_animals, amphibious, birds, land_animals)
+
+<span class="co"># equal probability 1/18</span>
+<span class="co"># 0 - animals that are not possible</span>
+<span class="co"># 1 - for shared</span>
+<span class="co"># 4 - non-shared</span>
+shared &lt;-<span class="st"> </span><span class="dv">2</span>
+non_shared &lt;-<span class="st"> </span><span class="dv">4</span>
+not_present &lt;-<span class="st"> </span><span class="dv">0</span>
+
+land_phi &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(not_present, <span class="kw">length</span>(sea_animals)),
+              <span class="kw">rep</span>(shared, <span class="kw">length</span>(amphibious)),
+              <span class="kw">rep</span>(non_shared, <span class="dv">2</span>), <span class="co"># turkey and chicken can&#39;t fly</span>
+              <span class="kw">rep</span>(shared, <span class="dv">2</span>), <span class="co"># regular bird and pengiun</span>
+              <span class="kw">rep</span>(non_shared, <span class="kw">length</span>(land_animals)))
+land_phi &lt;-<span class="st"> </span>land_phi<span class="op">/</span><span class="kw">sum</span>(land_phi)
+
+
+sea_phi &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(non_shared, <span class="kw">length</span>(sea_animals)),
+             <span class="kw">rep</span>(shared, <span class="kw">length</span>(amphibious)),
+             <span class="kw">rep</span>(not_present, <span class="dv">2</span>), <span class="co"># turkey and chicken can&#39;t fly </span>
+             <span class="kw">rep</span>(shared, <span class="dv">2</span>), <span class="co"># regular bird and pengiun </span>
+             <span class="kw">rep</span>(not_present, <span class="kw">length</span>(land_animals)))
+sea_phi &lt;-<span class="st"> </span>sea_phi<span class="op">/</span><span class="kw">sum</span>(sea_phi)
+
+air_phi &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(not_present, <span class="kw">length</span>(sea_animals)),
+             <span class="kw">rep</span>(not_present, <span class="kw">length</span>(amphibious)),
+             <span class="kw">rep</span>(not_present, <span class="dv">2</span>), <span class="co"># turkey and chicken can&#39;t fly </span>
+             non_shared, <span class="co"># regular bird</span>
+             not_present, <span class="co"># penguins can&#39;t fly</span>
+             <span class="kw">rep</span>(not_present, <span class="kw">length</span>(land_animals)))
+air_phi &lt;-<span class="st"> </span>air_phi<span class="op">/</span><span class="kw">sum</span>(air_phi)
+
+<span class="co"># calculate topic word distributions</span>
+phi &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(land_phi, sea_phi, air_phi), <span class="dt">nrow =</span> k, <span class="dt">ncol =</span> <span class="kw">length</span>(vocab), 
+              <span class="dt">byrow =</span> <span class="ot">TRUE</span>, <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="kw">c</span>(<span class="st">&#39;land&#39;</span>, <span class="st">&#39;sea&#39;</span>, <span class="st">&#39;air&#39;</span>)))
+
+theta_samples &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(M, alphas)
+thetas &lt;-<span class="st"> </span>theta_samples[<span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(theta_samples), <span class="dt">times =</span> N), ]
+new_words &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">apply</span>(thetas, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="kw">get_word</span>(x,phi)))
+
+ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(N), <span class="dt">times =</span> N), 
+            <span class="dt">word   =</span> new_words[,<span class="dv">1</span>],
+            <span class="dt">topic  =</span> new_words[,<span class="dv">2</span>], 
+            <span class="dt">theta_a =</span> thetas[,<span class="dv">1</span>],
+            <span class="dt">theta_b =</span> thetas[,<span class="dv">2</span>],
+            <span class="dt">theta_c =</span> thetas[,<span class="dv">3</span>]
+) 
+
+ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(doc_id <span class="op">&lt;</span><span class="st"> </span><span class="dv">3</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(doc_id) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(
+  <span class="dt">tokens =</span> <span class="kw">paste</span>(vocab[word], <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>)
+) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&#39;Document&#39;</span>, <span class="st">&#39;Animals&#39;</span>), 
+            <span class="dt">caption =</span><span class="st">&quot;Animals at the First Two Locations&quot;</span>)</code></pre></div>
 <table>
+<caption><span id="tab:unnamed-chunk-11">Table 6.1: </span>Animals at the First Two Locations</caption>
 <thead>
 <tr class="header">
-<th align="right">doc_id</th>
-<th align="left">tokens</th>
-<th align="right">topic_a</th>
-<th align="right">topic_b</th>
+<th align="right">Document</th>
+<th align="left">Animals</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="left">📘 📘 📕 📗 📕 📗 📗 📘 📗 📗 📘 📗 📗 📘 📘 📗 📕 📗 📕 📕 📗 📕 📕 📘 📘 📗 📗 📗 📗 📗 📗 📕 📘 📗 📘 📗 📗 📕 📘 📗 📕 📘 📗 📘 📗 📘 📕 📕 📗 📕 📗 📗 📗 📘 📕 📕 📘 📗 📗 📗 📗 📗 📘 📗 📕 📕 📘 📘 📘 📗 📘 📕 📘 📘 📗 📘 📗 📗 📕 📘 📘 📗 📘 📘 📕 📗 📗 📘 📕 📗 📕 📕 📗 📗 📕 📘 📗 📘 📗 📕 📕 📘 📗</td>
-<td align="right">0.40</td>
-<td align="right">0.60</td>
+<td align="left">🐑 🐋 🐂 🐓 🐑 🦃 🦃 🐪 🦃 🐓 🐑 🐂 🐋 🐪 🐢 🐂 🐑 🐓 🐍 🐑 🐟 🐍 🐙 🐿 🐪 🐘 🐑 🐙 🦃 🐘 🐑 🐂 🐂 🐊 🐂 🐘 🐿 🦃 🦃 🐧 🐪 🐍 🐿 🐘 🐍 🐂 🐙 🐦 🐂 🐟 🐍 🐠 🐑 🦃 🐓 🦃 🐂 🐘 🐠 🐓 🐢 🐘 🦃 🐙 🐘 🐍 🐢 🐑 🐍 🐘 🐦 🐧 🐙 🐦 🐂 🐋 🐘 🐠 🐓 🐿 🐘 🐿 🦀 🐓 🐿 🐊 🐓 🦀 🐂 🐪 🐓 🐠 🐪 🐦 🐙 🐠 🐘 🦃 🐘 🐑 🐊 🐑 🐳</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="left">📗 📗 📕 📗 📗 📗 📗 📗 📗 📗 📗 📗 📘 📗 📕 📘 📗 📗 📗 📗 📘 📗 📗 📗 📗 📗 📘 📗 📗 📗 📘 📕 📘 📗 📗 📗 📗 📘 📕 📕 📗 📘 📘 📗 📗 📗 📗 📗 📗 📕 📘 📘 📕 📗 📗 📕 📗 📗 📘 📗 📗 📕 📘 📗 📗 📕 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📘 📘 📕 📗 📕 📘 📘 📗 📕</td>
-<td align="right">0.57</td>
-<td align="right">0.43</td>
-</tr>
-<tr class="odd">
-<td align="right">3</td>
-<td align="left">📗 📗 📘 📘 📕 📗 📗 📗 📗 📕 📗 📗 📘 📗 📗 📘 📘 📗 📗 📗 📗 📗 📗 📗 📗 📘 📘 📗 📗 📗 📘 📗 📗 📗 📗 📗 📘 📘 📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📕 📘 📘 📕 📘 📘 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📘 📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📘 📕 📕 📗 📗 📗 📗 📘 📗 📗 📘 📗 📗 📗 📗 📗 📗</td>
-<td align="right">0.77</td>
-<td align="right">0.23</td>
-</tr>
-<tr class="even">
-<td align="right">4</td>
-<td align="left">📕 📗 📗 📗 📕 📘 📗 📗 📘 📕 📗 📗 📗 📗 📕 📗 📘 📗 📗 📗 📗 📘 📗 📗 📕 📗 📕 📗 📕 📘 📗 📘 📕 📘 📗 📗 📗 📕 📕 📘 📗 📘 📗 📕 📗 📕 📘 📕 📗 📘 📕 📗 📗 📕 📘 📘 📘 📗 📗 📗 📗 📘 📗 📕 📗 📘 📕 📘 📗 📗 📗 📗 📗 📗 📘 📗 📘 📗 📗 📗 📗 📗 📗 📗 📗 📘 📘 📗 📗 📗 📗 📗 📘</td>
-<td align="right">0.44</td>
-<td align="right">0.56</td>
-</tr>
-<tr class="odd">
-<td align="right">5</td>
-<td align="left">📗 📗 📗 📗 📗 📗 📗 📕 📗 📘 📗 📗 📗 📗 📕 📗 📗 📗 📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📗 📘 📗 📕 📗 📗 📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📘 📗 📕 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📗 📘 📘 📗 📕 📗 📗 📗 📗 📗 📗 📗 📗</td>
-<td align="right">0.87</td>
-<td align="right">0.13</td>
-</tr>
-<tr class="even">
-<td align="right">6</td>
-<td align="left">📗 📗 📘 📗 📗 📗 📗 📗 📗 📘 📗 📗 📗 📕 📗 📘 📗 📗 📗 📗 📘 📘 📗 📘 📗 📘 📕 📘 📘 📗 📗 📗 📗 📗 📗 📗 📗 📗 📕 📘 📗 📗 📗 📗 📗 📗 📗 📗 📕 📗 📗 📗 📗 📕 📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📗 📗 📕 📗 📗 📗 📕 📗 📗 📗 📘 📗 📕 📗 📗 📗 📘 📗 📗 📗 📘 📘 📗 📘 📘 📗 📗 📗</td>
-<td align="right">0.71</td>
-<td align="right">0.29</td>
-</tr>
-<tr class="odd">
-<td align="right">7</td>
-<td align="left">📗 📗 📘 📗 📗 📗 📗 📗 📘 📗 📗 📗 📘 📗 📗 📘 📗 📕 📗 📕 📕 📗 📗 📘 📗 📕 📕 📗 📕 📕 📗 📘 📗 📗 📕 📗 📘 📕 📘 📗 📗 📘 📗 📗 📗 📗 📕 📗 📘 📗 📕 📗 📗 📗 📗 📘 📗 📗 📘 📗 📗 📗 📕 📕 📗 📗 📗 📘 📗 📘 📗 📘 📗 📗 📕 📗 📗 📗 📘 📗 📘 📘 📗 📗 📗 📘 📗 📗 📗 📕 📗 📕 📘 📗 📗 📗 📗 📗 📘 📕 📗 📘 📘 📗</td>
-<td align="right">0.56</td>
-<td align="right">0.44</td>
-</tr>
-<tr class="even">
-<td align="right">8</td>
-<td align="left">📗 📘 📕 📗 📗 📕 📕 📕 📗 📕 📘 📘 📗 📘 📘 📘 📘 📗 📕 📗 📗 📕 📘 📗 📘 📕 📕 📘 📗 📗 📕 📗 📘 📗 📕 📕 📘 📕 📘 📘 📕 📘 📘 📘 📗 📗 📗 📕 📘 📗 📕 📘 📘 📕 📕 📕 📗 📕 📘 📕 📗 📘 📕 📗 📘 📕 📘 📘 📘 📕 📘 📗 📗 📘 📗 📗 📗 📗 📘 📕 📗 📕 📕 📘 📕 📘 📘 📕 📕 📘 📗 📘 📘 📗 📕 📗 📗 📘 📕</td>
-<td align="right">0.29</td>
-<td align="right">0.71</td>
-</tr>
-<tr class="odd">
-<td align="right">9</td>
-<td align="left">📘 📗 📘 📗 📗 📗 📘 📕 📘 📗 📗 📕 📗 📗 📘 📘 📗 📕 📗 📗 📘 📗 📗 📕 📕 📘 📘 📗 📗 📘 📗 📗 📘 📗 📘 📕 📘 📘 📘 📗 📗 📘 📗 📕 📗 📗 📗 📘 📘 📗 📗 📗 📗 📗 📗 📘 📘 📕 📗 📘 📗 📗 📗 📘 📘 📕 📗 📕 📕 📗 📗 📗 📗 📘 📕 📗 📗 📗 📗 📘 📗 📘 📗 📗 📕 📘 📗 📗 📗 📗 📕 📗 📗 📗 📗 📗 📘 📗 📗 📕 📗 📘 📘 📗 📘 📘 📕 📘</td>
-<td align="right">0.48</td>
-<td align="right">0.52</td>
-</tr>
-<tr class="even">
-<td align="right">10</td>
-<td align="left">📗 📗 📗 📘 📗 📗 📗 📗 📗 📗 📗 📗 📘 📗 📗 📗 📗 📘 📗 📗 📗 📕 📗 📕 📗 📗 📕 📗 📘 📕 📗 📗 📕 📗 📘 📕 📕 📗 📗 📗 📗 📗 📕 📗 📗 📗 📘 📗 📘 📗 📗 📕 📗 📗 📗 📘 📗 📗 📗 📗 📘 📗 📕 📗 📗 📗 📗 📕 📕 📘 📘 📕 📘 📘 📘 📘 📗 📗 📗 📗 📗 📕</td>
-<td align="right">0.56</td>
-<td align="right">0.44</td>
+<td align="left">🐠 🐟 🐋 🐋 🐢 🐳 🦀 🐦 🐘 🐦 🐓 🐦 🐦 🦃 🐦 🐦 🐂 🦀 🐢 🦀 🐊 🐿 🦃 🐳 🐦 🐠 🐪 🐍 🐠 🐪 🐧 🐂 🐿 🐋 🐦 🐦 🐦 🐿 🐋 🐿 🐠 🐦 🐳 🐂 🐦 🐙 🐟 🐑 🐪 🐪 🦀 🐑 🐊 🐦 🐦 🐿 🦃 🐙 🐿 🦃 🐓 🐊 🐦 🐢 🐙 🐊 🦀 🐙 🐍 🐓 🐍 🐳 🐋 🐙 🐧 🐢 🐋 🐘 🐑 🐍 🐑 🐳 🐦 🐠 🐂 🐧 🐙 🐍</td>
 </tr>
 </tbody>
 </table>
+<p>The habitat (<i>topic</i>) distributions for the first couple of documents:</p>
+<table>
+<caption><span id="tab:unnamed-chunk-12">Table 6.2: </span>Distribution of Habitats in the First Two Locations</caption>
+<thead>
+<tr class="header">
+<th align="right">Document</th>
+<th align="right">Land</th>
+<th align="right">Sea</th>
+<th align="right">Air</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">0.8168897</td>
+<td align="right">0.1688578</td>
+<td align="right">0.0142525</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">0.3860697</td>
+<td align="right">0.4442854</td>
+<td align="right">0.1696449</td>
+</tr>
+</tbody>
+</table>
+<p>With the help of LDA we can go through all of our documents and estimate the topic/word distributions and the topic/document distributions.</p>
+<p>This is our estimated values and our resulting values:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">######### Inference ############### 
-
-
-
 current_state &lt;-<span class="st"> </span>ds <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">select</span>(doc_id, word, topic)
 current_state<span class="op">$</span>topic &lt;-<span class="st"> </span><span class="ot">NA</span>
-
-
 t &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">unique</span>(current_state<span class="op">$</span>word))
 
 <span class="co"># n_doc_topic_count  </span>
-n_doc_topic_count &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> m, <span class="dt">ncol =</span> k)
+n_doc_topic_count &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> M, <span class="dt">ncol =</span> k)
 <span class="co"># document_topic_sum</span>
-n_doc_topic_sum  &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,m)
+n_doc_topic_sum  &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,M)
 <span class="co"># topic_term_count</span>
 n_topic_term_count &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> k, <span class="dt">ncol =</span> t)
-<span class="kw">colnames</span>(n_topic_term_count) &lt;-<span class="st"> </span><span class="kw">unique</span>(current_state<span class="op">$</span>word)
+<span class="co"># colnames(n_topic_term_count) &lt;- unique(current_state$word)</span>
 <span class="co"># topic_term_sum</span>
 n_topic_sum  &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>,k)
 p &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, k)
 <span class="co"># initialize topics</span>
-<span class="cf">for</span>( i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(current_state)){
-  current_state<span class="op">$</span>topic[i] &lt;-<span class="st"> </span><span class="kw">get_topic</span>(k)
-  n_doc_topic_count[current_state<span class="op">$</span>doc_id[i],current_state<span class="op">$</span>topic[i]] &lt;-<span class="st"> </span>n_doc_topic_count[current_state<span class="op">$</span>doc_id[i],current_state<span class="op">$</span>topic[i]] <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-  n_doc_topic_sum[current_state<span class="op">$</span>doc_id[i]] &lt;-<span class="st"> </span>n_doc_topic_sum[current_state<span class="op">$</span>doc_id[i]] <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-  n_topic_term_count[current_state<span class="op">$</span>topic[i] , current_state<span class="op">$</span>word[i]] &lt;-<span class="st"> </span>n_topic_term_count[current_state<span class="op">$</span>topic[i] ,
-                                                                                           current_state<span class="op">$</span>word[i]] <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-  n_topic_sum[current_state<span class="op">$</span>topic[i]] =<span class="st"> </span>n_topic_sum[current_state<span class="op">$</span>topic[i]] <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-  
-}
+
+current_state<span class="op">$</span>topic &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="kw">nrow</span>(current_state),<span class="kw">get_topic</span>(k))
+
+<span class="co"># get word, topic, and document counts (used during inference process)</span>
+n_doc_topic_count &lt;-<span class="st"> </span>current_state <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(doc_id, topic) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(
+    <span class="dt">count =</span> <span class="kw">n</span>()
+  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">spread</span>(<span class="dt">key =</span> topic, <span class="dt">value =</span> count) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>()
+
+n_topic_sum &lt;-<span class="st"> </span>current_state <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(topic) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarise</span>(
+    <span class="dt">count =</span> <span class="kw">n</span>()
+  )  <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(count) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.vector</span>()
+
+n_topic_term_count &lt;-<span class="st"> </span>current_state <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(topic, word) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">summarise</span>(
+    <span class="dt">count =</span> <span class="kw">n</span>()
+  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">spread</span>(word, count) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>()
 
 
 
-<span class="co"># topics mixtures keep converging to 1 an 0, this is incorrect,</span>
-<span class="co"># or it is a result fo the topics (word distributions) being too similar? </span>
-<span class="co"># gibbs</span>
-<span class="cf">for</span> (iter <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">100</span>){
-  
-  <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(current_state)){
-    
-    <span class="co"># decrement counts</span>
-    cs_topic &lt;-<span class="st"> </span>current_state<span class="op">$</span>topic[j]
-    cs_doc   &lt;-<span class="st"> </span>current_state<span class="op">$</span>doc_id[j]
-    cs_word  &lt;-<span class="st"> </span>current_state<span class="op">$</span>word[j]
-    
-    n_doc_topic_count[cs_doc,cs_topic] &lt;-<span class="st"> </span>n_doc_topic_count[cs_doc,cs_topic] <span class="op">-</span><span class="st"> </span><span class="dv">1</span>
-    n_doc_topic_sum[cs_doc] &lt;-<span class="st"> </span>n_doc_topic_sum[cs_doc] <span class="op">-</span><span class="st"> </span><span class="dv">1</span>
-    n_topic_term_count[cs_topic , cs_word] &lt;-<span class="st"> </span>n_topic_term_count[cs_topic , cs_word] <span class="op">-</span><span class="st"> </span><span class="dv">1</span>
-    n_topic_sum[cs_topic] =<span class="st"> </span>n_topic_sum[cs_topic] <span class="op">-</span><span class="dv">1</span>
-    
-    <span class="co"># get probability for each topic, select topic with highest prob</span>
-    <span class="cf">for</span>(topic <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>k){
-      p[topic] &lt;-<span class="st"> </span>(n_topic_term_count[topic, cs_word] <span class="op">+</span><span class="st"> </span>beta) <span class="op">*</span>
-<span class="st">        </span>(n_doc_topic_count[cs_doc,topic] <span class="op">+</span><span class="st"> </span>alphas[k])<span class="op">/</span>
-<span class="st">        </span><span class="kw">sum</span>(n_topic_term_count[topic,] <span class="op">+</span><span class="st"> </span>beta)
-    }
-    new_topic &lt;-<span class="st"> </span><span class="kw">which.max</span>(p)
-    
-    <span class="co"># update counts</span>
-    n_doc_topic_count[cs_doc,new_topic] &lt;-<span class="st"> </span>n_doc_topic_count[cs_doc,new_topic] <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-    n_doc_topic_sum[cs_doc] &lt;-<span class="st"> </span>n_doc_topic_sum[cs_doc] <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-    n_topic_term_count[new_topic , cs_word] &lt;-<span class="st"> </span>n_topic_term_count[new_topic , cs_word] <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-    n_topic_sum[new_topic] =<span class="st"> </span>n_topic_sum[new_topic] <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-    
-    
-    <span class="co"># update current_state</span>
-    current_state<span class="op">$</span>topic[j] &lt;-<span class="st"> </span>new_topic
-  }
-}</code></pre></div>
+<span class="co"># minus 1 in, add 1 out</span>
+lda_counts &lt;-<span class="st"> </span><span class="kw">gibbsLda</span>( current_state<span class="op">$</span>topic<span class="op">-</span><span class="dv">1</span> , current_state<span class="op">$</span>doc_id<span class="op">-</span><span class="dv">1</span>, current_state<span class="op">$</span>word<span class="op">-</span><span class="dv">1</span>,
+                        n_doc_topic_count[,<span class="op">-</span><span class="dv">1</span>], n_topic_term_count[,<span class="op">-</span><span class="dv">1</span>], n_topic_sum, N)
+
+
+<span class="co"># calculate estimates for phi and theta</span>
+
+<span class="co"># phi - row apply to lda_counts[[1]]</span>
+
+<span class="co"># rewrite this function and normalize by row so that they sum to 1</span>
+phi_est &lt;-<span class="st"> </span><span class="kw">apply</span>(lda_counts[[<span class="dv">1</span>]], <span class="dv">1</span>, <span class="cf">function</span>(x) (x <span class="op">+</span><span class="st"> </span>beta)<span class="op">/</span>(<span class="kw">sum</span>(x)<span class="op">+</span><span class="kw">length</span>(vocab)<span class="op">*</span>beta) )
+<span class="kw">rownames</span>(phi_est) &lt;-<span class="st"> </span>vocab
+<span class="kw">colnames</span>(phi) &lt;-<span class="st"> </span>vocab
+theta_est &lt;-<span class="st"> </span><span class="kw">apply</span>(lda_counts[[<span class="dv">2</span>]],<span class="dv">2</span>, <span class="cf">function</span>(x)(x<span class="op">+</span>alphas[<span class="dv">1</span>])<span class="op">/</span>(<span class="kw">sum</span>(x) <span class="op">+</span><span class="st"> </span>k<span class="op">*</span>alphas[<span class="dv">1</span>]))
+theta_est &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">apply</span>(theta_est, <span class="dv">1</span>, <span class="cf">function</span>(x) x<span class="op">/</span><span class="kw">sum</span>(x)))
+<span class="kw">kable</span>(<span class="kw">round</span>(phi_est, <span class="dv">2</span>),<span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&#39;Topic 1&#39;</span>, <span class="st">&#39;Topic 2&#39;</span>, <span class="st">&#39;Topic 3&#39;</span>),<span class="dt">caption =</span> <span class="st">&#39;Estimated word distribution for each topic&#39;</span>)</code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-13">Table 6.3: </span>Estimated word distribution for each topic</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Topic 1</th>
+<th align="right">Topic 2</th>
+<th align="right">Topic 3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>🐋</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="even">
+<td>🐳</td>
+<td align="right">0.00</td>
+<td align="right">0.02</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="odd">
+<td>🐟</td>
+<td align="right">0.00</td>
+<td align="right">0.01</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="even">
+<td>🐠</td>
+<td align="right">0.00</td>
+<td align="right">0.01</td>
+<td align="right">0.12</td>
+</tr>
+<tr class="odd">
+<td>🐙</td>
+<td align="right">0.00</td>
+<td align="right">0.01</td>
+<td align="right">0.13</td>
+</tr>
+<tr class="even">
+<td>🦀</td>
+<td align="right">0.00</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+</tr>
+<tr class="odd">
+<td>🐊</td>
+<td align="right">0.01</td>
+<td align="right">0.04</td>
+<td align="right">0.06</td>
+</tr>
+<tr class="even">
+<td>🐢</td>
+<td align="right">0.00</td>
+<td align="right">0.05</td>
+<td align="right">0.07</td>
+</tr>
+<tr class="odd">
+<td>🐍</td>
+<td align="right">0.01</td>
+<td align="right">0.06</td>
+<td align="right">0.05</td>
+</tr>
+<tr class="even">
+<td>🐓</td>
+<td align="right">0.01</td>
+<td align="right">0.09</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="odd">
+<td>🦃</td>
+<td align="right">0.00</td>
+<td align="right">0.11</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="even">
+<td>🐦</td>
+<td align="right">0.92</td>
+<td align="right">0.01</td>
+<td align="right">0.08</td>
+</tr>
+<tr class="odd">
+<td>🐧</td>
+<td align="right">0.01</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+</tr>
+<tr class="even">
+<td>🐿</td>
+<td align="right">0.01</td>
+<td align="right">0.09</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="odd">
+<td>🐘</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="even">
+<td>🐂</td>
+<td align="right">0.00</td>
+<td align="right">0.11</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="odd">
+<td>🐑</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+</tr>
+<tr class="even">
+<td>🐪</td>
+<td align="right">0.00</td>
+<td align="right">0.11</td>
+<td align="right">0.00</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><span id="tab:unnamed-chunk-14">Table 6.4: </span>The word distribution for each topic used to build the documents</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">land</th>
+<th align="right">sea</th>
+<th align="right">air</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>🐋</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐳</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐟</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐠</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐙</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🦀</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐊</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐢</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐍</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐓</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🦃</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐦</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td>🐧</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐿</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐘</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐂</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td>🐑</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>🐪</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>The document topic mixture estimates are shown below for the first 5 documents:</p>
+<pre><code>##      1    2    3
+## 1 0.04 0.90 0.06
+## 2 0.19 0.48 0.33
+## 3 0.31 0.13 0.56
+## 4 0.82 0.17 0.01
+## 5 0.31 0.31 0.39
+## 6 0.35 0.11 0.54</code></pre>
+<p>Here are our real mixtures for comparison:</p>
+<table>
+<caption><span id="tab:unnamed-chunk-16">Table 6.5: </span>The Real Topic Distributions for the First 5 Documents</caption>
+<thead>
+<tr class="header">
+<th align="right">Land</th>
+<th align="right">Sea</th>
+<th align="right">Air</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.82</td>
+<td align="right">0.17</td>
+<td align="right">0.01</td>
+</tr>
+<tr class="even">
+<td align="right">0.39</td>
+<td align="right">0.44</td>
+<td align="right">0.17</td>
+</tr>
+<tr class="odd">
+<td align="right">0.18</td>
+<td align="right">0.42</td>
+<td align="right">0.40</td>
+</tr>
+<tr class="even">
+<td align="right">0.33</td>
+<td align="right">0.03</td>
+<td align="right">0.64</td>
+</tr>
+<tr class="odd">
+<td align="right">0.41</td>
+<td align="right">0.30</td>
+<td align="right">0.29</td>
+</tr>
+<tr class="even">
+<td align="right">0.15</td>
+<td align="right">0.53</td>
+<td align="right">0.32</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>

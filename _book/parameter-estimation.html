@@ -102,7 +102,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i>Background</a></li>
 <li class="chapter" data-level="" data-path="layout-of-book.html"><a href="layout-of-book.html"><i class="fa fa-check"></i>Layout of Book</a></li>
 <li class="chapter" data-level="1" data-path="what-is-lda.html"><a href="what-is-lda.html"><i class="fa fa-check"></i><b>1</b> What is LDA?</a><ul>
-<li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a></li>
+<li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#generating-the-mixtures"><i class="fa fa-check"></i><b>1.1.1</b> Generating the Mixtures</a></li>
+</ul></li>
 <li class="chapter" data-level="1.2" data-path="what-is-lda.html"><a href="what-is-lda.html#inference"><i class="fa fa-check"></i><b>1.2</b> Inference</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="parameter-estimation.html"><a href="parameter-estimation.html"><i class="fa fa-check"></i><b>2</b> Parameter Estimation</a><ul>
@@ -215,7 +217,7 @@ P(X=0)&amp;=0.3
 <p>If you flip a coin 2 times resulting in 1 heads and 1 tails how sure are you that the coin is fair? Probably not all that sure, right? But what if you flipped the coin 200 times and it resulted in 100 heads and 100 tails? You would be much more confident that the coin is fair. This is the basis of the beta distribution.</p>
 <p>The beta distribution has 2 shape parameters, <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>. These can be though of as the results from the coin flips we just talked about. Below the probability density for different values of <span class="math inline">\(\theta\)</span> is displayed based on different values of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>. In general, the higher the value of <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> the narrower the density curve is. This makes sense with our thought example above, the more information (<em>coin flip results</em>) we have, the more confident we are in our coin’s bias (i.e. is it fair, head heavy, etc.).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
-<span class="kw">library</span>(hdi)
+
 a &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>)
 b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">100</span>)
 params &lt;-<span class="st"> </span><span class="kw">cbind</span>(a,b)

@@ -102,7 +102,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i>Background</a></li>
 <li class="chapter" data-level="" data-path="layout-of-book.html"><a href="layout-of-book.html"><i class="fa fa-check"></i>Layout of Book</a></li>
 <li class="chapter" data-level="1" data-path="what-is-lda.html"><a href="what-is-lda.html"><i class="fa fa-check"></i><b>1</b> What is LDA?</a><ul>
-<li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a></li>
+<li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#generating-the-mixtures"><i class="fa fa-check"></i><b>1.1.1</b> Generating the Mixtures</a></li>
+</ul></li>
 <li class="chapter" data-level="1.2" data-path="what-is-lda.html"><a href="what-is-lda.html#inference"><i class="fa fa-check"></i><b>1.2</b> Inference</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="parameter-estimation.html"><a href="parameter-estimation.html"><i class="fa fa-check"></i><b>2</b> Parameter Estimation</a><ul>
@@ -756,9 +758,11 @@ ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group
 </table>
 <p>(NOTE: Spread the table so topics are side by side for each doc)</p>
 <p>The LDA generative process for each document is shown below<span class="citation">(Darling <a href="references.html#ref-darling2011theoretical">2011</a>)</span>:</p>
-<p><span class="math display">\[
+<p><span class="math display" id="eq:generativeLDA">\[
+\begin{equation}
 p(w,z,\theta,\phi|\alpha, B) = p(\phi|B)p(\theta|\alpha)p(z|\theta)p(w|\phi_{z})
-\tag{25}
+\tag{5.1}
+\end{equation}
 \]</span></p>
 <p>You may be like me and have a hard time seeing how we get to the equation above and what it even means. If we look back at the pseudo code for the LDA model it is a bit easier to see how we got here. We start by giving a probability of a topic for each word in the vocabulary, <span class="math inline">\(\phi\)</span>. This value is drawn randomly from a dirichlet distribution with the parameter <span class="math inline">\(\beta\)</span> giving us our first term <span class="math inline">\(p(\phi|\beta)\)</span>. The next step is generating documents which starts by calculating the topic mixture of the document, <span class="math inline">\(\theta_{d}\)</span> generated from a dirichlet distribution with the parameter <span class="math inline">\(\alpha\)</span>. This is our second term <span class="math inline">\(p(\theta|\alpha)\)</span>. You can see the following two terms also follow this trend. The topic, <em>z</em>, of the next word is drawn from a multinomial distribuiton with the parameter <span class="math inline">\(\theta\)</span>. Once we know <em>z</em>, we use the distribution of words in topic <em>z</em>, <span class="math inline">\(\phi_{z}\)</span>, to determine the word that is generated.</p>
 
