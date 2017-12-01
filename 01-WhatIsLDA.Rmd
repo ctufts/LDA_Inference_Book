@@ -412,9 +412,6 @@ The document topic mixtures and the estimated mixtures are shown below for the f
 
 ```{r echo=FALSE}
 colnames(theta_est) <- estimated_topic_names
-# print(head(round(theta_est,2)))
-
-
 theta_table <- as.tibble(round(theta_samples,2)[,estimated_topic_names])
 
 theta_table <- cbind(theta_table, as.tibble(round(theta_est, 2)))
@@ -423,7 +420,7 @@ theta_table <- theta_table[, c(4,1,5,2,6,3)]
 theta_table$Location <- 1:nrow(theta_table)
 
 head(theta_table[, c('Location', names(theta_table[1:6]))]) %>% kable(caption='The Estimated Topic Distributions for the First 5 Documents')
-# (head(round(theta_est,2))) %>% kable(caption='The Estimated Topic Distributions for the First 5 Documents')
+
 ```
 
 

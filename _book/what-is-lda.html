@@ -12,7 +12,7 @@
   <meta property="og:title" content="LDA Tutorial" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:image" content="Davis.jpg" />
+  
   
   
 
@@ -20,7 +20,7 @@
   <meta name="twitter:title" content="LDA Tutorial" />
   <meta name="twitter:site" content="@devlintufts" />
   
-  <meta name="twitter:image" content="Davis.jpg" />
+  
 
 <meta name="author" content="Chris Tufts">
 
@@ -314,7 +314,7 @@ equal_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <span class="kw">cat</span>(equal_doc)</code></pre></div>
 <pre><code>## 🐘 🐂 🐪 🐧 🐧 🐙 🐦 🐦 🐦</code></pre>
 <p>NOTE: In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach.</p>
-<p>Ok, now let’s make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be %50 sea, %50 air, and %0 land.</p>
+<p>Ok, now let’s make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be 50% sea, 50% air, and 0% land.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">words_per_topic &lt;-<span class="st"> </span><span class="dv">3</span>
 ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])

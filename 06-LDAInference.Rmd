@@ -171,12 +171,11 @@ $$
 Need to explain the difference between primes/non-primes (w's)
 We will now use Equation \@ref(eq:LDAGibbsInference) in the example below to complete the LDA Inference task on a random sample of documents. To calculate our word distributions in each topic we will use:
 (NEED TO SWAP I, J'S WITH K,D,W TO MATCH ABOVE)
+
 $$
 \begin{equation}
-\begin{aligned}
-\phi_{i}^{j} = {C^{WT}_{ij}  + \beta \over  \sum_{k=1}^{W} C^{WT}_{kj} + W\beta}
-\end{aligned}
-(\#eq:phiEstimation)
+\phi^{j}_{i} = { C^{WT}_{ij}  + \beta \over  \sum_{k=1}^{W} C^{WT}_{kj} + W \beta}
+(\#eq:phiEstimate)
 \end{equation}
 $$
 
@@ -184,23 +183,13 @@ The topic distribution in each document is calcuated using:
 
 $$
 \begin{equation}
-\begin{aligned}
 \theta^{(d)}_{j} = {C^{DT}_{dj} + \alpha \over \sum_{k =1}^{T}C_{dk}^{DT} + T\alpha}
-\end{aligned}
 (\#eq:thetaEstimation)
 \end{equation}
 $$
 
-Add in the equations for the solution (phi and theta estimates- eq(4)) from [@steyvers2007probabilistic]
+Equations \@ref(eq:thetaEstimation) and \@ref(eq:phiEstimate) are from [@steyvers2007probabilistic]
 
-
-
-
-
------ Give general description of pseudo code 
-- go through each doc, each word, get probability of topic, assign topic, repeat
-  - this all gets lost in the math - it really is that simple, all the confusing components 
-come from the derivation of the probability calculation ....
 
 
 What if I don't want to generate docuements. What if my goal is to infer what topics are present in each document and what words belong to each topic? This is were LDA for inference comes into play.
@@ -214,12 +203,14 @@ Before going through any derivations of how we infer the document topic distribu
 * For <i>i</i> iterations
 * For document d in documents:
 * For each word in document d:
-* <i>assign a topic to the current word based on probability of the topic given the topic of all other words (except the current word)</i>   
+* <i>assign a topic to the current word based on probability of the topic given the topic of all other words (except the current word) as shown in Equation \@ref(eq:LDAGibbsInference) </i> 
 
-If you recall from the previous chapters on Gibbs sampling to infer the value of each $\theta$ we calculate the value of of 
-$p(\theta_{}|)
 
-Use Darling as an outline for the derivation process .... cite carpenter and heinrich (same as Darling does). 
+
+As in previous chapters,  Gibbs sampling is used to infer the value of each $\theta$ we calculate the value of of 
+$p(\theta_{}|)$
+
+ 
 
 
 Now let's revisit the animal example from the first section of the book and break down what we see. This time we will also be taking a look at the code used to generate the example documents as well as the inference code. 
@@ -227,8 +218,15 @@ Now let's revisit the animal example from the first section of the book and brea
 
 
 
-```{r echo=TRUE}
+```{r echo=TRUE, warning=FALSE, message=FALSE}
 rm(list = ls())
+library(MCMCpack)
+library(tidyverse)
+library(Rcpp)
+library(knitr)
+library(kableExtra) 
+library(lsa) 
+
 
 get_topic <- function(k){ 
   which(rmultinom(1,size = 1,rep(1/k,k))[,1] == 1)
@@ -467,24 +465,52 @@ rownames(phi_est) <- vocab
 colnames(phi) <- vocab
 theta_est <- apply(lda_counts[[2]],2, function(x)(x+alphas[1])/(sum(x) + k*alphas[1]))
 theta_est <- t(apply(theta_est, 1, function(x) x/sum(x)))
-kable(round(phi_est, 2),col.names = c('Topic 1', 'Topic 2', 'Topic 3'),caption = 'Estimated word distribution for each topic')
+
+
+# rewrite this function and normalize by row so that they sum to 1
+phi_est <- apply(lda_counts[[1]], 1, function(x) (x + beta)/(sum(x)+length(vocab)*beta) )
+rownames(phi_est) <- vocab
+colnames(phi) <- vocab
+theta_est <- apply(lda_counts[[2]],2, function(x)(x+alphas[1])/(sum(x) + k*alphas[1]))
+theta_est <- t(apply(theta_est, 1, function(x) x/sum(x)))
+
+colnames(theta_samples) <- c('land', 'sea', 'air')
+vector_angles <- cosine(cbind(theta_samples,theta_est))[4:6, 1:3]
+estimated_topic_names <- apply(vector_angles, 1, function(x)colnames(vector_angles)[which.max(x)])
+
+phi_table <- as.tibble(t(round(phi,2))[,estimated_topic_names])
+
+phi_table <- cbind(phi_table, as.tibble(round(phi_est, 2)))
+# names(theta_table)[4:6] <- paste0(estimated_topic_names, ' estimated')
+# theta_table <- theta_table[, c(4,1,5,2,6,3)]
+
+names(phi_table)[4:6] <- paste0(estimated_topic_names, ' estimated')
+phi_table <- phi_table[, c(4,1,5,2,6,3)]
+row.names(phi_table) <- colnames(phi)
+
+kable(round(phi_table, 2), caption = 'True and Estimated Word Distribution for Each Topic')
 ```
 
-```{r echo=FALSE}
-kable(t(round(phi,2)),caption = 'The word distribution for each topic used to build the documents')
-```
+
 
 
 The document topic mixture estimates are shown below for the first 5 documents:
 
 ```{r echo=FALSE}
-print(head(round(theta_est,2)))
+colnames(theta_est) <- estimated_topic_names
+# print(head(round(theta_est,2)))
+
+
+theta_table <- as.tibble(round(theta_samples,2)[,estimated_topic_names])
+
+theta_table <- cbind(theta_table, as.tibble(round(theta_est, 2)))
+names(theta_table)[4:6] <- paste0(estimated_topic_names, ' estimated')
+theta_table <- theta_table[, c(4,1,5,2,6,3)]
+theta_table$Location <- 1:nrow(theta_table)
+
+head(theta_table[, c('Location', names(theta_table[1:6]))]) %>% kable(caption='The Estimated Topic Distributions for the First 5 Documents')
 ```
 
 
-Here are our real mixtures for comparison: 
-```{r echo = FALSE}
-colnames(theta_samples) <- c('Land', 'Sea', 'Air')
-(head(round(theta_samples,2))) %>% kable(caption='The Real Topic Distributions for the First 5 Documents') 
-```
+
 

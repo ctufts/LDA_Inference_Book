@@ -12,7 +12,7 @@
   <meta property="og:title" content="LDA Tutorial" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:image" content="Davis.jpg" />
+  
   
   
 
@@ -20,7 +20,7 @@
   <meta name="twitter:title" content="LDA Tutorial" />
   <meta name="twitter:site" content="@devlintufts" />
   
-  <meta name="twitter:image" content="Davis.jpg" />
+  
 
 <meta name="author" content="Chris Tufts">
 
@@ -302,25 +302,23 @@ p(z_{i}|z^{(-i)}, w) &amp;= {p(w,z)\over {p(w,z^{(-i)})}} = {p(z)\over p(z^{(-i)
 \tag{6.9}
 \end{equation}
 \]</span></p>
-<p>Need to explain the difference between primes/non-primes (w’s) We will now use Equation <a href="lda-inference.html#eq:LDAGibbsInference">(6.9)</a> in the example below to complete the LDA Inference task on a random sample of documents. To calculate our word distributions in each topic we will use: (NEED TO SWAP I, J’S WITH K,D,W TO MATCH ABOVE) <span class="math display">\[
+<p>Need to explain the difference between primes/non-primes (w’s) We will now use Equation <a href="lda-inference.html#eq:LDAGibbsInference">(6.9)</a> in the example below to complete the LDA Inference task on a random sample of documents. To calculate our word distributions in each topic we will use: (NEED TO SWAP I, J’S WITH K,D,W TO MATCH ABOVE)</p>
+<p><span class="math display" id="eq:phiEstimate">\[
 \begin{equation}
-\begin{aligned}
-\phi_{i}^{j} = {C^{WT}_{ij}  + \beta \over  \sum_{k=1}^{W} C^{WT}_{kj} + W\beta}
-\end{aligned}
-(\#eq:phiEstimation)
+\phi^{j}_{i} = { C^{WT}_{ij}  + \beta \over  \sum_{k=1}^{W} C^{WT}_{kj} + W \beta}
+\tag{6.10}
 \end{equation}
 \]</span></p>
 <p>The topic distribution in each document is calcuated using:</p>
 <p><span class="math display" id="eq:thetaEstimation">\[
 \begin{equation}
-\begin{aligned}
 \theta^{(d)}_{j} = {C^{DT}_{dj} + \alpha \over \sum_{k =1}^{T}C_{dk}^{DT} + T\alpha}
-\end{aligned}
-\tag{6.10}
+\tag{6.11}
 \end{equation}
 \]</span></p>
-<p>Add in the equations for the solution (phi and theta estimates- eq(4)) from <span class="citation">(Steyvers and Griffiths <a href="references.html#ref-steyvers2007probabilistic">2007</a>)</span></p>
-<p>—– Give general description of pseudo code - go through each doc, each word, get probability of topic, assign topic, repeat - this all gets lost in the math - it really is that simple, all the confusing components come from the derivation of the probability calculation ….</p>
+<p>Equations <a href="lda-inference.html#eq:thetaEstimation">(6.11)</a> and <a href="lda-inference.html#eq:phiEstimate">(6.10)</a> are from <span class="citation">(Steyvers and Griffiths <a href="references.html#ref-steyvers2007probabilistic">2007</a>)</span></p>
+<p>—– Give general description of pseudo code<br />
+- go through each doc, each word, get probability of topic, assign topic, repeat - this all gets lost in the math - it really is that simple, all the confusing components come from the derivation of the probability calculation ….</p>
 <p>What if I don’t want to generate docuements. What if my goal is to infer what topics are present in each document and what words belong to each topic? This is were LDA for inference comes into play.</p>
 <p>Before going through any derivations of how we infer the document topic distributions and the word distributions of each topic, I want to go over the process of inference more generally.</p>
 <p><b>The General Idea of the Inference Process</b></p>
@@ -333,12 +331,19 @@ p(z_{i}|z^{(-i)}, w) &amp;= {p(w,z)\over {p(w,z^{(-i)})}} = {p(z)\over p(z^{(-i)
 <li>For <i>i</i> iterations</li>
 <li>For document d in documents:</li>
 <li>For each word in document d:</li>
-<li><i>assign a topic to the current word based on probability of the topic given the topic of all other words (except the current word)</i></li>
+<li><i>assign a topic to the current word based on probability of the topic given the topic of all other words (except the current word) as shown in Equation <a href="lda-inference.html#eq:LDAGibbsInference">(6.9)</a> </i></li>
 </ul>
-<p>If you recall from the previous chapters on Gibbs sampling to infer the value of each <span class="math inline">\(\theta\)</span> we calculate the value of of $p(_{}|)</p>
+<p>As in previous chapters, Gibbs sampling to infer the value of each <span class="math inline">\(\theta\)</span> we calculate the value of of <span class="math inline">\(p(\theta_{}|)\)</span></p>
 <p>Use Darling as an outline for the derivation process …. cite carpenter and heinrich (same as Darling does).</p>
 <p>Now let’s revisit the animal example from the first section of the book and break down what we see. This time we will also be taking a look at the code used to generate the example documents as well as the inference code.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>())
+<span class="kw">library</span>(MCMCpack)
+<span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(Rcpp)
+<span class="kw">library</span>(knitr)
+<span class="kw">library</span>(kableExtra) 
+<span class="kw">library</span>(lsa) 
+
 
 get_topic &lt;-<span class="st"> </span><span class="cf">function</span>(k){ 
   <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dt">size =</span> <span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span>k,k))[,<span class="dv">1</span>] <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)
@@ -602,297 +607,276 @@ phi_est &lt;-<span class="st"> </span><span class="kw">apply</span>(lda_counts[[
 <span class="kw">colnames</span>(phi) &lt;-<span class="st"> </span>vocab
 theta_est &lt;-<span class="st"> </span><span class="kw">apply</span>(lda_counts[[<span class="dv">2</span>]],<span class="dv">2</span>, <span class="cf">function</span>(x)(x<span class="op">+</span>alphas[<span class="dv">1</span>])<span class="op">/</span>(<span class="kw">sum</span>(x) <span class="op">+</span><span class="st"> </span>k<span class="op">*</span>alphas[<span class="dv">1</span>]))
 theta_est &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">apply</span>(theta_est, <span class="dv">1</span>, <span class="cf">function</span>(x) x<span class="op">/</span><span class="kw">sum</span>(x)))
-<span class="kw">kable</span>(<span class="kw">round</span>(phi_est, <span class="dv">2</span>),<span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&#39;Topic 1&#39;</span>, <span class="st">&#39;Topic 2&#39;</span>, <span class="st">&#39;Topic 3&#39;</span>),<span class="dt">caption =</span> <span class="st">&#39;Estimated word distribution for each topic&#39;</span>)</code></pre></div>
+
+
+<span class="co"># rewrite this function and normalize by row so that they sum to 1</span>
+phi_est &lt;-<span class="st"> </span><span class="kw">apply</span>(lda_counts[[<span class="dv">1</span>]], <span class="dv">1</span>, <span class="cf">function</span>(x) (x <span class="op">+</span><span class="st"> </span>beta)<span class="op">/</span>(<span class="kw">sum</span>(x)<span class="op">+</span><span class="kw">length</span>(vocab)<span class="op">*</span>beta) )
+<span class="kw">rownames</span>(phi_est) &lt;-<span class="st"> </span>vocab
+<span class="kw">colnames</span>(phi) &lt;-<span class="st"> </span>vocab
+theta_est &lt;-<span class="st"> </span><span class="kw">apply</span>(lda_counts[[<span class="dv">2</span>]],<span class="dv">2</span>, <span class="cf">function</span>(x)(x<span class="op">+</span>alphas[<span class="dv">1</span>])<span class="op">/</span>(<span class="kw">sum</span>(x) <span class="op">+</span><span class="st"> </span>k<span class="op">*</span>alphas[<span class="dv">1</span>]))
+theta_est &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">apply</span>(theta_est, <span class="dv">1</span>, <span class="cf">function</span>(x) x<span class="op">/</span><span class="kw">sum</span>(x)))
+
+<span class="kw">colnames</span>(theta_samples) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;land&#39;</span>, <span class="st">&#39;sea&#39;</span>, <span class="st">&#39;air&#39;</span>)
+vector_angles &lt;-<span class="st"> </span><span class="kw">cosine</span>(<span class="kw">cbind</span>(theta_samples,theta_est))[<span class="dv">4</span><span class="op">:</span><span class="dv">6</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">3</span>]
+estimated_topic_names &lt;-<span class="st"> </span><span class="kw">apply</span>(vector_angles, <span class="dv">1</span>, <span class="cf">function</span>(x)<span class="kw">colnames</span>(vector_angles)[<span class="kw">which.max</span>(x)])
+
+phi_table &lt;-<span class="st"> </span><span class="kw">as.tibble</span>(<span class="kw">t</span>(<span class="kw">round</span>(phi,<span class="dv">2</span>))[,estimated_topic_names])
+
+phi_table &lt;-<span class="st"> </span><span class="kw">cbind</span>(phi_table, <span class="kw">as.tibble</span>(<span class="kw">round</span>(phi_est, <span class="dv">2</span>)))
+<span class="co"># names(theta_table)[4:6] &lt;- paste0(estimated_topic_names, &#39; estimated&#39;)</span>
+<span class="co"># theta_table &lt;- theta_table[, c(4,1,5,2,6,3)]</span>
+
+<span class="kw">names</span>(phi_table)[<span class="dv">4</span><span class="op">:</span><span class="dv">6</span>] &lt;-<span class="st"> </span><span class="kw">paste0</span>(estimated_topic_names, <span class="st">&#39; estimated&#39;</span>)
+phi_table &lt;-<span class="st"> </span>phi_table[, <span class="kw">c</span>(<span class="dv">4</span>,<span class="dv">1</span>,<span class="dv">5</span>,<span class="dv">2</span>,<span class="dv">6</span>,<span class="dv">3</span>)]
+<span class="kw">row.names</span>(phi_table) &lt;-<span class="st"> </span><span class="kw">colnames</span>(phi)
+
+<span class="kw">kable</span>(<span class="kw">round</span>(phi_table, <span class="dv">2</span>), <span class="dt">caption =</span> <span class="st">&#39;True and Estimated Word Distribution for Each Topic&#39;</span>)</code></pre></div>
 <table>
-<caption><span id="tab:unnamed-chunk-11">Table 6.3: </span>Estimated word distribution for each topic</caption>
+<caption><span id="tab:unnamed-chunk-11">Table 6.3: </span>True and Estimated Word Distribution for Each Topic</caption>
 <thead>
 <tr class="header">
 <th></th>
-<th align="right">Topic 1</th>
-<th align="right">Topic 2</th>
-<th align="right">Topic 3</th>
+<th align="right">air estimated</th>
+<th align="right">air</th>
+<th align="right">land estimated</th>
+<th align="right">land</th>
+<th align="right">sea estimated</th>
+<th align="right">sea</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>🐋</td>
 <td align="right">0.00</td>
+<td align="right">0</td>
 <td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
 <td align="right">0.12</td>
 </tr>
 <tr class="even">
 <td>🐳</td>
 <td align="right">0.00</td>
+<td align="right">0</td>
 <td align="right">0.02</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
 <td align="right">0.12</td>
 </tr>
 <tr class="odd">
 <td>🐟</td>
 <td align="right">0.00</td>
+<td align="right">0</td>
 <td align="right">0.01</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
 <td align="right">0.12</td>
 </tr>
 <tr class="even">
 <td>🐠</td>
 <td align="right">0.00</td>
+<td align="right">0</td>
 <td align="right">0.01</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
 <td align="right">0.12</td>
 </tr>
 <tr class="odd">
 <td>🐙</td>
 <td align="right">0.00</td>
+<td align="right">0</td>
 <td align="right">0.01</td>
+<td align="right">0.00</td>
 <td align="right">0.13</td>
+<td align="right">0.12</td>
 </tr>
 <tr class="even">
 <td>🦀</td>
 <td align="right">0.00</td>
+<td align="right">0</td>
 <td align="right">0.05</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
 <td align="right">0.06</td>
 </tr>
 <tr class="odd">
 <td>🐊</td>
 <td align="right">0.01</td>
+<td align="right">0</td>
 <td align="right">0.04</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
 <td align="right">0.06</td>
 </tr>
 <tr class="even">
 <td>🐢</td>
 <td align="right">0.00</td>
+<td align="right">0</td>
+<td align="right">0.05</td>
 <td align="right">0.05</td>
 <td align="right">0.07</td>
+<td align="right">0.06</td>
 </tr>
 <tr class="odd">
 <td>🐍</td>
 <td align="right">0.01</td>
+<td align="right">0</td>
 <td align="right">0.06</td>
 <td align="right">0.05</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
 </tr>
 <tr class="even">
 <td>🐓</td>
 <td align="right">0.01</td>
+<td align="right">0</td>
 <td align="right">0.09</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
 <td align="right">0.00</td>
 </tr>
 <tr class="odd">
 <td>🦃</td>
 <td align="right">0.00</td>
+<td align="right">0</td>
 <td align="right">0.11</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
 <td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🐦</td>
 <td align="right">0.92</td>
-<td align="right">0.01</td>
-<td align="right">0.08</td>
-</tr>
-<tr class="odd">
-<td>🐧</td>
-<td align="right">0.01</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
-</tr>
-<tr class="even">
-<td>🐿</td>
-<td align="right">0.01</td>
-<td align="right">0.09</td>
-<td align="right">0.01</td>
-</tr>
-<tr class="odd">
-<td>🐘</td>
-<td align="right">0.00</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
-</tr>
-<tr class="even">
-<td>🐂</td>
-<td align="right">0.00</td>
-<td align="right">0.11</td>
-<td align="right">0.00</td>
-</tr>
-<tr class="odd">
-<td>🐑</td>
-<td align="right">0.00</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
-</tr>
-<tr class="even">
-<td>🐪</td>
-<td align="right">0.00</td>
-<td align="right">0.11</td>
-<td align="right">0.00</td>
-</tr>
-</tbody>
-</table>
-<table>
-<caption><span id="tab:unnamed-chunk-12">Table 6.4: </span>The word distribution for each topic used to build the documents</caption>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">land</th>
-<th align="right">sea</th>
-<th align="right">air</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>🐋</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td>🐳</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td>🐟</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td>🐠</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td>🐙</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td>🦀</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td>🐊</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td>🐢</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td>🐍</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td>🐓</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td>🦃</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td>🐦</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
 <td align="right">1</td>
+<td align="right">0.01</td>
+<td align="right">0.05</td>
+<td align="right">0.08</td>
+<td align="right">0.06</td>
 </tr>
 <tr class="odd">
 <td>🐧</td>
+<td align="right">0.01</td>
+<td align="right">0</td>
+<td align="right">0.05</td>
 <td align="right">0.05</td>
 <td align="right">0.06</td>
-<td align="right">0</td>
+<td align="right">0.06</td>
 </tr>
 <tr class="even">
 <td>🐿</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
+<td align="right">0.01</td>
 <td align="right">0</td>
+<td align="right">0.09</td>
+<td align="right">0.10</td>
+<td align="right">0.01</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="odd">
 <td>🐘</td>
-<td align="right">0.10</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.10</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🐂</td>
-<td align="right">0.10</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.11</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="odd">
 <td>🐑</td>
-<td align="right">0.10</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.10</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🐪</td>
-<td align="right">0.10</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.11</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 </tr>
 </tbody>
 </table>
 <p>The document topic mixture estimates are shown below for the first 5 documents:</p>
-<pre><code>##      1    2    3
-## 1 0.04 0.90 0.06
-## 2 0.19 0.48 0.33
-## 3 0.31 0.13 0.56
-## 4 0.82 0.17 0.01
-## 5 0.31 0.31 0.39
-## 6 0.35 0.11 0.54</code></pre>
-<p>Here are our real mixtures for comparison:</p>
 <table>
-<caption><span id="tab:unnamed-chunk-14">Table 6.5: </span>The Real Topic Distributions for the First 5 Documents</caption>
+<caption><span id="tab:unnamed-chunk-12">Table 6.4: </span>The Estimated Topic Distributions for the First 5 Documents</caption>
 <thead>
 <tr class="header">
-<th align="right">Land</th>
-<th align="right">Sea</th>
-<th align="right">Air</th>
+<th align="right">Location</th>
+<th align="right">air estimated</th>
+<th align="right">air</th>
+<th align="right">land estimated</th>
+<th align="right">land</th>
+<th align="right">sea estimated</th>
+<th align="right">sea</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.82</td>
-<td align="right">0.17</td>
+<td align="right">1</td>
+<td align="right">0.04</td>
 <td align="right">0.01</td>
-</tr>
-<tr class="even">
-<td align="right">0.39</td>
-<td align="right">0.44</td>
+<td align="right">0.90</td>
+<td align="right">0.82</td>
+<td align="right">0.06</td>
 <td align="right">0.17</td>
 </tr>
-<tr class="odd">
-<td align="right">0.18</td>
-<td align="right">0.42</td>
-<td align="right">0.40</td>
-</tr>
 <tr class="even">
+<td align="right">2</td>
+<td align="right">0.19</td>
+<td align="right">0.17</td>
+<td align="right">0.48</td>
+<td align="right">0.39</td>
 <td align="right">0.33</td>
-<td align="right">0.03</td>
-<td align="right">0.64</td>
+<td align="right">0.44</td>
 </tr>
 <tr class="odd">
-<td align="right">0.41</td>
-<td align="right">0.30</td>
-<td align="right">0.29</td>
+<td align="right">3</td>
+<td align="right">0.31</td>
+<td align="right">0.40</td>
+<td align="right">0.13</td>
+<td align="right">0.18</td>
+<td align="right">0.56</td>
+<td align="right">0.42</td>
 </tr>
 <tr class="even">
-<td align="right">0.15</td>
-<td align="right">0.53</td>
+<td align="right">4</td>
+<td align="right">0.82</td>
+<td align="right">0.64</td>
+<td align="right">0.17</td>
+<td align="right">0.33</td>
+<td align="right">0.01</td>
+<td align="right">0.03</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">0.31</td>
+<td align="right">0.29</td>
+<td align="right">0.31</td>
+<td align="right">0.41</td>
+<td align="right">0.39</td>
+<td align="right">0.30</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="right">0.35</td>
 <td align="right">0.32</td>
+<td align="right">0.11</td>
+<td align="right">0.15</td>
+<td align="right">0.54</td>
+<td align="right">0.53</td>
 </tr>
 </tbody>
 </table>
