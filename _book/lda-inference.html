@@ -504,7 +504,7 @@ ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filte
 ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&#39;Document&#39;</span>, <span class="st">&#39;Animals&#39;</span>), 
             <span class="dt">caption =</span><span class="st">&quot;Animals at the First Two Locations&quot;</span>)</code></pre></div>
 <table>
-<caption><span id="tab:unnamed-chunk-13">Table 6.1: </span>Animals at the First Two Locations</caption>
+<caption><span id="tab:unnamed-chunk-21">Table 6.1: </span>Animals at the First Two Locations</caption>
 <thead>
 <tr class="header">
 <th align="right">Document</th>
@@ -524,7 +524,7 @@ ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filte
 </table>
 <p>The habitat (<i>topic</i>) distributions for the first couple of documents:</p>
 <table>
-<caption><span id="tab:unnamed-chunk-14">Table 6.2: </span>Distribution of Habitats in the First Two Locations</caption>
+<caption><span id="tab:unnamed-chunk-22">Table 6.2: </span>Distribution of Habitats in the First Two Locations</caption>
 <thead>
 <tr class="header">
 <th align="right">Document</th>
@@ -604,7 +604,7 @@ theta_est &lt;-<span class="st"> </span><span class="kw">apply</span>(lda_counts
 theta_est &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="kw">apply</span>(theta_est, <span class="dv">1</span>, <span class="cf">function</span>(x) x<span class="op">/</span><span class="kw">sum</span>(x)))
 <span class="kw">kable</span>(<span class="kw">round</span>(phi_est, <span class="dv">2</span>),<span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&#39;Topic 1&#39;</span>, <span class="st">&#39;Topic 2&#39;</span>, <span class="st">&#39;Topic 3&#39;</span>),<span class="dt">caption =</span> <span class="st">&#39;Estimated word distribution for each topic&#39;</span>)</code></pre></div>
 <table>
-<caption><span id="tab:unnamed-chunk-15">Table 6.3: </span>Estimated word distribution for each topic</caption>
+<caption><span id="tab:unnamed-chunk-23">Table 6.3: </span>Estimated word distribution for each topic</caption>
 <thead>
 <tr class="header">
 <th></th>
@@ -725,7 +725,7 @@ theta_est &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="k
 </tbody>
 </table>
 <table>
-<caption><span id="tab:unnamed-chunk-16">Table 6.4: </span>The word distribution for each topic used to build the documents</caption>
+<caption><span id="tab:unnamed-chunk-24">Table 6.4: </span>The word distribution for each topic used to build the documents</caption>
 <thead>
 <tr class="header">
 <th></th>
@@ -855,7 +855,7 @@ theta_est &lt;-<span class="st"> </span><span class="kw">t</span>(<span class="k
 ## 6 0.35 0.11 0.54</code></pre>
 <p>Here are our real mixtures for comparison:</p>
 <table>
-<caption><span id="tab:unnamed-chunk-18">Table 6.5: </span>The Real Topic Distributions for the First 5 Documents</caption>
+<caption><span id="tab:unnamed-chunk-26">Table 6.5: </span>The Real Topic Distributions for the First 5 Documents</caption>
 <thead>
 <tr class="header">
 <th align="right">Land</th>
