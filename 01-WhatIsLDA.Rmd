@@ -388,7 +388,7 @@ colnames(phi) <- vocab
 theta_est <- apply(lda_counts[[2]],2, function(x)(x+alphas[1])/(sum(x) + k*alphas[1]))
 theta_est <- t(apply(theta_est, 1, function(x) x/sum(x)))
 
-colnames(theta_samples) <- c('Land', 'Sea', 'Air')
+colnames(theta_samples) <- c('land', 'sea', 'air')
 vector_angles <- cosine(cbind(theta_samples,theta_est))[4:6, 1:3]
 estimated_topic_names <- apply(vector_angles, 1, function(x)colnames(vector_angles)[which.max(x)])
 
@@ -397,7 +397,7 @@ kable(round(phi_est, 2),col.names = estimated_topic_names ,caption = 'Estimated 
 ```
 
 ```{r echo=FALSE}
-kable(t(round(phi,2)),caption = 'The word distribution for each topic used to build the documents')
+kable(t(round(phi,2))[,estimated_topic_names],caption = 'The word distribution for each topic used to build the documents')
 ```
 
 
@@ -412,6 +412,6 @@ colnames(theta_est) <- estimated_topic_names
 
 Here are our real mixtures for comparison: 
 ```{r echo = FALSE}
-(head(round(theta_samples,2))) %>% kable(caption='The Real Topic Distributions for the First 5 Documents') 
+(head(round(theta_samples,2)[,estimated_topic_names])) %>% kable(caption='The Real Topic Distributions for the First 5 Documents') 
 ```
 

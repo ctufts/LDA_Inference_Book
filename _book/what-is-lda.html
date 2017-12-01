@@ -312,14 +312,14 @@ equal_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(equal_doc)</code></pre></div>
-<pre><code>## 🐿 🐓 🐊 🐋 🐠 🦀 🐦 🐦 🐦</code></pre>
+<pre><code>## 🦃 🐂 🐧 🐳 🐠 🐟 🐦 🐦 🐦</code></pre>
 <p>NOTE: In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach.</p>
 <p>Ok, now let’s make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be %50 sea, %50 air, and %0 land.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">words_per_topic &lt;-<span class="st"> </span><span class="dv">3</span>
 ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(ocean_doc)</code></pre></div>
-<pre><code>## 🐟 🐟 🐳 🐦 🐦 🐦</code></pre>
+<pre><code>## 🐟 🐙 🐍 🐦 🐦 🐦</code></pre>
 <p>NOTE: In the example above only the air and land contribute to the ocean location. Therefore they both contribute an equal number of animals to the location.</p>
 <div id="generating-the-mixtures" class="section level3">
 <h3><span class="header-section-number">1.1.1</span> Generating the Mixtures</h3>
@@ -340,17 +340,17 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="left">🐑 🐦 🐢 🐢 🐦 🦃 🐦 🐿 🐑 🦀 🐪 🐦 🐍 🐪 🐿 🐂 🐧 🐪 🐦 🐑 🐿 🐂 🐠 🐦 🦀 🐓 🐦 🐦 🐦 🦀 🐦 🐂 🐠 🐦 🐍 🐪 🦀 🐙 🐦 🐑 🐢 🐋 🐿 🦃 🐪 🦃 🐓 🐑 🐂 🐿 🐧 🐢 🐦 🐑 🐧 🐢 🐿 🐓 🐋 🐦 🐙 🦃 🐑 🐦 🐿 🐿 🐪 🐢 🦃 🐓 🦀 🐍 🐦 🐦 🐦 🦀 🦀 🐂 🐂 🐦 🐢 🐑 🐦 🐂 🐢 🦃 🐪 🐦</td>
+<td align="left">🐦 🐦 🐘 🐦 🐦 🐦 🐦 🐦 🐦 🐢 🐦 🐓 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐧 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐿 🐂 🐦 🐦 🐦 🐠 🐦 🐦 🐦 🐦 🐦 🐠 🐳 🐦 🐊 🐦 🐳 🐦 🐠 🐦 🐿 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐠 🐋 🐦 🐦 🐦 🐦 🐦 🐦 🐢 🐍 🐿 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐋 🐦 🐦 🐢 🐦 🐦 🐦 🐦 🐦 🐦 🦀 🦃 🐿 🐦 🐙 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="left">🐙 🐦 🦀 🐦 🐙 🐦 🐋 🐦 🐦 🐧 🐦 🐊 🐙 🐦 🐦 🐑 🐠 🐳 🐳 🐦 🐦 🐦 🐊 🐦 🐟 🐦 🐠 🐦 🐳 🐦 🦃 🐦 🐧 🐦 🐦 🐦 🐦 🐳 🐙 🐢 🐋 🐧 🐙 🐦 🐦 🐦 🐦 🐦 🐦 🐳 🐦 🐋 🐓 🐦 🐟 🐠 🐙 🐦 🐦 🐦 🐦 🐦 🐦 🐋 🐢 🐊 🐊 🐍 🐿 🐊 🐠 🐙 🐙 🐦 🐙 🐟 🐠 🐦 🐦 🐦 🐦</td>
+<td align="left">🐟 🐂 🐿 🐦 🐦 🐦 🐢 🐦 🐦 🐦 🐦 🐿 🐋 🐂 🐦 🐪 🐠 🐦 🐦 🐟 🦃 🐍 🐦 🐦 🐧 🐦 🐂 🐠 🐠 🐋 🐦 🐦 🐳 🐋 🐦 🐦 🐦 🐦 🐿 🐦 🐦 🐦 🐦 🐦 🐦 🐧 🐦 🐦 🐓 🐙 🐦 🐦 🦀 🐠 🐢 🦃 🐳 🐍 🐑 🐦 🐦 🐿 🐊 🐦 🐦 🐦 🐍 🐦 🐙 🐦 🐠 🐟 🐦 🐳 🐳 🐳 🐧 🐦 🐦 🐪 🐟 🐳 🐦 🐦 🐙 🐦 🐦 🐦</td>
 </tr>
 </tbody>
 </table>
 <p>The topic word distributions shown in Table 1.1 were used to generate our sample documents. The true habitat (<i>topic</i>) mixtures used to generate the first couple of documents are shown in Table 1.3:</p>
 <table>
-<caption><span id="tab:unnamed-chunk-4">Table 1.3: </span>Distribution of Habitats in the First Two Locations</caption>
+<caption><span id="tab:unnamed-chunk-6">Table 1.3: </span>Distribution of Habitats in the First Two Locations</caption>
 <thead>
 <tr class="header">
 <th align="right">Document</th>
@@ -362,15 +362,15 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="right">0.6436926</td>
-<td align="right">0.1749360</td>
-<td align="right">0.1813714</td>
+<td align="right">0.0677780</td>
+<td align="right">0.1446454</td>
+<td align="right">0.7875767</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="right">0.1619416</td>
-<td align="right">0.4255663</td>
-<td align="right">0.4124920</td>
+<td align="right">0.2292364</td>
+<td align="right">0.3021864</td>
+<td align="right">0.4685772</td>
 </tr>
 </tbody>
 </table>
@@ -381,326 +381,326 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <thead>
 <tr class="header">
 <th></th>
-<th align="right">Sea</th>
-<th align="right">Land</th>
-<th align="right">Air</th>
+<th align="right">air</th>
+<th align="right">sea</th>
+<th align="right">land</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>🐋</td>
-<td align="right">0.12</td>
 <td align="right">0.00</td>
+<td align="right">0.13</td>
 <td align="right">0.01</td>
 </tr>
 <tr class="even">
 <td>🐳</td>
-<td align="right">0.11</td>
 <td align="right">0.00</td>
-<td align="right">0.01</td>
+<td align="right">0.13</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="odd">
 <td>🐟</td>
+<td align="right">0.00</td>
 <td align="right">0.12</td>
 <td align="right">0.00</td>
-<td align="right">0.01</td>
 </tr>
 <tr class="even">
 <td>🐠</td>
-<td align="right">0.12</td>
 <td align="right">0.00</td>
+<td align="right">0.13</td>
 <td align="right">0.00</td>
 </tr>
 <tr class="odd">
 <td>🐙</td>
-<td align="right">0.11</td>
 <td align="right">0.01</td>
+<td align="right">0.12</td>
 <td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🦀</td>
-<td align="right">0.06</td>
-<td align="right">0.06</td>
 <td align="right">0.00</td>
+<td align="right">0.07</td>
+<td align="right">0.05</td>
 </tr>
 <tr class="odd">
 <td>🐊</td>
-<td align="right">0.06</td>
-<td align="right">0.04</td>
-<td align="right">0.01</td>
+<td align="right">0.00</td>
+<td align="right">0.07</td>
+<td align="right">0.05</td>
 </tr>
 <tr class="even">
 <td>🐢</td>
-<td align="right">0.08</td>
+<td align="right">0.01</td>
 <td align="right">0.05</td>
-<td align="right">0.00</td>
+<td align="right">0.05</td>
 </tr>
 <tr class="odd">
 <td>🐍</td>
+<td align="right">0.01</td>
 <td align="right">0.06</td>
 <td align="right">0.05</td>
-<td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🐓</td>
 <td align="right">0.00</td>
-<td align="right">0.10</td>
 <td align="right">0.00</td>
+<td align="right">0.11</td>
 </tr>
 <tr class="odd">
 <td>🦃</td>
 <td align="right">0.00</td>
-<td align="right">0.10</td>
 <td align="right">0.00</td>
+<td align="right">0.11</td>
 </tr>
 <tr class="even">
 <td>🐦</td>
-<td align="right">0.05</td>
-<td align="right">0.08</td>
-<td align="right">0.92</td>
+<td align="right">0.94</td>
+<td align="right">0.04</td>
+<td align="right">0.01</td>
 </tr>
 <tr class="odd">
 <td>🐧</td>
-<td align="right">0.08</td>
-<td align="right">0.03</td>
 <td align="right">0.00</td>
+<td align="right">0.06</td>
+<td align="right">0.06</td>
 </tr>
 <tr class="even">
 <td>🐿</td>
 <td align="right">0.00</td>
-<td align="right">0.09</td>
 <td align="right">0.01</td>
+<td align="right">0.11</td>
 </tr>
 <tr class="odd">
 <td>🐘</td>
 <td align="right">0.00</td>
-<td align="right">0.10</td>
 <td align="right">0.00</td>
+<td align="right">0.11</td>
 </tr>
 <tr class="even">
 <td>🐂</td>
 <td align="right">0.01</td>
-<td align="right">0.08</td>
 <td align="right">0.01</td>
+<td align="right">0.09</td>
 </tr>
 <tr class="odd">
 <td>🐑</td>
 <td align="right">0.00</td>
-<td align="right">0.09</td>
 <td align="right">0.00</td>
+<td align="right">0.10</td>
 </tr>
 <tr class="even">
 <td>🐪</td>
 <td align="right">0.00</td>
-<td align="right">0.09</td>
 <td align="right">0.00</td>
+<td align="right">0.10</td>
 </tr>
 </tbody>
 </table>
 <table>
-<caption><span id="tab:unnamed-chunk-5">Table 1.5: </span>The word distribution for each topic used to build the documents</caption>
+<caption><span id="tab:unnamed-chunk-7">Table 1.5: </span>The word distribution for each topic used to build the documents</caption>
 <thead>
 <tr class="header">
 <th></th>
-<th align="right">land</th>
-<th align="right">sea</th>
 <th align="right">air</th>
+<th align="right">sea</th>
+<th align="right">land</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>🐋</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
 <td align="right">0</td>
+<td align="right">0.12</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🐳</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
 <td align="right">0</td>
+<td align="right">0.12</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="odd">
 <td>🐟</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
 <td align="right">0</td>
+<td align="right">0.12</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🐠</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
 <td align="right">0</td>
+<td align="right">0.12</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="odd">
 <td>🐙</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
 <td align="right">0</td>
+<td align="right">0.12</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🦀</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
 <td align="right">0</td>
+<td align="right">0.06</td>
+<td align="right">0.05</td>
 </tr>
 <tr class="odd">
 <td>🐊</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
 <td align="right">0</td>
+<td align="right">0.06</td>
+<td align="right">0.05</td>
 </tr>
 <tr class="even">
 <td>🐢</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
 <td align="right">0</td>
+<td align="right">0.06</td>
+<td align="right">0.05</td>
 </tr>
 <tr class="odd">
 <td>🐍</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
 <td align="right">0</td>
+<td align="right">0.06</td>
+<td align="right">0.05</td>
 </tr>
 <tr class="even">
 <td>🐓</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
 </tr>
 <tr class="odd">
 <td>🦃</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
 </tr>
 <tr class="even">
 <td>🐦</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
 <td align="right">1</td>
+<td align="right">0.06</td>
+<td align="right">0.05</td>
 </tr>
 <tr class="odd">
 <td>🐧</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
 <td align="right">0</td>
+<td align="right">0.06</td>
+<td align="right">0.05</td>
 </tr>
 <tr class="even">
 <td>🐿</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
 </tr>
 <tr class="odd">
 <td>🐘</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
 </tr>
 <tr class="even">
 <td>🐂</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
 </tr>
 <tr class="odd">
 <td>🐑</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
 </tr>
 <tr class="even">
 <td>🐪</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
 </tr>
 </tbody>
 </table>
 <p>The document topic mixture estimates are shown below for the first 5 documents:</p>
 <table>
-<caption><span id="tab:unnamed-chunk-6">Table 1.6: </span>The Estimated Topic Distributions for the First 5 Documents</caption>
+<caption><span id="tab:unnamed-chunk-8">Table 1.6: </span>The Estimated Topic Distributions for the First 5 Documents</caption>
 <thead>
 <tr class="header">
-<th align="right">Sea</th>
-<th align="right">Land</th>
-<th align="right">Air</th>
+<th align="right">air</th>
+<th align="right">sea</th>
+<th align="right">land</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.15</td>
-<td align="right">0.68</td>
-<td align="right">0.17</td>
+<td align="right">0.75</td>
+<td align="right">0.14</td>
+<td align="right">0.11</td>
 </tr>
 <tr class="even">
 <td align="right">0.47</td>
-<td align="right">0.04</td>
-<td align="right">0.49</td>
-</tr>
-<tr class="odd">
 <td align="right">0.36</td>
-<td align="right">0.09</td>
-<td align="right">0.55</td>
-</tr>
-<tr class="even">
-<td align="right">0.22</td>
-<td align="right">0.28</td>
-<td align="right">0.51</td>
+<td align="right">0.17</td>
 </tr>
 <tr class="odd">
-<td align="right">0.03</td>
-<td align="right">0.96</td>
-<td align="right">0.01</td>
+<td align="right">0.15</td>
+<td align="right">0.06</td>
+<td align="right">0.79</td>
 </tr>
 <tr class="even">
-<td align="right">0.01</td>
-<td align="right">0.05</td>
-<td align="right">0.94</td>
+<td align="right">0.57</td>
+<td align="right">0.11</td>
+<td align="right">0.32</td>
+</tr>
+<tr class="odd">
+<td align="right">0.07</td>
+<td align="right">0.61</td>
+<td align="right">0.32</td>
+</tr>
+<tr class="even">
+<td align="right">0.24</td>
+<td align="right">0.14</td>
+<td align="right">0.62</td>
 </tr>
 </tbody>
 </table>
 <p>Here are our real mixtures for comparison:</p>
 <table>
-<caption><span id="tab:unnamed-chunk-7">Table 1.7: </span>The Real Topic Distributions for the First 5 Documents</caption>
+<caption><span id="tab:unnamed-chunk-9">Table 1.7: </span>The Real Topic Distributions for the First 5 Documents</caption>
 <thead>
 <tr class="header">
-<th align="right">Land</th>
-<th align="right">Sea</th>
-<th align="right">Air</th>
+<th align="right">air</th>
+<th align="right">sea</th>
+<th align="right">land</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">0.64</td>
-<td align="right">0.17</td>
-<td align="right">0.18</td>
+<td align="right">0.79</td>
+<td align="right">0.14</td>
+<td align="right">0.07</td>
 </tr>
 <tr class="even">
-<td align="right">0.16</td>
-<td align="right">0.43</td>
-<td align="right">0.41</td>
+<td align="right">0.47</td>
+<td align="right">0.30</td>
+<td align="right">0.23</td>
 </tr>
 <tr class="odd">
-<td align="right">0.09</td>
-<td align="right">0.35</td>
-<td align="right">0.56</td>
+<td align="right">0.22</td>
+<td align="right">0.07</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="even">
+<td align="right">0.66</td>
+<td align="right">0.10</td>
+<td align="right">0.23</td>
+</tr>
+<tr class="odd">
+<td align="right">0.06</td>
+<td align="right">0.64</td>
+<td align="right">0.30</td>
 </tr>
 <tr class="even">
 <td align="right">0.21</td>
-<td align="right">0.28</td>
-<td align="right">0.51</td>
-</tr>
-<tr class="odd">
-<td align="right">0.91</td>
-<td align="right">0.03</td>
-<td align="right">0.06</td>
-</tr>
-<tr class="even">
-<td align="right">0.05</td>
-<td align="right">0.01</td>
-<td align="right">0.94</td>
+<td align="right">0.14</td>
+<td align="right">0.65</td>
 </tr>
 </tbody>
 </table>
