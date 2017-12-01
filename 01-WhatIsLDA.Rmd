@@ -125,7 +125,7 @@ cat(equal_doc)
 
 NOTE: In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach. 
 
-Ok, now let's make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be %50 sea, %50 air, and %0 land. 
+Ok, now let's make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be 50% sea, 50% air, and 0% land. 
 
 ```{r}
 words_per_topic <- 3
@@ -330,9 +330,9 @@ ds %>% filter(doc_id < 3) %>% group_by(doc_id) %>% select(doc_id, theta_a, theta
 ```
 
 
-With the help of LDA we can go through all of our documents and estimate the topic/word distributions and the topic/document distributions. 
+With the help of LDA we can go through all of our documents and estimate the topic/word (_habitat/animal_) distributions and the topic/document (_habitat/location_) distributions. 
 
-The estimated topic word distributions are shown in Table 1.4 and can be compared to the true distributions in Table 1.5.
+The true and estimated topic word distributions are shown in Table 1.4.
 
 ```{r introInference,  echo= FALSE}
 ######### Inference ############### 
@@ -408,7 +408,7 @@ kable(round(phi_table, 2), caption = 'True and Estimated Word Distribution for E
 
 
 
-The document topic mixture estimates are shown below for the first 5 documents:
+The document topic mixtures and the estimated mixtures are shown below for the first 5 documents:
 
 ```{r echo=FALSE}
 colnames(theta_est) <- estimated_topic_names
