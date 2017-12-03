@@ -33,9 +33,9 @@ Let's take a step from the math and just map out 'things we know' versus the 'th
 
 **Known Parameters**
 
-* **Documents:** We have a set number of documents we want to identify the topic strucutres in. 
-* **Words:** We have a collection of words and word counts for each document which we place in a document word matrix. 
-* **Vocabulary:** The unique list of words across all documents. This means our document word matrix has one row for each document and one column for each word in our vocabulary. 
+* **Documents (d in D):** We have a set number of documents we want to identify the topic strucutres in. 
+* **Words (w in W):** We have a collection of words and word counts for each document which we place in a document word matrix. 
+* **Vocabulary (W):** The unique list of words across all documents. This means our document word matrix has one row for each document and one column for each word in our vocabulary. 
 * **Hyperparemeters:**
     * $\overrightarrow{\alpha}$: Our prior assumption about the topic distribution of our documents. This book will only use symmetric $\alpha$ values, in other words we assume all topics are equally as probably in any given document (similar to the naive assumption of a fair die). We will be supplying the $\alpha$ value for inference. 
         * Higher $\overrightarrow{\alpha}$ - We assume documents will have a similar and close to uniform distribution of topics.
@@ -48,10 +48,10 @@ And on to the parts we don't know....
 
 ** Unknown (Latent) Parameters **
 
-* **Number of Topics:** Disclaimer - We need to specify the number of topics we assume are present in the documents. However we don't know the _real_ number of topics in the corpus. For the purposes of this book I'm going to skip how to estimate the number of topics. If you are interested in learning more about how to estimate the number of topics present in a document see <b>REFERENCE LIST</b>. 
+* **Number of Topics (k):** Disclaimer - We need to specify the number of topics we assume are present in the documents. However we don't know the _real_ number of topics in the corpus. For the purposes of this book I'm going to skip how to estimate the number of topics. If you are interested in learning more about how to estimate the number of topics present in a document see <b>REFERENCE LIST</b>. 
 * **Document Topic Mixture ($\theta$):**  We need to determine the topic distribution in each document. 
 * **Word Distribution of Each Topic ($\phi$):**  We need to know the distribution of words in each topic. Obviously some words are going to occur very often in a topic while others may have zero probability of occurring in a topic. 
-* **Word topic assignment:** This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture, $\theta$, and the word distribution, $\phi$, of each topic. 
+* **Word topic assignment (z):** This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture, $\theta$, and the word distribution, $\phi$, of each topic. 
 
 Back to the math...
 
@@ -166,51 +166,45 @@ CHANGE THE -i's  TO THE NEGATION SIGN FOR CONSISTENCY
 $$
 \begin{equation}
 \begin{aligned}
-p(z_{i}|z^{(-i)}, w) &= {p(w,z)\over {p(w,z^{(-i)})}} = {p(z)\over p(z^{(-i)})}{p(w|z)\over p(w^{(-i)}|z^{(-i)})p(w_{i})}\\
+p(z_{i}|z_{\neg i}, w) &= {p(w,z)\over {p(w,z_{\neg i})}} = {p(z)\over p(z_{\neg i})}{p(w|z)\over p(w_{\neg i}|z_{\neg i})p(w_{i})}\\
 \\
-&\propto \prod_{d}{B(n_{d,.} + \alpha) \over B(n_{d,.}^{(-i)}\alpha)}
-  \prod_{k}{B(n_{k,.} + \beta) \over B(n_{k,.}^{(-i)} + \beta)}\\
+&\propto \prod_{d}{B(n_{d,.} + \alpha) \over B(n_{d,\neg i}\alpha)}
+  \prod_{k}{B(n_{k,.} + \beta) \over B(n_{k,\neg i} + \beta)}\\
   \\
 &\propto {\Gamma(n_{d,k} + \alpha_{k})
-  \Gamma(\sum_{k=1}^{K} n_{d,k}^{(-i)} + \alpha_{k}) \over 
-  \Gamma(n_{d,k}^{(-i)} + \alpha_{k}) 
+  \Gamma(\sum_{k=1}^{K} n_{d,\neg i}^{k} + \alpha_{k}) \over 
+  \Gamma(n_{d,\neg i}^{k} + \alpha_{k}) 
   \Gamma(\sum_{k=1}^{K} n_{d,k}+ \alpha_{k})}
   {\Gamma(n_{k,w} + \beta_{w})
-  \Gamma(\sum_{w=1}^{W} n_{k,w}^{(-i)} + \beta_{w}) \over 
-  \Gamma(n_{k,w}^{(-i)} + \beta_{w}) 
+  \Gamma(\sum_{w=1}^{W} n_{k,\neg i}^{w} + \beta_{w}) \over 
+  \Gamma(n_{k,\neg i}^{w} + \beta_{w}) 
   \Gamma(\sum_{w=1}^{W} n_{k,w}+ \beta_{w})}\\
   \\
-&\propto (n_{d,k}^{(-i)} + \alpha_{k}) {n_{k,w}^{(-i)} + \beta_{w} \over 
-  \sum_{w'} n_{k,w'}^{(-i)} + \beta_{w'}}
+&\propto (n_{d,\neg i}^{k} + \alpha_{k}) {n_{k,\neg i}^{w} + \beta_{w} \over 
+  \sum_{w} n_{k,\neg i}^{w} + \beta_{w}}
 \end{aligned}
 (\#eq:LDAGibbsInference)
 \end{equation}
 $$
 
 
-Need to explain the difference between primes/non-primes (w's)
-We will now use Equation \@ref(eq:LDAGibbsInference) in the example below to complete the LDA Inference task on a random sample of documents. To calculate our word distributions in each topic we will use:
-(NEED TO SWAP I, J'S WITH K,D,W TO MATCH ABOVE)
+We will now use Equation \@ref(eq:LDAGibbsInference) in the example below to complete the LDA Inference task on a random sample of documents. To calculate our word distributions in each topic we will use Equation \@ref(eq:phiEstimate).
 
 $$
 \begin{equation}
-\phi^{j}_{i} = { C^{WT}_{ij}  + \beta \over  \sum_{k=1}^{W} C^{WT}_{kj} + W \beta}
+\phi_{k,w} = { n^{(w)}_{k}  + \beta_{w} \over  \sum_{w=1}^{W} n^{(w)}_{k} +  \beta_{w}}
 (\#eq:phiEstimate)
 \end{equation}
 $$
 
-The topic distribution in each document is calcuated using:
+The topic distribution in each document is calcuated using Equation \@ref(eq:thetaEstimation).
 
 $$
 \begin{equation}
-\theta^{(d)}_{j} = {C^{DT}_{dj} + \alpha \over \sum_{k =1}^{T}C_{dk}^{DT} + T\alpha}
+\theta_{d,k} = {n^{(k)}_{d} + \alpha_{k} \over \sum_{k=1}^{K}n_{d}^{k} + \alpha_{k}}
 (\#eq:thetaEstimation)
 \end{equation}
 $$
-
-Equations \@ref(eq:thetaEstimation) and \@ref(eq:phiEstimate) are from [@steyvers2007probabilistic]
-
-
 
 What if I don't want to generate docuements. What if my goal is to infer what topics are present in each document and what words belong to each topic? This is were LDA for inference comes into play.
 
