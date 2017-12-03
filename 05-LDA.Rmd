@@ -21,6 +21,7 @@ Let's get the ugly part out of the way, the parameters and variables that are go
 * <b>k</b> : Topic index
 * <b>z</b> : Topic selected for the next word to be generated. 
 * <b>w</b> : Generated Word
+* <b>d</b> : Current Document
 
 Outside of the variables above all the distributions should be familiar from the previous chapter. 
 

@@ -68,7 +68,7 @@ p(z_{i}|z_{\neg i}, \alpha, \beta, w)
 $$
 
 
-Notice that we are interested in identifying the topic of the current word, $z_{i}$, based on the topic assignments of all other words (not including word _i_), $z_{\neg i}$. The following derivations are all from [@darling2011theoretical].
+Notice that we are interested in identifying the topic of the current word, $z_{i}$, based on the topic assignments of all other words (not including the current word _i_), which is signified as $z_{\neg i}$. 
 
 $$
 \begin{equation}
@@ -83,7 +83,7 @@ p(z_{i}|z_{\neg i}, \alpha, \beta, w)
 \end{equation}
 $$
 
-You may notice $p(z,w|\alpha, \beta)$ looks very similar to the definition of the generative process of LDA (cite Darling) from the previous chapter (equation \@ref(eq:generativeLDA)). The only difference is the absence of $\theta$ and $\phi$. This means we can swap in equation \@ref(eq:generativeLDA) and integrate out $\theta$ and $\phi$. 
+You may notice $p(z,w|\alpha, \beta)$ looks very similar to the definition of the generative process of LDA from the previous chapter (equation \@ref(eq:generativeLDA)). The only difference is the absence of $\theta$ and $\phi$. This means we can swap in equation \@ref(eq:generativeLDA) and integrate out $\theta$ and $\phi$. 
 
 
 $$
@@ -97,15 +97,10 @@ p(w,z|\alpha, \beta) &= \int \int p(z, w, \theta, \phi|\alpha, \beta)d\theta d\p
 \end{equation}
 $$
 
-As with previous examples in this book we are now going to expand equation \@ref(eq:zwConditional), plug in our conjugate priors, and get to a point where we can use a gibbs sampler to estimate our solution. 
-
-ADD IN A NOTE ABOUT GIBBS SAMPLING FOR THE UNITIATED - PAPER - this follows the exact steps laid out in that paper. 
+As with the previous Gibbs sampling examples in this book we are going to expand equation \@ref(eq:zwConditional), plug in our conjugate priors, and get to a point where we can use a Gibbs sampler to estimate our solution. 
 
 
-topic assignment/topic proportion of documents. i - documents, k - topics
-
-
-Below you will see the derivation for the first term of equation \@ref(eq:IntegrateOutPhiTheta) which to identify the sampling distribution for the topic distribution in each document. The conjugate prior is utilized. The result is a dirichlet distribution with the parameter comprised of the sum of the number of words assigned each topic and the alpha value for that topic. (This needs to be more clear...)
+Below we continue to solve for the first term of equation \@ref(eq:IntegrateOutPhiTheta) utilizing the conjugate prior relationship between the multinomial and Dirichlet distribution. The result is a Dirichlet distribution with the parameters comprised of the sum of the number of words assigned to each topic and the alpha value for each topic in the current document _d_. 
 
 $$
 \begin{equation}
@@ -118,7 +113,7 @@ $$
 \end{equation}
 $$
 
-Similarly we can expand the second term of Equation \@ref(eq:IntegrateOutPhiTheta) and we find a solution with a similar form. 
+Similarly we can expand the second term of Equation \@ref(eq:IntegrateOutPhiTheta) and we find a solution with a similar form. The result is a Dirichlet distribution with the parameter comprised of the sum of the number of words assigned to each topic across all documents and the alpha value for that topic.
 
 $$
 \begin{equation}
@@ -147,7 +142,26 @@ p(w,z|\alpha, \beta) &=
 \end{equation}
 $$
 
-The equation necessary for Gibbs sampling can be derived by utilizing \@ref(eq:postConditionalDirs).  This is accomplished via the chain rule. NEED TO ADD IN MORE INFORMATION ON THIS - DEFINITELY HAVE NOTES ABOUT THIS SOMEWHERE. 
+The equation necessary for Gibbs sampling can be derived by utilizing \@ref(eq:postConditionalDirs).  This is accomplished via the chain rule and the definition of conditional probability. 
+
+_Quick Note: The chain rule is outlined in Equation \@ref(eq:chainRule)_
+
+$$
+\begin{equation}
+p(A,B,C,D) = P(A)P(B|A)P(C|A,B)P(D|A,B,C)
+(\#eq:chainRule)
+\end{equation}
+$$
+_The conditional probability property utilized is shown in \@ref(eq:conditionalPropA)_
+$$
+\begin{equation}
+P(B|A) = {P(A,B) \over P(A)}
+(\#eq:conditionalPropA)
+\end{equation}
+$$
+ 
+
+CHANGE THE -i's  TO THE NEGATION SIGN FOR CONSISTENCY
 
 $$
 \begin{equation}
