@@ -14,9 +14,9 @@ In regards to the model name, you can think of it as follows:
 * <b>Dirichlet</b>: The Dirichlet distribution determines the mixture proportions of the topics in the documents and the words in each topic. 
 * <b>Allocation</b>: Allocation of words to a given topic. 
 
-So to review: we have latent structures in a corpus (topics), taking into account Dirichlet priors for the word and topic distributions, to allocate words to a given topic and topics to a given document. 
+So to review: we have latent structures in a corpus (topics), with topic distributions in each document and word distributions in each topic based on the Dirichlet distribution, to allocate words to a given topic and topics to a given document. 
 
-Throughout this book I will work through all of the building blocks which make LDA possible, but to help get an understanding of what LDA is and why it is useful, I will offer a quick example first. 
+I realize many reading this may be unfamiliar with some of the terminology and distributions mentioned in the opening paragraphs. Please keep reading, all the nuts an bolts will be addressed in the following chapters, but to help get an understanding of what LDA is and why it is useful, I will offer a quick example without much math. 
 
 
 ## Animal Generator
@@ -27,9 +27,9 @@ You are probably asking yourself 'where is he going with this?'. We can think of
 
 So let's move on to generating a specific location. We know that different locations will vary in terms of which habitats are present. For example, a beach contains land, sea, and air, but some areas inland may only contain air and land like a desert.  We can define the mixture of these types of habitats in each location. For example, a beach is 1/3 land, 1/3 sea, and 1/3 air. We can think of the beach as a single document. To review: a given location (_document_) contains a mixture of land, air, and sea (_topics_) and each of those contain different mixtures of animals (_words_).  
 
-Let's work through some examples using our animals and habitats. The examples provided in this chapter are oversimplified so that we can get a general idea how LDA works. The rest of the book will handle all the nuts and bolts of the model, but for now let's try and get a handle on how this works.
+Let's work through some examples using our animals and habitats. The examples provided in this chapter are oversimplified so that we can get a general idea how LDA works.
 
-We'll start by generating a beach location with 1/3 land animals, 1/3 sea animals, and 1/3 air animals. Below you can see our collection of animals and their probability in each topic. Note that some animals have zero probabilities in a given topic, i.e. a cow is never in the ocean, where some have higher probabilities than others; a crab is in the sea sometimes, but a fish is always in the sea. You may notice that there is only 1 animal in the air category. There are several birds, but only 1 of them is cabable of flight in our vocabulary. 
+We'll start by generating our beach location with 1/3 land animals, 1/3 sea animals, and 1/3 air animals. Below you can see our collection of animals and their probability in each topic. Note that some animals have zero probabilities in a given topic, i.e. a cow is never in the ocean, where some have higher probabilities than others; a crab is in the sea sometimes, but a fish is always in the sea. You may notice that there is only 1 animal in the air category. There are several birds, but only 1 of them is cabable of flight in our vocabulary. 
 
 (NOTE: These are the probability of a word <b>given</b> the topic and therefore the probabilities of each habitat (_column_) sum to 1.)
 
@@ -125,6 +125,8 @@ cat(equal_doc)
 
 NOTE: In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach. 
 
+Before proceeding, I want to take a moment to give recognition to Tim Hopper for his presentation utilizing emoji to shed some light on how generative LDA works [@HopperTopicModels].
+
 Ok, now let's make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be 50% sea, 50% air, and 0% land. 
 
 ```{r}
@@ -144,7 +146,7 @@ It is important to note the examples above use static word and topic mixtures th
 
 ## Inference
 
-We have seen that we can generate collections of animals that are representative of the given location. What if we have thousands of locations and we want to know the mixture of land, air, and sea that are present? And what if we had no idea where each animal spends its time? LDA allows us to infer both of these peices of information.   Similar to the locations (<i>documents</i>) generated above, I will create 100 random documents with varying length and various habitat mixtures. 
+We have seen that we can generate collections of animals that are representative of the given location. What if we have thousands of locations and we want to know the mixture of land, air, and sea that are present? And what if we had no idea where each animal spends its time? LDA allows us to infer both of these peices of information. Similar to the locations (<i>documents</i>) generated above, I will create 100 random documents with varying length and various habitat mixtures. 
 
  
 ```{r echo=FALSE}

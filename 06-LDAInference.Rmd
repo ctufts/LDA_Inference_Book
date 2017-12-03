@@ -53,6 +53,8 @@ And on to the parts we don't know....
 * **Word Distribution of Each Topic ($\phi$):**  We need to know the distribution of words in each topic. Obviously some words are going to occur very often in a topic while others may have zero probability of occurring in a topic. 
 * **Word topic assignment (z):** This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture, $\theta$, and the word distribution, $\phi$, of each topic. 
 
+
+## Mathematical Derivations for Inference
 Back to the math...
 
 The derivation connecting equation \@ref(eq:LDAInference) to the actual Gibbs sampling solution to determine _z_ for each word in each document, $\overrightarrow{\theta}$, and 
@@ -216,17 +218,10 @@ Before going through any derivations of how we infer the document topic distribu
 2. <b>Gibbs Sampling:</b>  
 * For <i>i</i> iterations
 * For document d in documents:
-* For each word in document d:
-* <i>assign a topic to the current word based on probability of the topic given the topic of all other words (except the current word) as shown in Equation \@ref(eq:LDAGibbsInference) </i> 
+    * For each word in document d:
+        * <i>assign a topic to the current word based on probability of the topic given the topic of all other words (except the current word) as shown in Equation \@ref(eq:LDAGibbsInference) </i> 
 
-
-
-As in previous chapters,  Gibbs sampling is used to infer the value of each $\theta$ we calculate the value of of 
-$p(\theta_{}|)$
-
- 
-
-
+## Animal Farm - Code Example
 Now let's revisit the animal example from the first section of the book and break down what we see. This time we will also be taking a look at the code used to generate the example documents as well as the inference code. 
 
 

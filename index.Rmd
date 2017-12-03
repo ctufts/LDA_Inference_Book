@@ -37,4 +37,6 @@ I've often found that resources covering LDA are either hard to follow, do to a 
 * LDA - A Generative Model
 * LDA - Inference
 
-
+# Package References
+This book only came together due to the amazing open source work so many have done in the R community. The list of packages utilized to create this book can be found in the reference section and are as follows:
+[@R-base], [@R-bindrcpp], [@R-bookdown], [@R-coda], [@R-dplyr], [@R-ggplot2], [@R-kableExtra], [@R-knitr],[@R-lsa], [@R-MASS], [@R-MCMCpack], [@R-purrr], [@R-Rcpp], [@R-readr], [@R-SnowballC],[@R-tibble], [@R-tidyr], [@R-tidyverse] 
