@@ -4,8 +4,7 @@
 We have talked about LDA as a generative model, but now it is time to flip the problem around. What if I have a bunch of documents and I want to infer topics? To figure out a problem like this we are first going to assume the documents were generated using a generative model similar to the ones we created in the previous section. 
 
 
-
-Now it is time to flip the problem around. What happens when I have a bunch of documents and I want to know what topics are present in each document and what words are present (most probable) in each topic? In terms of math, the values we need to answer the questions above are:
+Now it is time to flip the problem around. What happens when I have a bunch of documents and I want to know what topics are present in each document and what words are present (most probable) in each topic? To answer the previous questions, we first need to be able to attain the answer for Equation \@ref(eq:LDAInference). (NOTE: The derivation for LDA inference via Gibbs Sampling is taken from [@darling2011theoretical], [@heinrich2008parameter] and [@steyvers2007probabilistic].)
 
 $$
 \begin{equation}
@@ -14,32 +13,10 @@ p(\theta, \phi, z|w, \alpha, \beta) = {p(\theta, \phi, z, w|\alpha, \beta) \over
 \end{equation}
 $$
 Equation \@ref(eq:LDAInference) says the following:   
-The probability of the topic proportion, the word distribution of each topic, and the topic label given a word (in a document) and the hyperparameters $\alpha$ and $\beta$. In a more basic term this means the probability of a specific topic _z_ given the word _w_ (and our prior assumptions, i.e. hyperparameters), once the topic label of a word is known, then we can answer derive $\phi$ and $\theta$.
+The probability of the document topic distribution, the word distribution of each topic, and the topic labels of all words (in all documents) and the hyperparameters $\alpha$ and $\beta$. In particular we are interested in estimating the probability of topic (_z_) for a given word (_w_) (and our prior assumptions, i.e. hyperparameters) for all words and topics. From this we can infer $\phi$ and $\theta$. (NOTE - COME BACK TO THIS AS THIS NEEDS TO BE MORE CLEAR)
 
-
-Let's take a step from the math and just map out things we know versus the things we don't know in our current scenario:
-
-**Known Parameters**
-
-* **Documents:** We have a set number of documents we want to identify the topic strucutres in. 
-* **Words:** We have a collection of words and word counts for each document which we place in a document word matrix. 
-* **Vocabulary:** The unique list of words across all documents. 
-* **Hyperparemeters:**
-    * $\overrightarrow{\alpha}$
-    * $\overrightarrow{\beta}$
-
-And on to the parts we don't know....
-
-** Unknown (Latent) Parameters **
-
-* **Number of Topics:** We need to determine the number of topics we assume are present in the documents. For the purposes of this book I'm going to skip how to estimate this number properly. If you are interested in learning more about how to estimate the number of topics present in a document see REFERENCE LIST. 
-* **Document Topic Mixture:** We need to determine the topic distribution in each document. 
-* **Word Distribution of Each Topic:** We need to know the distribution of words in each topic. Obviously some words are going to occur very often in a topic while others may have zero probability of occurring in a topic. 
-* **Word topic assignment:** This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture, $\theta$, and the word distribution, $\phi$, of each topic. 
-
-
-_Quick note:   
-Equation \@ref(eq:LDAInference) is based on the following statistical property_
+_Quick notes:   
+* Equation \@ref(eq:LDAInference) is based on the following statistical property_
 
 
 $$
@@ -49,8 +26,37 @@ p(A, B | C) = {p(A,B,C) \over p(C)}
 \end{equation}
 $$
 
+
+* _All the variables used in this section were outlined at the beginning of Chapter 5 if you need a refresher._
+
+Let's take a step from the math and just map out 'things we know' versus the 'things we don't know' in regards to an inference problem:
+
+**Known Parameters**
+
+* **Documents:** We have a set number of documents we want to identify the topic strucutres in. 
+* **Words:** We have a collection of words and word counts for each document which we place in a document word matrix. 
+* **Vocabulary:** The unique list of words across all documents. This means our document word matrix has one row for each document and one column for each word in our vocabulary. 
+* **Hyperparemeters:**
+    * $\overrightarrow{\alpha}$: Our prior assumption about the topic distribution of our documents. This book will only use symmetric $\alpha$ values, in other words we assume all topics are equally as probably in any given document (similar to the naive assumption of a fair die). We will be supplying the $\alpha$ value for inference. 
+        * Higher $\overrightarrow{\alpha}$ - We assume documents will have a similar and close to uniform distribution of topics.
+        * Lower $\overrightarrow{\alpha}$ - We assume document topic distributions vary more drastically. 
+    * $\overrightarrow{\beta}$: Our prior assumption about the word distribution of each topic. 
+        * Higher $\overrightarrow{\beta}$: Word distributions in each topic are closer to uniform, i.e. each word is equally as likely in each topic.
+        * Lower $\overrightarrow{\beta}$: Word distributions vary more from topic to topic. 
+
+And on to the parts we don't know....
+
+** Unknown (Latent) Parameters **
+
+* **Number of Topics:** Disclaimer - We need to specify the number of topics we assume are present in the documents. However we don't know the _real_ number of topics in the corpus. For the purposes of this book I'm going to skip how to estimate the number of topics. If you are interested in learning more about how to estimate the number of topics present in a document see <b>REFERENCE LIST</b>. 
+* **Document Topic Mixture ($\theta$):**  We need to determine the topic distribution in each document. 
+* **Word Distribution of Each Topic ($\phi$):**  We need to know the distribution of words in each topic. Obviously some words are going to occur very often in a topic while others may have zero probability of occurring in a topic. 
+* **Word topic assignment:** This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture, $\theta$, and the word distribution, $\phi$, of each topic. 
+
+Back to the math...
+
 The derivation connecting equation \@ref(eq:LDAInference) to the actual Gibbs sampling solution to determine _z_ for each word in each document, $\overrightarrow{\theta}$, and 
-$\overrightarrow{\phi}$ is very complicated and I'm just going to gloss over a few steps. For complete derivations see (site heinrich and that other one from darling). 
+$\overrightarrow{\phi}$ is very complicated and I'm going to gloss over a few steps. For complete derivations see [@heinrich2008parameter] and [@carpenter2010integrating].
 
 As stated previously, the main goal of inference in LDA is to determine the topic of each word, $z_{i}$ (topic of word _i_), in each document. 
 
@@ -62,7 +68,7 @@ p(z_{i}|z_{\neg i}, \alpha, \beta, w)
 $$
 
 
-Notice that we are interested in identifying the topic of the current word, $z_{i}$, based on the topic assignments of all other words (not including word _i_), $z_{\neg i}$. The following derivations are all from [@darling2011theoretical]
+Notice that we are interested in identifying the topic of the current word, $z_{i}$, based on the topic assignments of all other words (not including word _i_), $z_{\neg i}$. The following derivations are all from [@darling2011theoretical].
 
 $$
 \begin{equation}
