@@ -6,17 +6,23 @@
   
 # What is LDA?
   
-Latent Dirichlet Allocation (LDA) is a generative probablistic model for collections of discrete data developed by Blei, Ng, and Jordan. [@blei2003latent] One of the most common uses of LDA is for modeling collections of text. The general idea is that each document is generated from a mixture of topics and each of those topics is a mixture of words. 
+Latent Dirichlet Allocation (LDA) is a generative probablistic model for collections of discrete data developed by Blei, Ng, and Jordan. [@blei2003latent] One of the most common uses of LDA is for modeling collections of text.  LDA is often used for what is known as topic modeling. 
+
+A topic is a probability distribution over words.[@steyvers2007probabilistic]  Imagine you have a bag that has a bunch of little squares in it with a word printed on each (similar to the game Scrabble, but words instead of letters). Any word not in the bag has a probability of being drawn equal to zero. However all other words in the bag have a probability greater than zero. Let's say we have 2 chips with the word 'philadelphia' and 1 with the word 'eagles' on it. We would say you have a 1/3 chance of drawing 'eagles', 2/3 chance of drawing 'philadelphia', and 0 for any other word. This is effectively what a topic is; it provides us with the probabilities of a set of words for the given topic. 
+
+-----------------IMAGE PLACE HOLDER - different bags of topics-------------------------
+
+The general idea of LDA is that each document is generated from a mixture of topics and each of those topics is a mixture of words. This can be used as a mechanism for generating new documents, i.e. we know the topics a priori, or for inferring topics present in a set of documents we already have.
 
 In regards to the model name, you can think of it as follows:
 
-* <b>Latent</b>: Topic structures in a document are 'latent' meaning they are hidden structures in the text. 
+* <b>Latent</b>: Topic structures in a document are 'latent' meaning they are hidden structures in the text.
 * <b>Dirichlet</b>: The Dirichlet distribution determines the mixture proportions of the topics in the documents and the words in each topic. 
 * <b>Allocation</b>: Allocation of words to a given topic. 
 
-So to review: we have latent structures in a corpus (topics), with topic distributions in each document and word distributions in each topic based on the Dirichlet distribution, to allocate words to a given topic and topics to a given document. 
+To review: we have latent structures in a corpus (topics), with topic distributions in each document and word distributions in each topic based on the Dirichlet distribution, to allocate words to a given topic and topics to a given document. 
 
-I realize many reading this may be unfamiliar with some of the terminology and distributions mentioned in the opening paragraphs. Please keep reading, all the nuts an bolts will be addressed in the following chapters, but to help get an understanding of what LDA is and why it is useful, I will offer a quick example without much math. 
+I realize many reading this may be unfamiliar with some of the terminology and distributions mentioned in the opening paragraphs. Please keep reading, all the nuts an bolts will be addressed in the following chapters, but to help get an understanding of what LDA is and why it is useful, I will offer a quick example and we will get to the math and technical concepts in the following chapters. 
 
 
 ## Animal Generator
