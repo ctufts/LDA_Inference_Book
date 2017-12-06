@@ -1,4 +1,4 @@
-# Word Embeddings and Representations
+# Word Representations
 
 This chapter offers a general overview of how documents and words are viewed and processed during topic modeling. 
 
