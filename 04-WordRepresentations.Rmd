@@ -15,8 +15,8 @@ Possible examples:
 Scrabble in reverse
 
 
-## Word Embeddings
-I will preface this section by warning you there are many differnt types of word embeddings. A word embedding is a way to summarized words in documents based on a frequency or weight. Why would we need this? The primary reason is that we need a way of summarizing text in a manner that we can process easily with a computer (or with math in general). One of the simplest ways to do this is by taking word counts for each individual word in a document. Each row is a unique word in the vocabulary and each column is a document. 
+## Document Term Matrix
+The primary reason is that we need a way of summarizing text in a manner that we can process easily with a computer (or with math in general). One of the simplest ways to do this is by taking word counts for each individual word in a document. Each row is a unique word in the vocabulary and each column is a document. 
 
 
 -------image----------
