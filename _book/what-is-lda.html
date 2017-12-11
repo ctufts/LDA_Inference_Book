@@ -115,7 +115,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#inference-the-building-blocks"><i class="fa fa-check"></i><b>2.2</b> Inference: The Building Blocks</a></li>
 <li class="chapter" data-level="2.3" data-path="parameter-estimation.html"><a href="parameter-estimation.html#maximum-likelihood"><i class="fa fa-check"></i><b>2.3</b> Maximum Likelihood</a></li>
-<li class="chapter" data-level="2.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#maximum-a-posteriori-map"><i class="fa fa-check"></i><b>2.4</b> Maximum a Posteriori (MAP)</a></li>
+<li class="chapter" data-level="2.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#maximum-a-posteriori"><i class="fa fa-check"></i><b>2.4</b> Maximum a Posteriori</a></li>
 <li class="chapter" data-level="2.5" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bayesian-inference"><i class="fa fa-check"></i><b>2.5</b> Bayesian Inference</a><ul>
 <li class="chapter" data-level="2.5.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#the-issue-of-intractability"><i class="fa fa-check"></i><b>2.5.1</b> The Issue of Intractability</a></li>
 <li class="chapter" data-level="2.5.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#a-tale-of-two-mcs"><i class="fa fa-check"></i><b>2.5.2</b> A Tale of Two MC’s</a></li>
@@ -315,17 +315,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </table>
 <p>To generate a beach (<i>document</i>) based off the description we would use those probabilities in a straightforward manner:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">words_per_topic &lt;-<span class="st"> </span><span class="dv">3</span>
-equal_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>land, <span class="dt">replace =</span> T)],
-               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
-               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
+equal_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds$land, <span class="dt">replace =</span> T)],
+               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds$sea, <span class="dt">replace =</span> T)],
+               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds$air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(equal_doc)</code></pre></div>
 <pre><code>## 🐘 🐂 🐪 🐧 🐧 🐙 🐦 🐦 🐦</code></pre>
 <p>NOTE: In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach.</p>
 <p>Before proceeding, I want to take a moment to give recognition to Tim Hopper for his presentation utilizing emoji to shed some light on how generative LDA works <span class="citation">(Hopper <a href="references.html#ref-HopperTopicModels">2016</a>)</span>.</p>
 <p>Ok, now let’s make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be 50% sea, 50% air, and 0% land.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">words_per_topic &lt;-<span class="st"> </span><span class="dv">3</span>
-ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
-               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
+ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds$sea, <span class="dt">replace =</span> T)],
+               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds$air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(ocean_doc)</code></pre></div>
 <pre><code>## 🐋 🐳 🐢 🐦 🐦 🐦</code></pre>
 <p>NOTE: In the example above only the air and land contribute to the ocean location. Therefore they both contribute an equal number of animals to the location.</p>
@@ -362,30 +362,30 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <thead>
 <tr class="header">
 <th align="right">Document</th>
-<th align="right">Land</th>
-<th align="right">Sea</th>
-<th align="right">Air</th>
+<th align="right">air</th>
+<th align="right">land</th>
+<th align="right">sea</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="right">0.8966575</td>
-<td align="right">0.0110344</td>
-<td align="right">0.0923081</td>
+<td align="right">0.09</td>
+<td align="right">0.90</td>
+<td align="right">0.01</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="right">0.5134076</td>
-<td align="right">0.3919741</td>
-<td align="right">0.0946184</td>
+<td align="right">0.09</td>
+<td align="right">0.51</td>
+<td align="right">0.39</td>
 </tr>
 </tbody>
 </table>
 <p>With the help of LDA we can go through all of our documents and estimate the topic/word (<em>habitat/animal</em>) distributions and the topic/document (<em>habitat/location</em>) distributions.</p>
 <p>The true and estimated topic word distributions are shown in Table 1.4.</p>
 <table>
-<caption><span id="tab:introInference">Table 1.4: </span>True and Estimated Word Distribution for Each Topic</caption>
+<caption><span id="tab:unnamed-chunk-5">Table 1.4: </span>True and Estimated Word Distribution for Each Topic</caption>
 <thead>
 <tr class="header">
 <th></th>
@@ -564,7 +564,7 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 </table>
 <p>The document topic mixtures and the estimated mixtures are shown below for the first 5 documents:</p>
 <table>
-<caption><span id="tab:unnamed-chunk-5">Table 1.5: </span>The Estimated Topic Distributions for the First 5 Documents</caption>
+<caption><span id="tab:unnamed-chunk-6">Table 1.5: </span>The Estimated Topic Distributions for the First 5 Documents</caption>
 <thead>
 <tr class="header">
 <th align="right">Location</th>
@@ -630,6 +630,41 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <td align="right">0.38</td>
 <td align="right">0.62</td>
 <td align="right">0.59</td>
+</tr>
+</tbody>
+</table>
+<p>The results of our estimations of both the word topic distributions and the document topic distributions have some variation from the true distributions used to generate the documents. The cosine similarity between the estimated and true topic proportions in each document are shown below.</p>
+<table>
+<caption><span id="tab:cosineDistanceDocTop">Table 1.6: </span>Cosine Similarity between Estimated Document Topic Distributions and Real Distributions</caption>
+<thead>
+<tr class="header">
+<th align="left">air</th>
+<th align="left">land</th>
+<th align="left">sea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">0.99</td>
+<td align="left">0.99</td>
+<td align="left">0.99</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption><span id="tab:cosineDistanceTermTop">Table 1.7: </span>Cosine Similarity between Estimated Topic Word Distributions and Real Distributions</caption>
+<thead>
+<tr class="header">
+<th align="left">air</th>
+<th align="left">land</th>
+<th align="left">sea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1.00</td>
+<td align="left">0.99</td>
+<td align="left">0.98</td>
 </tr>
 </tbody>
 </table>

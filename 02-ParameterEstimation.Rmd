@@ -6,7 +6,7 @@ output:
 
 # Parameter Estimation
 
-LDA is a generative probabilistic model, so to understand exactly how this works we need to understand the underlying probability distibutions. In this chapter we will focus on the Bernoulli distribution and the Beta distribution. Both of these distributions are very closely related to (and also special cases of) the multinomial and Dirichlet distributions utilized by LDA, but they are a bit easier to comprehend. Once we have made our way through Bernoulli and beta, the following chapter will go into detail about multinomial and Dirichlet distributions and how all these peices are connected. 
+LDA is a generative probabilistic model, so to understand exactly how this works we need to understand the underlying probability distributions. In this chapter we will focus on the Bernoulli distribution and the Beta distribution. Both of these distributions are very closely related to (and also special cases of) the multinomial and Dirichlet distributions utilized by LDA, but they are a bit easier to comprehend. Once we have made our way through Bernoulli and beta, we will go over how they are linked to the multinomial and Dirichlet distributions. 
 
 Throughout the chapter I'm going to build off of a simple example - a single coin flip. Let's begin. 
 
@@ -17,11 +17,13 @@ When you flip a coin you get either heads or tails as an outcome (barring the po
 
 
 #### Bernoulli: A Special Case of the Binomial Distribution
-You will often see Bernoulli distribution mentioned as a special case of the Binomial distribution. The binomial model consists of _n_ Bernoulli trials, where each trial is independent and the probability of success does not change between trials.[@kerns2010introduction]. The Bernoulli distribution is the case of a single trial or _n_=1. 
+You will often see Bernoulli distribution mentioned as a special case of the Binomial distribution. The binomial model consists of _n_ Bernoulli trials, where each trial is independent and the probability of success does not change between trials.[@kerns2010introduction] The Bernoulli distribution is the case of a single trial (_n_=1). 
 
-__NOTE:__ I will use the term <i>success</i> interchangably with the term <i>heads</i> when describing bernoulli distribution. In reality <i>success</i> could be <i>tails</i> if you choose to define it that way. 
+_Quick Note:    
+I will use the term <i>success</i> interchangably with the term <i>heads</i> when describing Bernoulli distribution. In reality <i>success</i> could be <i>tails</i> if you choose to define it that way. 
+_
 
-To clarify, if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However, if I want to know the probability of getting 2 heads (or more) in a row, this is where the binomial distribution comes in. For our purposes we are only concerned about the outcome of a single coin flip and will therefore stick to the Bernoulli distribution. 
+To clarify, if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However, if I want to know the probability of getting 2 heads (or more) in a row, we would use the binomial distribution. For our purposes we are only concerned about the outcome of a single coin flip and will therefore stick to the Bernoulli distribution. 
 
 ```{r BernVSBin, echo = FALSE, fig.cap = 'Bernoulli and Binomial Distributions'}
 knitr::include_graphics("Images/Bern_Binomial.png")
@@ -37,7 +39,7 @@ $$
 \end{equation}
 $$
 
-The only parameter of the bernoulli distribution is $\theta$, which defines the probability of success during a bernoulli trial. The value of _x_ is 0 for a failure and 1 for a success. In a practical example you can think of this as 0 for tails and 1 for heads during a coin flip. In Equation \@ref(eq:bernPMFExample) the value of $\theta$ is set to 0.7. We can see the probability of getting a success is 0.7, while the probability of failure is 0.3. 
+The only parameter of the bernoulli distribution is $\theta$, which defines the probability of success during a bernoulli trial. The value of _x_ is 0 for a failure and 1 for a success. In a practical example you can think of this as 0 for tails and 1 for heads during a coin flip. \@ref(eq:bernPMFExample) is an example where the value of $\theta$ is set to 0.7. We can see the probability of getting a success is 0.7, while the probability of failure is 0.3. 
 
 
 $$
@@ -55,17 +57,17 @@ $$
 ### Beta Distribution
 
 The beta distribution can be thought of as a probability distribution of 
-distributions[@Robinson2014beta]. 
+probabilities [@Robinson2014beta]. The Bernoulli distribution is a distribution that gives us a probability of success (coin comes up heads). The beta distribution provides a distribution of these probabilities. To clear this up we will be working through some examples.  
+ 
+If you flip a coin 2 times resulting in 1 heads and 1 tails how sure are you that the coin is fair? Probably not all that sure. But what if you flipped the coin 200 times and it resulted in 100 heads and 100 tails? You would be much more confident that the coin is fair. The beta distribution gives us a way to quantify the probabilities (our confidence in the coin being fair).
 
-We know the bernoulli distribution has one parameter, $\theta$. We can use the beta distribution to determine the probability of a specific value of $\theta$ based on prior information, in our case previous coin flips. 
+The beta distribution has 2 shape parameters, $\alpha$ and $\beta$. These can be thought of as the results from the coin flips we just talked about (i.e. $\alpha=200$, $\beta=200$). Below the probability density for different values of $\theta$ is displayed based on different values of $\alpha$ and $\beta$. In general, the higher the value of $\alpha$ and $\beta$ the narrower the density curve is. Another way to think of this is that the more information (_coin flip results_) we have, the more confident we can be in our coin's bias value (i.e. is it fair, head heavy, etc.). 
 
-If you flip a coin 2 times resulting in 1 heads and 1 tails how sure are you that the coin is fair? Probably not all that sure, right? But what if you flipped the coin 200 times and it resulted in 100 heads and 100 tails? You would be much more confident that the coin is fair. This is the basis of the beta distribution.
-
-The beta distribution has 2 shape parameters, $\alpha$ and $\beta$. These can be though of as the results from the coin flips we just talked about. Below the probability density for different values of $\theta$ is displayed based on different values of $\alpha$ and $\beta$. In general, the higher the value of $\alpha$ and $\beta$ the narrower the density curve is. This makes sense with our thought example above, the more information (_coin flip results_) we have, the more confident we are in our coin's bias (i.e. is it fair, head heavy, etc.). 
+```{r , echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+```
 
 ```{r betashape, echo = TRUE, fig.cap = 'Beta Distribution'}
-library(tidyverse)
-
 a <- c(1, 10, 100)
 b <- c(1, 10, 100)
 params <- cbind(a,b)
@@ -83,9 +85,9 @@ ggplot(ds, aes(x = x, y = y, color=parameters)) + geom_line() +
 
 ```
 
-What about the cases where $\alpha$ and $\beta$ are not equal or close to equal? Well in those 
+What about the cases where $\alpha$ and $\beta$ are not equal or close to equal? In those 
 cases you would probably assume a bit of skew in the distribution, i.e. your coin may
-be biased toward head or tails as shown below.  
+be biased toward head (density skewed toward 1) or tails (density skewed toward 0) as shown below.  
 
 ```{r betaShapeSkewed, echo = TRUE, fig.cap = 'Beta Distribution - Skewed'}
 a <- c(8, 2)
@@ -153,10 +155,10 @@ The 4 components are:
 * __Prior__: The probability of the parameter(s). Defines our prior beliefs of the parameter. Do we _believe_ to a good degree of 
 certainty that the coin is fair?  Maybe take a step back and ask yourself 'do I 
 trust the manufacturer of this coin?'. If this manufacturer has always had great quality
-(i.e. fair coins) then you would have some confidence that your case is no different. 
-* __Posterior__: The probability of the parameter __given__ the evidence. The only way 
-to know this value is to already have the evidence. However we can estimate the posterior in various ways. Think of 
-it this way, given 100 coin flips with 47 heads and 53 tails what is the probability that theta is 0.5 (coin is fair)?
+(i.e. fair coins) then you would have confidence your coin is fair. If you know nothing about where the coin came from you would be more skeptical of the coin's bias.  
+* __Posterior__: The probability of the parameter __given__ the evidence. Think of 
+it this way, given 100 coin flips with 47 heads and 53 tails what is the probability that theta is 0.5 (coin is fair)? The only way 
+to know this value is if you already obtained the evidence. However we can estimate the posterior in various ways some of which will be covered in this chapter. 
 * __Likelihood__: The probability of the evidence __given__ the parameter. Given that 
 we know the coin is fair (theta = 0.5) what is the probability of having 47 heads out of 100 flips? 
 * __Evidence__: The probability of all possible outcomes. Probability of 1/100 heads, 2/100 heads, ..., 100/100 heads.
@@ -165,7 +167,7 @@ we know the coin is fair (theta = 0.5) what is the probability of having 47 head
 __Conditioning your brain for LDA__ : We are starting with a coin flip, but the eventual goal is to link this back to words appearing in a document. Try to keep in mind that we think of a word similar to the outcome of a coin: a word exists in the document (heads!) or a word doesn't exist in the document (tails!).
 
 ## Maximum Likelihood
-The simplest method of parameter estimation is the maximum likelihood method. Effectively we calculate the parameter that maximizes the likelihood.
+The simplest method of parameter estimation is the maximum likelihood (ML) method. Effectively we calculate the parameter ($\theta$) that maximizes the likelihood.
 
 
 $$
@@ -178,7 +180,7 @@ $$
 
 Let's first discuss what the likelihood is. The likelihood can be described as the probability of getting observed data given a specified value of the parameter, $\theta$.  For example, let's say I've flipped a coin 10 times and got 5 heads, 5 tails. Assuming the coin is fair, $\theta$ equals 0.5, what is the likelihood of observing 5 heads and 5 tails. 
 
-To calculate the likelihood of a parameter given a single outcome we would use the probability mass function:
+To calculate the likelihood of a parameter given an outcome we would use the probability mass function in Equation \@ref(eq:bernPMF2).
 
 $$
 \begin{equation}
@@ -186,7 +188,7 @@ P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\}
 (\#eq:bernPMF2)
 \end{equation}
 $$
-Where an outcome of heads equal 1 and tails is 0. Now let's say we have carried out the 10 flips as mentioned previously:
+Where an outcome, _x_, of heads equals 1 and an outcome of tails is 0. Now let's say we have carried out 10 coin flips:
 
 $$
 \begin{equation}
@@ -199,7 +201,7 @@ L(\theta) &= \prod\limits_{n=1}^{10} \theta^{x}(1-\theta)^{1-x}
 $$
 What is shown in Equation \@ref(eq:bernL) is the joint probability mass function. Each coin flip is independent so we calculate the product of the PMF's for each trial. This is known as the likelihood function - the likelihood of a value of $\theta$ given our observed data. 
 
-Back to the maximum likelihood....
+__Back to the maximum likelihood....__
 
 Our goal is to find the value of $\theta$ which maximizes the likelihood of the observed data. To derive the maximum likelihood we start by taking the log of the likelihood, $\mathcal{L}$. 
 
@@ -214,7 +216,7 @@ $$
 \end{equation}
 $$
 
-Differentiate with respect to $\theta$:
+Then differentiate with respect to $\theta$:
 
 $$
 \begin{equation}
@@ -223,12 +225,12 @@ $$
 \end{equation}
 $$
 
-Set it equal to zero and solve:
+Then set the left side of the equation equal to zero and solve:
 
 $$
 \begin{equation}
 \begin{aligned}
-{n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} &= 0  \\ \\
+0 &= {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta}   \\ \\
 {n^{(1)}\over\theta} &= {n^{(0)}\over 1-\theta} \\ \\
 {n^{1} - \theta n^{1}} &= {\theta n^{0}} \\ \\
 n^{(1)} &= \theta(n^{(1)} + n^{0}) \\ \\
@@ -239,7 +241,7 @@ n^{(1)} &= \theta(n^{(1)} + n^{0}) \\ \\
 $$
 
 The value of $\theta$ that maximizes the likelihood is the number of heads over the 
-number of flips. 
+number of flips. The maximum likelihood value for 1 out of 10 flips equal to head up to 10 heads out of 10 flips is shown in Figure \@ref(fig:bernoulliml).  
 
 ```{r bernoulliml, echo = TRUE, warning=FALSE, fig.cap = 'Bernoulli Maximum Likelihood'}
 heads = 1:10
@@ -260,9 +262,8 @@ ggplot(ds, aes(x = heads,
 ```
 
 
-## Maximum a Posteriori (MAP)
-MAP is similar to the method of maximum likelihood estimation, but it also let's us 
-include information about our prior beliefs. Unlike ML estimation, MAP estimates parameters by trying to maximize the posterior.
+## Maximum a Posteriori
+Maximum a Posteriorir (MAP) is similar to the method of maximum likelihood estimation, but it also includes information about our prior beliefs. Unlike ML estimation, MAP estimates parameters by maximizing the posterior.
 
 $$
 \begin{equation}
@@ -282,8 +283,8 @@ $$
 \end{equation}
 $$
 
-
-The evidence term is dropped during the calculation of $\theta_{MAP}$ since it is not a function of $\theta$ and our only concern is maximizing the posterior based on $\theta$. Similar to calculating the Likelhood, the first step is to apply the log function to the remaining terms. 
+The formula for the MAP estimation of $\theta$ is shown in \@ref(eq:bernPMFDropEvidence).
+The evidence term is dropped during the calculation of $\theta_{MAP}$ since it is not a function of $\theta$ and our only concern is maximizing the posterior based on $\theta$. Similar to calculating the ML estimate, the first step is to apply the log function to the remaining terms (Equation \@ref(eq:bernMAPLog)). 
 
 
 $$
@@ -296,7 +297,7 @@ $$
 \end{equation}
 $$
 
-We have already derived the log likelihood during our derivation of the maximum likelihood, so let's now focus on the prior. The prior for the Bernoulli distribution is the Beta distribution and can be used to describe $p(\theta)$. The probability distribution function, PDF, for the Beta distribution is shown in Equation \@ref(#eq:bernPrior). 
+We have already derived the log likelihood during our derivation of the maximum likelihood, so let's now focus on the prior. The prior for the Bernoulli distribution is the Beta distribution and can be used to describe $p(\theta)$. The probability distribution function, PDF, for the Beta distribution is shown in Equation \@ref(eq:bernPrior). 
 
 $$
 \begin{equation}
@@ -305,7 +306,7 @@ p(\theta|\alpha,\beta) = {\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \
 \end{equation}
 $$
 
-Plugging in the PDF of the beta distribution for the prior:
+Next, we plug in the PDF of the beta distribution in the place of the prior (Equation \@ref(eq:bernMAPTheta)).
 
 
 $$
@@ -325,12 +326,12 @@ $$
 \end{equation}
 $$
 
-Now that we know how to calculate the parameter $\theta$ that maximizes the posterior, lets take a look at how choices of different priors and different number of observed trials effects our outcome.  
+Now that we know how to calculate the parameter $\theta$ that maximizes the posterior, lets take a look at how choices of different priors and different numbers of observed trials effects our outcome.  
 
-In the figure below we see MAP estimation of $\theta$ with a relatively uninformed prior and a small number of observed experiments (n=20). Uninformed means we are going to make a weak assumption about the prior. In more general terms, this means that we don't have a strong intuition that our coin is fair or unfair.  The Beta distribution has $\alpha$ and $\beta$ parameters of 2 resulting in the blue density curve shown below. 
+In the Figure \@ref(fig:mapSmallnUninformedPrior) we see the MAP estimation of $\theta$ with a relatively uninformed prior, low $\alpha$ and $\beta$ values and a small number of observed experiments (n=20). Uninformed means we are going to make a weak assumption about the prior. In more general terms, this means that we don't have a strong intuition that our coin is fair or unfair. In a mathematical sense, uninformed means a low sum of the two parameters, if you had $\alpha=1000$ and $\beta=1$ this would __not__ be considered as uninformed whereas $\alpha$ and $\beta$ both equal to 1 is normally referred to as uniformed or naive. The Beta distribution has $\alpha$ and $\beta$ parameters of 2 resulting in the blue density curve shown in Figure \@ref(fig:mapSmallnUninformedPrior). 
 
 
-__NOTE__: The terms weak and uninformed are often used interchangeably when referencing priors. The same goes for the terms strong and informed. 
+__NOTE__: The terms weak, uninformed, and naive are often used interchangeably when referencing priors. The same goes for the terms strong and informed. 
 
 ```{r mapSmallnUninformedPrior, echo = TRUE, fig.cap = 'MAP: Small number of experiments and uninformed prior'}
 # description:
@@ -359,7 +360,7 @@ ggplot(beta_ds, aes(x = theta, y = density)) + geom_point(color='#7A99AC') +
 ```
 
 
-In the next example we have the same number of samples, but we assume a much stronger prior. In particular, we assume the coin is most likely fair by selecting $\alpha$ and $\beta$ parameters of 100. These parameters represent a Beta distribution that is centered at 0.5 and is very dense around that point. We can see the resuting MAP estimate is much closer to 0.5, which is the value of $\theta$ where the Beta distribution is most dense. 
+In the next example we have the same number of samples, but we assume a much stronger prior. In particular, we assume the coin is most likely fair by selecting $\alpha$ and $\beta$ parameters both equal to 100. These parameters represent a Beta distribution that is centered at 0.5 and is very dense around that point. We can see the resuting MAP estimate is much closer to 0.5 than our previous example with the uniformed prior. 
 
 ```{r mapSmallnInformedPrior, echo = TRUE, fig.cap = 'MAP: Small number of experiments and informed prior'}
 # description:
@@ -389,7 +390,7 @@ ggplot(beta_ds, aes(x = theta, y = density)) + geom_line(color='#7A99AC') +
 
 ```
 
-What happens when we have a much larger number of observed experiments and an uninformed prior? In general, the MAP estimate gives us a value that is very close to a likelihood, heads divide by number of trials. 
+What happens when we have a much larger number of observed experiments and an uninformed prior? In this case the MAP estimate will give us a value that is very close to a maximum likelihood estimate, i.e. heads divide by number of trials. 
 
 
 ```{r mapLargenUninformedPrior, echo = TRUE, fig.cap = 'MAP: Large number of experiments and uninformed prior'}
@@ -416,7 +417,7 @@ ggplot(beta_ds, aes(x = theta, y = density)) + geom_line(color='#7A99AC') +
   labs(x='\U03B8', y = 'Density') + theme_minimal()
 ```
 
-Now let's assume a much stronger prior that the coin is fair while using the same number of experiments. Notice that when we use a larger number of experiments it overpowers the strong prior and gives us a very similar MAP estimate in comparison to the example with the uninformed prior and the same number of experiments. 
+Now let's assume a much stronger prior, i.e. more confidence a priori the coin is fair, while using the same number of experiments. Notice that when we use a larger number of experiments it overpowers the strong prior and gives us a very similar MAP estimate in comparison to the example with the uninformed prior and the same number of experiments (Uninformed - Figure \@ref(fig:mapLargenUninformedPrior) and Informed - Figure \@ref(fig:mapLargeInformedPrior)). 
 
 
 ```{r mapLargeInformedPrior, echo = TRUE, fig.cap = 'MAP: Large number of experiments and informed prior'}
@@ -443,7 +444,7 @@ ggplot(beta_ds, aes(x = theta, y = density)) +
 
 In summary:
 
-* The stronger your prior assumptions are, the more observations you will need to overcome an incorrect prior.
+* The stronger your prior assumptions are, the more observations you will need to overcome an incorrect prior estimation/belief.
 * Stronger prior  - MAP estimate moves toward most dense area of prior distribution
 * Weaker prior    - MAP looks more like a maximum likelihood
 

@@ -316,9 +316,9 @@ new_words <- t(apply(thetas, 1, function(x) get_word(x,phi)))
 ds <-tibble(doc_id = rep(1:length(N), times = N), 
             word   = new_words[,1],
             topic  = new_words[,2], 
-            theta_a = thetas[,1],
-            theta_b = thetas[,2],
-            theta_c = thetas[,3]
+            land = thetas[,1],
+            sea = thetas[,2],
+            air = thetas[,3]
 ) 
 
 ds %>% filter(doc_id < 3) %>% group_by(doc_id) %>% summarise(
@@ -330,17 +330,6 @@ ds %>% filter(doc_id < 3) %>% group_by(doc_id) %>% summarise(
 
 The topic word distributions shown in Table 1.1 were used to generate our sample documents. The true habitat (<i>topic</i>) mixtures used to generate the first couple of documents are shown in Table 1.3: 
 
-```{r echo= FALSE}
-ds %>% filter(doc_id < 3) %>% group_by(doc_id) %>% select(doc_id, theta_a, theta_b, theta_c) %>% distinct() %>% 
-  kable(col.names = c('Document', 'Land', 'Sea', 'Air'), 
-        caption = 'Distribution of Habitats in the First Two Locations')
-
-```
-
-
-With the help of LDA we can go through all of our documents and estimate the topic/word (_habitat/animal_) distributions and the topic/document (_habitat/location_) distributions. 
-
-The true and estimated topic word distributions are shown in Table 1.4.
 
 ```{r introInference,  echo= FALSE}
 ######### Inference ############### 
@@ -409,11 +398,30 @@ phi_table <- cbind(phi_table, as.tibble(round(phi_est, 2)))
 names(phi_table)[4:6] <- paste0(estimated_topic_names, ' estimated')
 phi_table <- phi_table[, c(4,1,5,2,6,3)]
 row.names(phi_table) <- colnames(phi)
+```
 
-kable(round(phi_table, 2), caption = 'True and Estimated Word Distribution for Each Topic')
+```{r echo= FALSE}
+
+
+ds %>% filter(doc_id < 3) %>% group_by(doc_id) %>% 
+  select_(1, estimated_topic_names[1],
+          estimated_topic_names[2],
+          estimated_topic_names[3]) %>% distinct() %>% round(2) %>% 
+  kable(col.names = c('Document', estimated_topic_names), 
+        caption = 'Distribution of Habitats in the First Two Locations')
+
 ```
 
 
+With the help of LDA we can go through all of our documents and estimate the topic/word (_habitat/animal_) distributions and the topic/document (_habitat/location_) distributions. 
+
+The true and estimated topic word distributions are shown in Table 1.4.
+
+
+
+```{r echo=FALSE}
+kable(round(phi_table, 2), caption = 'True and Estimated Word Distribution for Each Topic')
+```
 
 
 The document topic mixtures and the estimated mixtures are shown below for the first 5 documents:
@@ -431,6 +439,27 @@ head(theta_table[, c('Location', names(theta_table[1:6]))]) %>% kable(caption='T
 
 ```
 
+The results of our estimations of both the word topic distributions and the document topic distributions have some variation from the true distributions used to generate the documents. The cosine similarity between the estimated and true topic proportions in each document are shown below. 
 
+```{r cosineDistanceDocTop, echo=FALSE}
+as.tibble(t(
+  format(
+    apply(round(vector_angles[,estimated_topic_names],2), 1, max), nsmall=2))) %>%
+  kable(col.names = estimated_topic_names,
+        caption = 'Cosine Similarity between Estimated Document Topic Distributions and Real Distributions')
+```
 
+```{r cosineDistanceTermTop, echo = FALSE}
+phi_vec_angles <- cosine(as.matrix(phi_table))[c(1,3,5),c(2,4,6)]
+phi_vec_angles <- phi_vec_angles[,estimated_topic_names]
+ as.tibble(
+   matrix(format(
+     signif(
+       diag(phi_vec_angles)
+       ,2), nsmall = 2),
+     nrow=1, ncol=3)
+   ) %>% 
+   kable(col.names = estimated_topic_names, 
+         caption = 'Cosine Similarity between Estimated Topic Word Distributions and Real Distributions')
+```
 
