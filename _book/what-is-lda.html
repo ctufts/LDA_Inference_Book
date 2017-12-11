@@ -315,17 +315,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </table>
 <p>To generate a beach (<i>document</i>) based off the description we would use those probabilities in a straightforward manner:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">words_per_topic &lt;-<span class="st"> </span><span class="dv">3</span>
-equal_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds$land, <span class="dt">replace =</span> T)],
-               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds$sea, <span class="dt">replace =</span> T)],
-               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds$air, <span class="dt">replace =</span> T)])
+equal_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>land, <span class="dt">replace =</span> T)],
+               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
+               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(equal_doc)</code></pre></div>
 <pre><code>## 🐘 🐂 🐪 🐧 🐧 🐙 🐦 🐦 🐦</code></pre>
 <p>NOTE: In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach.</p>
 <p>Before proceeding, I want to take a moment to give recognition to Tim Hopper for his presentation utilizing emoji to shed some light on how generative LDA works <span class="citation">(Hopper <a href="references.html#ref-HopperTopicModels">2016</a>)</span>.</p>
 <p>Ok, now let’s make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be 50% sea, 50% air, and 0% land.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">words_per_topic &lt;-<span class="st"> </span><span class="dv">3</span>
-ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds$sea, <span class="dt">replace =</span> T)],
-               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds$air, <span class="dt">replace =</span> T)])
+ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
+               vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(ocean_doc)</code></pre></div>
 <pre><code>## 🐋 🐳 🐢 🐦 🐦 🐦</code></pre>
 <p>NOTE: In the example above only the air and land contribute to the ocean location. Therefore they both contribute an equal number of animals to the location.</p>

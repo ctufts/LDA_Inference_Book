@@ -180,11 +180,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>In the example above we would assume it is a fair die which would result in equal probabilities of ‘rolling’ any of the 6 unique words. Therefore each word has 1/6 chances of being randomly sampled from the die.</p>
 <p>Below is an empirical example where we take each word and assign it to a single side of a fair die. The experiment, a single roll of the die, is repeated 10,000 times. We can see each word comes up at roughly the same frequency.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># draw 1000 samples from multinomial distribution</span>
-outcomes &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">10000</span>, <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">1</span>/<span class="dv">6</span>,<span class="dv">6</span>))==<span class="dv">1</span>))
+outcomes &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">10000</span>, <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">6</span>,<span class="dv">6</span>))<span class="op">==</span><span class="dv">1</span>))
 words &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">strsplit</span>(<span class="st">&quot;Latent Dirichlet Allocation has many peices&quot;</span>, <span class="st">&#39; &#39;</span>))
-ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">id =</span> outcomes, <span class="dt">word =</span> <span class="kw">sapply</span>(outcomes, function(x)words[x]))
-<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x=</span> word)) +<span class="st"> </span><span class="kw">geom_histogram</span>(<span class="dt">stat=</span><span class="st">&#39;count&#39;</span>,<span class="dt">color=</span><span class="st">&#39;#1A384A&#39;</span>, <span class="dt">fill=</span><span class="st">&#39;#7A99AC&#39;</span>) +
-<span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels =</span> words) +
+ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">id =</span> outcomes, <span class="dt">word =</span> <span class="kw">sapply</span>(outcomes, <span class="cf">function</span>(x)words[x]))
+<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x=</span> word)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_histogram</span>(<span class="dt">stat=</span><span class="st">&#39;count&#39;</span>,<span class="dt">color=</span><span class="st">&#39;#1A384A&#39;</span>, <span class="dt">fill=</span><span class="st">&#39;#7A99AC&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels =</span> words) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme_minimal</span>()</code></pre></div>
 <div class="figure"><span id="fig:multinomialDist"></span>
 <img src="_main_files/figure-html/multinomialDist-1.png" alt="Sampling from Multinomial with Equal Parameters" width="672" />
@@ -277,17 +277,17 @@ Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
 trials &lt;-<span class="st"> </span><span class="dv">10000</span>
 x &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(trials, alpha)
 <span class="kw">colnames</span>(x) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;theta_1&#39;</span>, <span class="st">&#39;theta_2&#39;</span>, <span class="st">&#39;theta_3&#39;</span>)
-ds &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">as.tibble</span>(x), <span class="dt">trial =</span> <span class="dv">1</span>:trials) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">gather</span>(theta, word, -trial)
+ds &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">as.tibble</span>(x), <span class="dt">trial =</span> <span class="dv">1</span><span class="op">:</span>trials) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">gather</span>(theta, word, <span class="op">-</span>trial)
 
-<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">color =</span> theta, <span class="dt">fill =</span> theta, <span class="dt">x =</span> theta, <span class="dt">y =</span> word)) +<span class="st"> </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.3</span>) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">theme_minimal</span>() +<span class="st"> </span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">y=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">x =</span> <span class="st">&#39;&#39;</span>, <span class="dt">title =</span> <span class="kw">paste0</span>(<span class="st">&quot;\U03B1 = &quot;</span>,<span class="kw">unique</span>(alpha)) ) +<span class="st"> </span>
+<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">color =</span> theta, <span class="dt">fill =</span> theta, <span class="dt">x =</span> theta, <span class="dt">y =</span> word)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.3</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">y=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">x =</span> <span class="st">&#39;&#39;</span>, <span class="dt">title =</span> <span class="kw">paste0</span>(<span class="st">&quot;\U03B1 = &quot;</span>,<span class="kw">unique</span>(alpha)) ) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels =</span> <span class="kw">c</span>(<span class="kw">expression</span>(<span class="st">&quot;\U03B1&quot;</span>[<span class="dv">1</span>]),
                               <span class="kw">expression</span>(<span class="st">&quot;\U03B1&quot;</span>[<span class="dv">2</span>]),
-                              <span class="kw">expression</span>(<span class="st">&quot;\U03B1&quot;</span>[<span class="dv">3</span>]))) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">scale_fill_discrete</span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>)+<span class="st"> </span>
+                              <span class="kw">expression</span>(<span class="st">&quot;\U03B1&quot;</span>[<span class="dv">3</span>]))) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_fill_discrete</span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>)<span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</code></pre></div>
 <div class="figure"><span id="fig:DirichletAlpha100"></span>
 <img src="_main_files/figure-html/DirichletAlpha100-1.png" alt="Sampling from Dirichlet: α=100" width="672" />
@@ -299,17 +299,17 @@ Figure 3.2: Sampling from Dirichlet: α=100
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">alpha &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)
   x &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(trials, alpha)
 <span class="kw">colnames</span>(x) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;theta_1&#39;</span>, <span class="st">&#39;theta_2&#39;</span>, <span class="st">&#39;theta_3&#39;</span>)
-ds &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">as.tibble</span>(x), <span class="dt">trial =</span> <span class="dv">1</span>:trials) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">gather</span>(theta, word, -trial)
+ds &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">as.tibble</span>(x), <span class="dt">trial =</span> <span class="dv">1</span><span class="op">:</span>trials) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">gather</span>(theta, word, <span class="op">-</span>trial)
 
-<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">color =</span> theta, <span class="dt">fill =</span> theta, <span class="dt">x =</span> theta, <span class="dt">y =</span> word)) +<span class="st"> </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.3</span>) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">theme_minimal</span>() +<span class="st"> </span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">y=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">x =</span> <span class="st">&#39;&#39;</span>, <span class="dt">title =</span> <span class="kw">paste0</span>(<span class="st">&quot;\U03B1 = &quot;</span>,<span class="kw">unique</span>(alpha)) ) +<span class="st"> </span>
+<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">color =</span> theta, <span class="dt">fill =</span> theta, <span class="dt">x =</span> theta, <span class="dt">y =</span> word)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_boxplot</span>(<span class="dt">alpha =</span> <span class="fl">0.3</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">y=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">x =</span> <span class="st">&#39;&#39;</span>, <span class="dt">title =</span> <span class="kw">paste0</span>(<span class="st">&quot;\U03B1 = &quot;</span>,<span class="kw">unique</span>(alpha)) ) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">labels =</span> <span class="kw">c</span>(<span class="kw">expression</span>(<span class="st">&quot;\U03B1&quot;</span>[<span class="dv">1</span>]),
                               <span class="kw">expression</span>(<span class="st">&quot;\U03B1&quot;</span>[<span class="dv">2</span>]),
-                              <span class="kw">expression</span>(<span class="st">&quot;\U03B1&quot;</span>[<span class="dv">3</span>]))) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">scale_fill_discrete</span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>) +<span class="st"> </span>
-<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>) +<span class="st"> </span>
+                              <span class="kw">expression</span>(<span class="st">&quot;\U03B1&quot;</span>[<span class="dv">3</span>]))) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_fill_discrete</span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">guide =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</code></pre></div>
 <div class="figure"><span id="fig:DirichletAlpha1"></span>
 <img src="_main_files/figure-html/DirichletAlpha1-1.png" alt="Sampling from Dirichlet - θ=1" width="672" />
@@ -320,18 +320,18 @@ Figure 3.3: Sampling from Dirichlet - θ=1
 <p>So what happens when the <span class="math inline">\(\alpha\)</span> values are not the same, i.e. the distribution is non-symmetrical? In the histogram below, you can see the distribution of values sampled from the dirichlet distribution for each category. Recall the beta distribution shape skews as the difference between the two parameters grows.</p>
 <p>You recall we only need to estimate one value, <span class="math inline">\(\theta_{1}\)</span> generated from the beta distribution with 2 parameters because we can infer <span class="math inline">\(\theta_{2}\)</span> from this value (<span class="math inline">\(\theta_{2} = 1-\theta_{1}\)</span>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">alpha &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">50</span>,<span class="dv">20</span>)
-alpha_prop &lt;-<span class="st"> </span>alpha/<span class="kw">sum</span>(alpha)
+alpha_prop &lt;-<span class="st"> </span>alpha<span class="op">/</span><span class="kw">sum</span>(alpha)
 x &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(trials, alpha)
 <span class="kw">colnames</span>(x) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;theta_1&#39;</span>, <span class="st">&#39;theta_2&#39;</span>, <span class="st">&#39;theta_3&#39;</span>)
-ds &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">as.tibble</span>(x), <span class="dt">trial =</span> <span class="dv">1</span>:trials) %&gt;%<span class="st"> </span>
-<span class="st">  </span><span class="kw">gather</span>(theta, word, -trial)
+ds &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">as.tibble</span>(x), <span class="dt">trial =</span> <span class="dv">1</span><span class="op">:</span>trials) <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">gather</span>(theta, word, <span class="op">-</span>trial)
 
-<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">color =</span> theta, <span class="dt">fill=</span>theta, <span class="dt">x =</span> word)) +<span class="st"> </span><span class="kw">geom_histogram</span>(<span class="dt">position=</span><span class="st">&#39;identity&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.1</span>) +
+<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">color =</span> theta, <span class="dt">fill=</span>theta, <span class="dt">x =</span> word)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_histogram</span>(<span class="dt">position=</span><span class="st">&#39;identity&#39;</span>, <span class="dt">alpha =</span> <span class="fl">0.1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="co"># geom_line(stat=&#39;density&#39;) + </span>
-<span class="st">  </span><span class="kw">theme_minimal</span>() +<span class="st"> </span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;\U03B8&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Count&quot;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;\U03B8&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Count&quot;</span>) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">label =</span> alpha,
-                       <span class="dt">name =</span> <span class="st">&quot;\U03B1&quot;</span> ) +
+                       <span class="dt">name =</span> <span class="st">&quot;\U03B1&quot;</span> ) <span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_fill_discrete</span>(<span class="dt">label =</span> alpha,
                        <span class="dt">name =</span> <span class="st">&quot;\U03B1&quot;</span> )</code></pre></div>
 <div class="figure"><span id="fig:DirichletAlphaMixed"></span>
@@ -359,11 +359,11 @@ Figure 3.4: Sampling from Dirichlet - θ=[10,50,20]
 v &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;red&#39;</span>, <span class="st">&#39;green&#39;</span>, <span class="st">&#39;blue&#39;</span>)
 nwords &lt;-<span class="st"> </span><span class="dv">10</span>
 doc_theta &lt;-<span class="st"> </span><span class="kw">c</span>(.<span class="dv">1</span>, .<span class="dv">1</span>, .<span class="dv">8</span>)
-document&lt;-<span class="kw">rep</span>(v, doc_theta*nwords)
+document&lt;-<span class="kw">rep</span>(v, doc_theta<span class="op">*</span>nwords)
 books &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">label =</span> <span class="kw">c</span>(<span class="st">&#39;blue&#39;</span>, <span class="st">&#39;red&#39;</span>, <span class="st">&#39;green&#39;</span>), 
                     <span class="dt">code =</span> <span class="kw">c</span>(<span class="st">&#39;\U1F4D8&#39;</span>, <span class="st">&#39;\U1F4D5&#39;</span>, <span class="st">&#39;\U1F4D7&#39;</span>))
 
-<span class="kw">cat</span>(<span class="kw">sapply</span>(document, function(x) books$code[<span class="kw">which</span>(books$label ==<span class="st"> </span>x)]))</code></pre></div>
+<span class="kw">cat</span>(<span class="kw">sapply</span>(document, <span class="cf">function</span>(x) books<span class="op">$</span>code[<span class="kw">which</span>(books<span class="op">$</span>label <span class="op">==</span><span class="st"> </span>x)]))</code></pre></div>
 <pre><code>## 📕 📗 📘 📘 📘 📘 📘 📘 📘 📘</code></pre>
 <p>So what is the structure of the document generator?</p>
 <ul>
@@ -383,17 +383,17 @@ words &lt;-<span class="st"> </span>document
 word_counts &lt;-<span class="st"> </span><span class="kw">table</span>(words)
 alphas &lt;-<span class="st">  </span>word_counts
 new_doc &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="st">&#39;&#39;</span>, nwords)
-for(i in <span class="dv">1</span>:nwords){
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>nwords){
   <span class="kw">set.seed</span>(i)
   p =<span class="st"> </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>,alphas)
   <span class="kw">set.seed</span>(i)
-  new_doc[i] &lt;-<span class="st"> </span><span class="kw">names</span>(word_counts)[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>, <span class="dv">1</span>, p) ==<span class="st"> </span><span class="dv">1</span>)]
+  new_doc[i] &lt;-<span class="st"> </span><span class="kw">names</span>(word_counts)[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>, <span class="dv">1</span>, p) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)]
 }
 <span class="kw">table</span>(new_doc)</code></pre></div>
 <pre><code>## new_doc
 ## blue  red 
 ##    9    1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(<span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>, <span class="kw">sapply</span>(new_doc, function(x) books$code[<span class="kw">which</span>(books$label ==<span class="st"> </span>x)]))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(<span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>, <span class="kw">sapply</span>(new_doc, <span class="cf">function</span>(x) books<span class="op">$</span>code[<span class="kw">which</span>(books<span class="op">$</span>label <span class="op">==</span><span class="st"> </span>x)]))</code></pre></div>
 <pre><code>## 
 ##  📘 📘 📘 📘 📘 📘 📕 📘 📘 📘</code></pre>
 <p>It’s not quite the same as the original, but that should be expected. This is a model that generates documents probabalistically based on some prior information. So let’s make a few more and see how this changes.</p>
@@ -405,25 +405,25 @@ word_encodings &lt;-<span class="st"> </span><span class="kw">tibble</span>(<spa
                 <span class="dt">code =</span> <span class="kw">c</span>(<span class="st">&#39;\U1F4D8&#39;</span>, <span class="st">&#39;\U1F4D5&#39;</span>, <span class="st">&#39;\U1F4D7&#39;</span>), 
                 <span class="dt">word_props =</span> <span class="kw">c</span>(.<span class="dv">1</span>, .<span class="dv">1</span>, .<span class="dv">8</span>))
 
-thetas &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(ndocs*nwords, alphas)
+thetas &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(ndocs<span class="op">*</span>nwords, alphas)
 <span class="kw">print</span>(<span class="kw">head</span>(thetas))</code></pre></div>
-<pre><code>##           [,1]       [,2]        [,3]
-## [1,] 0.6259047 0.33535589 0.038739455
-## [2,] 0.8641536 0.07229474 0.063551631
-## [3,] 0.8292271 0.02713615 0.143636766
-## [4,] 0.9399257 0.05494752 0.005126745
-## [5,] 0.7641922 0.19525569 0.040552159
-## [6,] 0.9015058 0.02198210 0.076512137</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">selected_words &lt;-<span class="st"> </span><span class="kw">apply</span>(thetas, <span class="dv">1</span>, function(x) <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,x)==<span class="dv">1</span>))
+<pre><code>##      [,1]  [,2]   [,3]
+## [1,] 0.63 0.335 0.0387
+## [2,] 0.86 0.072 0.0636
+## [3,] 0.83 0.027 0.1436
+## [4,] 0.94 0.055 0.0051
+## [5,] 0.76 0.195 0.0406
+## [6,] 0.90 0.022 0.0765</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">selected_words &lt;-<span class="st"> </span><span class="kw">apply</span>(thetas, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,x)<span class="op">==</span><span class="dv">1</span>))
 
-ds &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">1</span>:ndocs, <span class="dt">each =</span> nwords),
-             <span class="dt">word =</span> word_encodings$label[selected_words], 
-             <span class="dt">word_uni =</span> word_encodings$code[selected_words])
+ds &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span>ndocs, <span class="dt">each =</span> nwords),
+             <span class="dt">word =</span> word_encodings<span class="op">$</span>label[selected_words], 
+             <span class="dt">word_uni =</span> word_encodings<span class="op">$</span>code[selected_words])
 
 
-ds %&gt;%<span class="st"> </span><span class="kw">group_by</span>(doc_id) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(
+ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(doc_id) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(
   <span class="dt">tokens =</span> <span class="kw">paste</span>(word_uni, <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>)
-) %&gt;%<span class="st"> </span><span class="kw">kable</span>(<span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&#39;Document&#39;</span>, <span class="st">&#39;Words&#39;</span>))</code></pre></div>
+) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&#39;Document&#39;</span>, <span class="st">&#39;Words&#39;</span>))</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -463,7 +463,7 @@ ds %&gt;%<span class="st"> </span><span class="kw">group_by</span>(doc_id) %&gt;
 <span class="co"># plot distributions</span>
 alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">nrow</span>(books))
 <span class="co"># alphas &lt;- 1:6 </span>
-n &lt;-<span class="st"> </span><span class="kw">table</span>(ds$word)
+n &lt;-<span class="st"> </span><span class="kw">table</span>(ds<span class="op">$</span>word)
 <span class="kw">head</span>(n)</code></pre></div>
 <pre><code>## 
 ##  blue green   red 
@@ -471,24 +471,24 @@ n &lt;-<span class="st"> </span><span class="kw">table</span>(ds$word)
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">niters =<span class="st"> </span><span class="dv">2000</span>
 burnin =<span class="st"> </span><span class="dv">500</span>
 
-thetas =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> (niters-burnin), <span class="dt">ncol=</span><span class="kw">nrow</span>(books), 
+thetas =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> (niters<span class="op">-</span>burnin), <span class="dt">ncol=</span><span class="kw">nrow</span>(books), 
                 <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="ot">NULL</span>, <span class="kw">c</span>(<span class="kw">names</span>(n))))
-for (i in <span class="dv">1</span>:niters){
-  theta =<span class="st"> </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>,n+alphas)
+<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>niters){
+  theta =<span class="st"> </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>,n<span class="op">+</span>alphas)
 
   
-  if (i &gt;=<span class="st"> </span>burnin){
-    thetas[(i-burnin), ] =<span class="st"> </span>theta
+  <span class="cf">if</span> (i <span class="op">&gt;=</span><span class="st"> </span>burnin){
+    thetas[(i<span class="op">-</span>burnin), ] =<span class="st"> </span>theta
   }
 }
 
  <span class="co"># hist(thetas[, 1])</span>
  <span class="co"># hist(thetas[, 2])</span>
  <span class="co"># </span>
- df &lt;-<span class="st"> </span><span class="kw">as.tibble</span>(thetas) %&gt;%<span class="st"> </span>
+ df &lt;-<span class="st"> </span><span class="kw">as.tibble</span>(thetas) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">   </span><span class="kw">gather</span>(word, theta)
 <span class="co"># map book colors to each segment of plot to avoid bothering with the emoji labels (for now)</span>
-<span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">y=</span>theta, <span class="dt">x =</span> word)) +<span class="st"> </span><span class="kw">geom_violin</span>()</code></pre></div>
+<span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">y=</span>theta, <span class="dt">x =</span> word)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_violin</span>()</code></pre></div>
 <p><img src="_main_files/figure-html/unigramInference10-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># apply(thetas, 2, median)</span>
 <span class="co"># n/sum(n)</span></code></pre></div>
@@ -520,20 +520,20 @@ word_encodings &lt;-<span class="st"> </span><span class="kw">tibble</span>(<spa
                 <span class="dt">code =</span> <span class="kw">c</span>(<span class="st">&#39;\U1F4D8&#39;</span>, <span class="st">&#39;\U1F4D5&#39;</span>, <span class="st">&#39;\U1F4D7&#39;</span>), 
                 <span class="dt">word_props =</span> <span class="kw">c</span>(.<span class="dv">1</span>, .<span class="dv">1</span>, .<span class="dv">8</span>))
 
-thetas &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(ndocs*nwords, alphas)
+thetas &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(ndocs<span class="op">*</span>nwords, alphas)
 <span class="kw">print</span>(<span class="kw">head</span>(thetas))</code></pre></div>
-<pre><code>##           [,1]       [,2]       [,3]
-## [1,] 0.5154606 0.40401130 0.08052810
-## [2,] 0.8526076 0.12103847 0.02635393
-## [3,] 0.7801023 0.14641427 0.07348343
-## [4,] 0.8444930 0.06278609 0.09272094
-## [5,] 0.7224804 0.11597181 0.16154776
-## [6,] 0.8639552 0.01028122 0.12576353</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">selected_words &lt;-<span class="st"> </span><span class="kw">apply</span>(thetas, <span class="dv">1</span>, function(x) <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,x)==<span class="dv">1</span>))
+<pre><code>##      [,1]  [,2]  [,3]
+## [1,] 0.52 0.404 0.081
+## [2,] 0.85 0.121 0.026
+## [3,] 0.78 0.146 0.073
+## [4,] 0.84 0.063 0.093
+## [5,] 0.72 0.116 0.162
+## [6,] 0.86 0.010 0.126</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">selected_words &lt;-<span class="st"> </span><span class="kw">apply</span>(thetas, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,x)<span class="op">==</span><span class="dv">1</span>))
 
-ds &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">1</span>:ndocs, <span class="dt">each =</span> nwords),
-             <span class="dt">word =</span> word_encodings$label[selected_words], 
-             <span class="dt">word_uni =</span> word_encodings$code[selected_words])
+ds &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span>ndocs, <span class="dt">each =</span> nwords),
+             <span class="dt">word =</span> word_encodings<span class="op">$</span>label[selected_words], 
+             <span class="dt">word_uni =</span> word_encodings<span class="op">$</span>code[selected_words])
 
 
 <span class="co"># counts -&gt; alphas</span>
@@ -544,7 +544,7 @@ ds &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt"
 
 alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">nrow</span>(books))
 <span class="co"># alphas &lt;- 1:6 </span>
-n &lt;-<span class="st"> </span><span class="kw">table</span>(ds$word)
+n &lt;-<span class="st"> </span><span class="kw">table</span>(ds<span class="op">$</span>word)
 <span class="kw">head</span>(n)</code></pre></div>
 <pre><code>## 
 ##  blue green   red 
@@ -552,30 +552,30 @@ n &lt;-<span class="st"> </span><span class="kw">table</span>(ds$word)
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">niters =<span class="st"> </span><span class="dv">2000</span>
 burnin =<span class="st"> </span><span class="dv">500</span>
 
-thetas =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> (niters-burnin), <span class="dt">ncol=</span><span class="kw">nrow</span>(books), 
+thetas =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> (niters<span class="op">-</span>burnin), <span class="dt">ncol=</span><span class="kw">nrow</span>(books), 
                 <span class="dt">dimnames =</span> <span class="kw">list</span>(<span class="ot">NULL</span>, <span class="kw">c</span>(<span class="kw">names</span>(n))))
-for (i in <span class="dv">1</span>:niters){
-  theta =<span class="st"> </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>,n+alphas)
+<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>niters){
+  theta =<span class="st"> </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>,n<span class="op">+</span>alphas)
 
   
-  if (i &gt;=<span class="st"> </span>burnin){
-    thetas[(i-burnin), ] =<span class="st"> </span>theta
+  <span class="cf">if</span> (i <span class="op">&gt;=</span><span class="st"> </span>burnin){
+    thetas[(i<span class="op">-</span>burnin), ] =<span class="st"> </span>theta
   }
 }
 
  <span class="co"># hist(thetas[, 1])</span>
  <span class="co"># hist(thetas[, 2])</span>
  <span class="co"># </span>
- df &lt;-<span class="st"> </span><span class="kw">as.tibble</span>(thetas) %&gt;%<span class="st"> </span>
+ df &lt;-<span class="st"> </span><span class="kw">as.tibble</span>(thetas) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">   </span><span class="kw">gather</span>(word, theta)
 <span class="co"># map book colors to each segment of plot to avoid bothering with the emoji labels (for now)</span>
-<span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">y=</span>theta, <span class="dt">x =</span> word)) +<span class="st"> </span><span class="kw">geom_violin</span>()</code></pre></div>
+<span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">y=</span>theta, <span class="dt">x =</span> word)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_violin</span>()</code></pre></div>
 <p><img src="_main_files/figure-html/unigramInference500-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># apply(thetas, 2, median)</span>
-n/<span class="kw">sum</span>(n)</code></pre></div>
+n<span class="op">/</span><span class="kw">sum</span>(n)</code></pre></div>
 <pre><code>## 
-##   blue  green    red 
-## 0.8016 0.1014 0.0970</code></pre>
+##  blue green   red 
+## 0.802 0.101 0.097</code></pre>
 
 </div>
 </div>

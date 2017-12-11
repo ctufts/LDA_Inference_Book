@@ -49,6 +49,7 @@ library(knitr)
 library(kableExtra) 
 library(lsa)
 
+
 # 3 topics - land sea & air
 # birds and amphibious have cross over
 # fish - sea 100
@@ -107,11 +108,13 @@ phi <- matrix(c(land_phi, sea_phi, air_phi), nrow = k, ncol = length(vocab),
               byrow = TRUE, dimnames = list(c('land', 'sea', 'air'),vocab))
 
 
-phi_ds <- as.tibble(cbind(vocab,t(round(phi,2))))
+phi_ds <- as.tibble(cbind(vocab,t(phi)))
 phi_ds$land <- as.numeric(phi_ds$land)
 phi_ds$sea <- as.numeric(phi_ds$sea)
 phi_ds$air <- as.numeric(phi_ds$air)
-phi_ds %>% kable(caption = 'Animal Distributions in Each Habitat') %>% 
+
+
+phi_ds %>% kable(caption = 'Animal Distributions in Each Habitat', digits = 2) %>% 
   kable_styling(bootstrap_options = "striped")
 ```
 
