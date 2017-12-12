@@ -451,10 +451,10 @@ In summary:
 
 ## Bayesian Inference
 
-Another option we have for estimating parameters is to estimate the posterior of the distribution via Bayesian inference. In MAP estimation we included prior assumptions as part of our calculation. We are going to do the same via Bayesian Inference however instead of a point estimate of $\theta$, we will be calculating the posterior distribution over all possible values of $\theta$. From this we can take the expected value of $\theta$ as our estimated parameter. 
+Another option we have for estimating parameters is to estimate the posterior of the distribution via Bayesian inference. In our MAP estimation example we included prior assumptions as part of our calculation. We are going to do the same via Bayesian inference however instead of a point estimate of $\theta$, we will be calculating the posterior distribution over all possible values of $\theta$. From this we can take the expected value of $\theta$ as our estimated parameter. 
 
 
-In the case of the coin flip, Bayesian inference can be solved analytically. We have reviewed the likelihood and the prior, but when estimating the posterior we need to include the evidence term. This is somewhat tricky.
+In the case of the coin flip, Bayesian inference can be solved analytically. We have reviewed the likelihood and the prior, but when estimating the posterior we need to include the evidence term. This is somewhat tricky. 
 
 $$
 \begin{equation}
@@ -478,7 +478,7 @@ $$
 \end{equation}
 $$
 
-Note that the evidence term is actually a constant value since it is an integral over all values of $\theta$. The evidence term is used as a scaling factor to ensure our probabilities sum to 1. We will plug in a generic placeholder of our evidence value since we have established that it is a constant.
+In Equation \@ref(eq:evidence) we see the evidence term is an integral over all values of $\theta$, 0 to 1. This means the value is a constant. Recall that the evidence term acts as a scaling factor to ensure our probabilities sum to 1. We will plug in a generic placeholder of our evidence value in \@ref(eq:bernBIFinal) since we have established that it is a constant.
 
 $$
 \begin{equation}
@@ -490,12 +490,9 @@ p(\theta|z, N) &= {\theta^{z}(1-\theta)^{(N-z)}{{\theta^{(a-1)}(1-\theta)^{(b-1)
 (\#eq:bernBIFinal)
 \end{equation}
 $$
+In the second step of Equation @\ref(eq:bernBIFinal) the beta function (the denomitor of the prior) takes the place of the constant (i.e. the evidence value). The beta function is a constant value and we need it to do the same job as the evidence term; it needs to ensure the probabilities sum to 1. To ensure this we alter the input parameters to the beta function, so that we are left with a beta distribution for our posterior that includes our observed experiments and our prior's hyperparameters.
 
-Notice what happens in the second step of equation 18. I combine the Beta function term and the constant evidence term. The Beta function in this equation is also a constant value. Therefore when we combine the likelihood and prior we alter the Beta function's parameters and drop the constant for the evidence term. This leaves us with a Beta distribution for our posterior that includse our observed experiments and our prior's hyperparameters.
-
-????????????? Possibly rephrase the above to specify that we are preserving the scaling of the posterior... ??????????????
-
-To estimate $\theta$, we calculate the expected value of a Beta distribution as shown in Equation 19. 
+To estimate $\theta$, we calculate the expected value of a Beta distribution as shown in Equation @\ref(eq:bernBIExp). 
 
 $$
 \begin{equation}
@@ -504,7 +501,7 @@ E[\theta]={\alpha \over \alpha + \beta}
 \end{equation}
 $$
 
-Plugging in our parameters as per the derivation in Equation 18: 
+Plugging in our parameters, as per the derivation in Equation @\ref(eq:bernBIFinal), we get the resulting expected value of $\theta$ shown in @\ref(eq:bernBIExpFinal) 
 
 $$
 \begin{equation}
@@ -515,6 +512,9 @@ E[\theta] &= {z+a \over {z+a + n-z+b}}\\\\
 (\#eq:bernBIExpFinal)
 \end{equation}
 $$
+
+
+Figure \@ref(fig:BISmallUninformedPrior) shows an example of the analytical Bayesian inference solution for a small number of flips, 20, resulting in 14 heads while assuming a weak prior ($\alpha$=$\beta$ = 2). It is worth noting that Bayesian inference is effected by the selection of a prior and the number of observations in the same way MAP estimation is. 
 
 
 ```{r BISmallUninformedPrior, echo = TRUE, fig.cap = 'Bayesian Inference: Analytical Solution (n=20)'}
@@ -539,24 +539,27 @@ ggplot(beta_ds, aes(x = theta, y = density)) +
   labs(x='\U03B8', y = 'Density') + theme_minimal()
 ```
 
-Keep in mind Bayesian inference is effected by the selection of a prior and the number of observations in the same way MAP estimation is. 
-
 
 ### The Issue of Intractability
 The coin flip example solved via Bayesian inference was capable of being solved analytically. However in many cases of Bayesian inference this is not possible due to the intractability of solving for the marginal likelihood (evidence term). We do have other options for solutions such as Gibbs sampling, expectation-maximization, and Metropolis-Hastings methods. This book will only focus on Gibbs Sampling, but be aware other types of solvers are used for Bayesian inference, and in particular LDA.
 
 ### A Tale of Two MC's
 Gibbs Sampling is a Markov Chain Monte Carlo (MCMC) technique for parameter estimation.  Let's break down the two MC's. A markov chain is a process where the next state is determined by the current state. More importantly it does not rely on any information prior to the current state. 
+
 ?????
 1. This needs a diagram and possibly a general example. 
+ * Weather - Sunny/Rainy (it's always sunny in philadelphia), Next word in sentence (probably too complicated), board game (dice rolls) 
+ 
 2. LETS MAKE SURE TO REITERATE THIS AFTER SHOWING THE GENERAL GIBBS SAMPLING MATH AND DIAGRAM 
 ????
-The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of $\pi$. All we need is some chalk and a bucket of rice. I draw a circle on the ground. I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. From here I can infer the value of $\pi$ as follows:
+
+
+The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of $\pi$.[@resnik2010gibbs] All we need is some chalk and a bucket of rice. First I draw a circle on the ground. Then I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. (Side note: you could save yourself a bunch of time and just weight the two proportions of rice instead of straining your vision and wasting your time.) From here I can infer the value of $\pi$ as follows:
 
 $$
 \begin{equation}
 \begin{aligned}
-{Rice_{circle}\over Rice_{circle + square}} &= {\pi r^{2} \over (2r)^{2}}\\\\
+{\pi r^{2} \over (2r)^{2}} &= {Rice_{circle}\over Rice_{circle + square}} \\\\
 \pi &\approx {4Rice_{circle}\over Rice_{circle + square}}
 \end{aligned}
 (\#eq:MCRice)
