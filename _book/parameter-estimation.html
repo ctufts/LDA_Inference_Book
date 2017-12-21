@@ -117,12 +117,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="2.3" data-path="parameter-estimation.html"><a href="parameter-estimation.html#maximum-likelihood"><i class="fa fa-check"></i><b>2.3</b> Maximum Likelihood</a></li>
 <li class="chapter" data-level="2.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#maximum-a-posteriori"><i class="fa fa-check"></i><b>2.4</b> Maximum a Posteriori</a></li>
 <li class="chapter" data-level="2.5" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bayesian-inference"><i class="fa fa-check"></i><b>2.5</b> Bayesian Inference</a><ul>
-<li class="chapter" data-level="2.5.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#the-issue-of-intractability"><i class="fa fa-check"></i><b>2.5.1</b> The Issue of Intractability</a></li>
-<li class="chapter" data-level="2.5.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#a-tale-of-two-mcs"><i class="fa fa-check"></i><b>2.5.2</b> A Tale of Two MC’s</a></li>
-<li class="chapter" data-level="2.5.3" data-path="parameter-estimation.html"><a href="parameter-estimation.html#conjugate-priors"><i class="fa fa-check"></i><b>2.5.3</b> Conjugate Priors</a></li>
-<li class="chapter" data-level="2.5.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#gibbs-sampling"><i class="fa fa-check"></i><b>2.5.4</b> Gibbs Sampling</a></li>
-<li class="chapter" data-level="2.5.5" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bias-of-two-coins"><i class="fa fa-check"></i><b>2.5.5</b> Bias of Two Coins</a></li>
-<li class="chapter" data-level="2.5.6" data-path="parameter-estimation.html"><a href="parameter-estimation.html#change-point-example"><i class="fa fa-check"></i><b>2.5.6</b> Change Point Example</a></li>
+<li class="chapter" data-level="2.5.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#analytical-solution"><i class="fa fa-check"></i><b>2.5.1</b> Analytical Solution</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="parameter-estimation.html"><a href="parameter-estimation.html#gibbs-sampling"><i class="fa fa-check"></i><b>2.6</b> Gibbs Sampling</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#the-issue-of-intractability"><i class="fa fa-check"></i><b>2.6.1</b> The Issue of Intractability</a></li>
+<li class="chapter" data-level="2.6.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#a-tale-of-two-mcs"><i class="fa fa-check"></i><b>2.6.2</b> A Tale of Two MC’s</a></li>
+<li class="chapter" data-level="2.6.3" data-path="parameter-estimation.html"><a href="parameter-estimation.html#conjugate-distributions-and-priors"><i class="fa fa-check"></i><b>2.6.3</b> Conjugate Distributions and Priors</a></li>
+<li class="chapter" data-level="2.6.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#gibbs-sampling-1"><i class="fa fa-check"></i><b>2.6.4</b> Gibbs Sampling</a></li>
+<li class="chapter" data-level="2.6.5" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bias-of-two-coins"><i class="fa fa-check"></i><b>2.6.5</b> Bias of Two Coins</a></li>
+<li class="chapter" data-level="2.6.6" data-path="parameter-estimation.html"><a href="parameter-estimation.html#change-point-example"><i class="fa fa-check"></i><b>2.6.6</b> Change Point Example</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html"><i class="fa fa-check"></i><b>3</b> Multinomial Distribution</a><ul>
@@ -335,7 +338,8 @@ L(\theta) &amp;= \prod\limits_{n=1}^{10} \theta^{x}(1-\theta)^{1-x}
 \end{aligned}
 \tag{2.9}
 \end{equation}
-\]</span> What is shown in Equation <a href="parameter-estimation.html#eq:bernL">(2.9)</a> is the joint probability mass function. Each coin flip is independent so we calculate the product of the PMF’s for each trial. This is known as the likelihood function - the likelihood of a value of <span class="math inline">\(\theta\)</span> given our observed data.</p>
+\]</span></p>
+<p>What is shown in Equation <a href="parameter-estimation.html#eq:bernL">(2.9)</a> is the joint probability mass function. Each coin flip is independent so we calculate the product of the PMF’s for each trial. This is known as the likelihood function - the likelihood of a value of <span class="math inline">\(\theta\)</span> given our observed data.</p>
 <p><strong>Back to the maximum likelihood….</strong></p>
 <p>Our goal is to find the value of <span class="math inline">\(\theta\)</span> which maximizes the likelihood of the observed data. To derive the maximum likelihood we start by taking the log of the likelihood, <span class="math inline">\(\mathcal{L}\)</span>.</p>
 <p><span class="math display" id="eq:bernLogL">\[
@@ -566,7 +570,9 @@ Figure 2.8: MAP: Large number of experiments and informed prior
 </div>
 <div id="bayesian-inference" class="section level2">
 <h2><span class="header-section-number">2.5</span> Bayesian Inference</h2>
-<p>Another option we have for estimating parameters is to estimate the posterior of the distribution via Bayesian inference. In MAP estimation we included prior assumptions as part of our calculation. We are going to do the same via Bayesian Inference however instead of a point estimate of <span class="math inline">\(\theta\)</span>, we will be calculating the posterior distribution over all possible values of <span class="math inline">\(\theta\)</span>. From this we can take the expected value of <span class="math inline">\(\theta\)</span> as our estimated parameter.</p>
+<div id="analytical-solution" class="section level3">
+<h3><span class="header-section-number">2.5.1</span> Analytical Solution</h3>
+<p>Another option we have for estimating parameters is to estimate the posterior of the distribution via Bayesian inference. In our MAP estimation example we included prior assumptions as part of our calculation. We are going to do the same via Bayesian inference however instead of a point estimate of <span class="math inline">\(\theta\)</span>, we will be calculating the posterior distribution over all possible values of <span class="math inline">\(\theta\)</span>. From this we can take the expected value of <span class="math inline">\(\theta\)</span> as our estimated parameter.</p>
 <p>In the case of the coin flip, Bayesian inference can be solved analytically. We have reviewed the likelihood and the prior, but when estimating the posterior we need to include the evidence term. This is somewhat tricky.</p>
 <p><span class="math display" id="eq:PosteriorBI">\[
 \begin{equation}
@@ -587,7 +593,7 @@ p(D) = \int_{\theta}p(D|\theta)p(\theta)d\theta
 \tag{2.20}
 \end{equation}
 \]</span></p>
-<p>Note that the evidence term is actually a constant value since it is an integral over all values of <span class="math inline">\(\theta\)</span>. The evidence term is used as a scaling factor to ensure our probabilities sum to 1. We will plug in a generic placeholder of our evidence value since we have established that it is a constant.</p>
+<p>In Equation <a href="parameter-estimation.html#eq:evidence">(2.19)</a> we see the evidence term is an integral over all values of <span class="math inline">\(\theta\)</span>, 0 to 1. This means the value is a constant. Recall that the evidence term acts as a scaling factor to ensure our probabilities sum to 1. We will plug in a generic placeholder of our evidence value in <a href="parameter-estimation.html#eq:bernBIFinal">(2.21)</a> since we have established that it is a constant.</p>
 <p><span class="math display" id="eq:bernBIFinal">\[
 \begin{equation}
 \begin{aligned}
@@ -597,17 +603,15 @@ p(\theta|z, N) &amp;= {\theta^{z}(1-\theta)^{(N-z)}{{\theta^{(a-1)}(1-\theta)^{(
 \end{aligned}
 \tag{2.21}
 \end{equation}
-\]</span></p>
-<p>Notice what happens in the second step of equation 18. I combine the Beta function term and the constant evidence term. The Beta function in this equation is also a constant value. Therefore when we combine the likelihood and prior we alter the Beta function’s parameters and drop the constant for the evidence term. This leaves us with a Beta distribution for our posterior that includse our observed experiments and our prior’s hyperparameters.</p>
-<p>????????????? Possibly rephrase the above to specify that we are preserving the scaling of the posterior… ??????????????</p>
-<p>To estimate <span class="math inline">\(\theta\)</span>, we calculate the expected value of a Beta distribution as shown in Equation 19.</p>
+\]</span> In the second step of Equation @(eq:bernBIFinal) the beta function (the denomitor of the prior) takes the place of the constant (i.e. the evidence value). The beta function is a constant value and we need it to do the same job as the evidence term; it needs to ensure the probabilities sum to 1. To ensure this we alter the input parameters to the beta function, so that we are left with a beta distribution for our posterior that includes our observed experiments and our prior’s hyperparameters.</p>
+<p>To estimate <span class="math inline">\(\theta\)</span>, we calculate the expected value of a Beta distribution as shown in Equation @(eq:bernBIExp).</p>
 <p><span class="math display" id="eq:bernBIExp">\[
 \begin{equation}
 E[\theta]={\alpha \over \alpha + \beta}
 \tag{2.22}
 \end{equation}
 \]</span></p>
-<p>Plugging in our parameters as per the derivation in Equation 18:</p>
+<p>Plugging in our parameters, as per the derivation in Equation @(eq:bernBIFinal), we get the resulting expected value of <span class="math inline">\(\theta\)</span> shown in @(eq:bernBIExpFinal)</p>
 <p><span class="math display" id="eq:bernBIExpFinal">\[
 \begin{equation}
 \begin{aligned}
@@ -617,6 +621,7 @@ E[\theta] &amp;= {z+a \over {z+a + n-z+b}}\\\\
 \tag{2.23}
 \end{equation}
 \]</span></p>
+<p>Figure <a href="parameter-estimation.html#fig:BISmallUninformedPrior">2.9</a> shows an example of the analytical Bayesian inference solution for a small number of flips, 20, resulting in 14 heads while assuming a weak prior (<span class="math inline">\(\alpha\)</span>=<span class="math inline">\(\beta\)</span> = 2). It is worth noting that Bayesian inference is effected by the selection of a prior and the number of observations in the same way MAP estimation is.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">20</span>
 heads &lt;-<span class="st"> </span><span class="dv">14</span>
 tails &lt;-<span class="st"> </span>n<span class="op">-</span>heads
@@ -641,34 +646,47 @@ map_theta &lt;-<span class="st"> </span>(heads <span class="op">+</span><span cl
 Figure 2.9: Bayesian Inference: Analytical Solution (n=20)
 </p>
 </div>
-<p>Keep in mind Bayesian inference is effected by the selection of a prior and the number of observations in the same way MAP estimation is.</p>
+</div>
+</div>
+<div id="gibbs-sampling" class="section level2">
+<h2><span class="header-section-number">2.6</span> Gibbs Sampling</h2>
+<p>The remainder of this chapter will tackle the concept of Gibbs sampling for estimating a posterior distribution. Before getting into specifics let’s touch on why a person may need to use a method such as Gibbs sampling.</p>
 <div id="the-issue-of-intractability" class="section level3">
-<h3><span class="header-section-number">2.5.1</span> The Issue of Intractability</h3>
-<p>The coin flip example solved via Bayesian inference was capable of being solved analytically. However in many cases of Bayesian inference this is not possible due to the intractability of solving for the marginal likelihood (evidence term). We do have other options for solutions such as Gibbs sampling, expectation-maximization, and Metropolis-Hastings methods. This book will only focus on Gibbs Sampling, but be aware other types of solvers are used for Bayesian inference, and in particular LDA.</p>
+<h3><span class="header-section-number">2.6.1</span> The Issue of Intractability</h3>
+<p>The coin flip example solved via Bayesian inference was capable of being solved analytically. However in many cases of Bayesian inference this is not possible due to the intractability of solving for the marginal likelihood (evidence term). We do have other options for solutions such as Gibbs sampling, expectation-maximization, and Metropolis-Hastings methods. This book will only focus on Gibbs Sampling, but be aware other types of solvers are used for Bayesian inference problems including LDA.</p>
 </div>
 <div id="a-tale-of-two-mcs" class="section level3">
-<h3><span class="header-section-number">2.5.2</span> A Tale of Two MC’s</h3>
-<p>Gibbs Sampling is a Markov Chain Monte Carlo (MCMC) technique for parameter estimation. Let’s break down the two MC’s. A markov chain is a process where the next state is determined by the current state. More importantly it does not rely on any information prior to the current state. ????? 1. This needs a diagram and possibly a general example. 2. LETS MAKE SURE TO REITERATE THIS AFTER SHOWING THE GENERAL GIBBS SAMPLING MATH AND DIAGRAM ???? The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of <span class="math inline">\(\pi\)</span>. All we need is some chalk and a bucket of rice. I draw a circle on the ground. I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. From here I can infer the value of <span class="math inline">\(\pi\)</span> as follows:</p>
+<h3><span class="header-section-number">2.6.2</span> A Tale of Two MC’s</h3>
+<p>Gibbs Sampling is a Markov Chain Monte Carlo (MCMC) technique for parameter estimation. Let’s break down the two MC’s. A markov chain is a process where the next state is determined by the current state. More importantly it does not rely on any information prior to the current state.</p>
+<p>????? 1. This needs a diagram and possibly a general example. * Weather - Sunny/Rainy (it’s always sunny in philadelphia), Next word in sentence (probably too complicated), board game (dice rolls)</p>
+<ol start="2" style="list-style-type: decimal">
+<li>LETS MAKE SURE TO REITERATE THIS AFTER SHOWING THE GENERAL GIBBS SAMPLING MATH AND DIAGRAM ????</li>
+</ol>
+<p>The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of <span class="math inline">\(\pi\)</span>. <span class="citation">(Resnik and Hardisty <a href="references.html#ref-resnik2010gibbs">2010</a>)</span> All we need is some chalk and a bucket of rice. First I draw a circle on the ground. Then I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. (Side note: you could save yourself a bunch of time and just weight the two proportions of rice instead of straining your vision and wasting your time.) From here I can infer the value of <span class="math inline">\(\pi\)</span> as follows:</p>
 <p><span class="math display" id="eq:MCRice">\[
 \begin{equation}
 \begin{aligned}
-{Rice_{circle}\over Rice_{circle + square}} &amp;= {\pi r^{2} \over (2r)^{2}}\\\\
+{\pi r^{2} \over (2r)^{2}} &amp;= {Rice_{circle}\over Rice_{circle + square}} \\\\
 \pi &amp;\approx {4Rice_{circle}\over Rice_{circle + square}}
 \end{aligned}
 \tag{2.24}
 \end{equation}
 \]</span></p>
 </div>
-<div id="conjugate-priors" class="section level3">
-<h3><span class="header-section-number">2.5.3</span> Conjugate Priors</h3>
-<p>Before wading into the deeper water that is Gibbs sampling I need to touch on the concept of conjugate priors. The general premise of conjugate priors is that the prior has the same form as the posterior distribution. Ok, but what does that mean for us? In a pragmatic sense, it means we need to look for a <strong>pattern</strong> when solving for our posterior.</p>
-<p><strong>PATTERN MATCHING</strong></p>
-<p>????????? Double check the ‘observed data’ statement here ???????????????</p>
-<p>Let’s take the coin flip example. We want to estimate the posterior, the probability of <span class="math inline">\(\theta\)</span> given the the results of all experiments (this includes experiments that we haven’t yet completed). Obviously we don’t have data which does not yet exist (i.e. all experiments) so we will need to use the likelihood and the prior to estimate the posterior.</p>
+<div id="conjugate-distributions-and-priors" class="section level3">
+<h3><span class="header-section-number">2.6.3</span> Conjugate Distributions and Priors</h3>
+<p>Before wading into the deeper water that is Gibbs sampling I need to touch on the concept of conjugate distributions and priors. A <strong>conjugate distribution</strong> pair is a posterior distribution that have the same form as the prior distribution. Bernoulli and beta distributions are conjugate distributions. The posterior of the bernoulli distribution has the same general form as the prior, the beta distribution. Therefore we call the beta distribution a <strong>conjugate prior</strong> of the bernoulli distribution. We will cover this specific conjugate relationship in detail in the following section, but you can look ahead at Equations <a href="parameter-estimation.html#eq:bernGibbs">(2.27)</a> <a href="parameter-estimation.html#eq:bernGibbsFinal">(2.28)</a> to see the similar form of the posterior compared to the prior.</p>
+<p>Ok, but what does that mean for us? We can use the conjugate relationship to:</p>
+<ol style="list-style-type: decimal">
+<li>Simplify our posterior estimation to the same from as the prior.</li>
+<li>Step 1 allows us to then sample from a known distribution to estimate our posterior distribution.</li>
+</ol>
+<p>Step 2 is a crucial component in Gibbs sampling - it is the Monte Carlo piece of the method. To help reinforce the concept of conjugate priors we will go through an example.</p>
 <div id="bernoulli-beta" class="section level4">
-<h4><span class="header-section-number">2.5.3.1</span> Bernoulli &amp; Beta</h4>
-<p>In previous example we have used the Beta distribution to calculate the prior. What I did not point out is that the Beta distribution is the conjugate prior of the Bernoulli distribution.</p>
-<p>We start with our base relationship between posterior, likelihood, prior, and posterior.</p>
+<h4><span class="header-section-number">2.6.3.1</span> Bernoulli &amp; Beta</h4>
+<p>We return to our coin flip example. We want to estimate the posterior, the probability of <span class="math inline">\(\theta\)</span> given the the results of all experiments (this includes experiments that we haven’t yet completed). Obviously we don’t have data which does not yet exist (i.e. all experiments) so we will need to use the likelihood and the prior to estimate the posterior.</p>
+<p>In the previous example we used the Beta distribution for our prior. As we now know, the Beta distribution is the conjugate prior of the Bernoulli distribution. We will take a closer look at this relationship now.</p>
+<p>We start with our base relationship between posterior, likelihood, prior, and posterior as shown in Equation <a href="parameter-estimation.html#eq:posteriorGibbs">(2.25)</a>.</p>
 <p><span class="math display" id="eq:posteriorGibbs">\[
 \begin{equation}
 \underbrace{p(\theta|D)}_{posterior} = {\overbrace{p(D|\theta)}^{likelihood}
@@ -677,6 +695,7 @@ Figure 2.9: Bayesian Inference: Analytical Solution (n=20)
 \end{equation}
 \]</span></p>
 <p>When estimating the posterior we drop out the evidence term. To reiterate, we can drop out the evidence term because it is constant and is used as a normalizing factor for scaling our probabilities to so that they sum to 1. We will see in the upcoming section that Gibbs sampling accounts for the scaling issue and allows us to infer probabilities at the correct scale.</p>
+<p>MAYBE ADD SOMETHING HERE ALONG THESE LINES OTHERWISE JUST SAVE IT FOR GIBBS SECTION….(Gibbs sampling accomplishes this normalization by taking a large number of samples and then dividing by the samples by the sum of all samples resulting in a proportion between 0 and 1. )</p>
 <p><span class="math display" id="eq:posteriorPrompto">\[
 \begin{equation}
 \underbrace{p(\theta|D)}_{posterior}  \propto  {\overbrace{p(D|\theta)}^{likelihood}
@@ -684,14 +703,14 @@ Figure 2.9: Bayesian Inference: Analytical Solution (n=20)
 \tag{2.26}
 \end{equation}
 \]</span></p>
-<p>To estimate the posterior of the bernoulli distribution we plug in our likelihood and prior (<em>Beta distribution</em>) equations.</p>
+<p>To estimate the posterior of the bernoulli distribution we plug in our likelihood and prior (<em>Beta distribution</em>) equations in Equation <a href="parameter-estimation.html#eq:bernGibbs">(2.27)</a>.</p>
 <p><span class="math display" id="eq:bernGibbs">\[
 \begin{equation}
 p(\theta|z,N) \propto \overbrace{\theta^z(1-\theta)^{(N-z)}}^{likelihood} \overbrace{{\theta^{(a-1)}(1-\theta)^{(b-1)}}\over \beta(a,b)}^{prior}
 \tag{2.27}
 \end{equation}
 \]</span></p>
-<p>After combining terms we end up with Equation <a href="parameter-estimation.html#eq:bernGibbsFinal">(2.28)</a> which looks very similar to @(bernBIFinal). This is a very simple example where an analytical solution for the posterior is possible, so the equations are effectively the same with the exeption of the <span class="math inline">\(\propto\)</span> in place of the <span class="math inline">\(=\)</span>. The <span class="math inline">\(\propto\)</span> is used because we are going to base our posterior off of random samples from the Beta distribution with the parameters shown in <a href="parameter-estimation.html#eq:bernGibbsFinal">(2.28)</a>, unlike the BI example where the solution was found analytically.</p>
+<p>After combining terms we end up with Equation <a href="parameter-estimation.html#eq:bernGibbsFinal">(2.28)</a> which looks very similar to @(bernBIFinal). This is a very simple example where an analytical solution for the posterior is possible, so the equations are effectively the same with the exeption of the <span class="math inline">\(\propto\)</span> in place of the <span class="math inline">\(=\)</span>. The <span class="math inline">\(\propto\)</span> is used because we are going to base our posterior off of random samples from the Beta distribution with the parameters shown in <a href="parameter-estimation.html#eq:bernGibbsFinal">(2.28)</a>.</p>
 <p><span class="math display" id="eq:bernGibbsFinal">\[
 \begin{equation}
 \begin{aligned}
@@ -703,37 +722,94 @@ p(\theta|z,N) &amp;\propto Beta(a+z, N-z+b)
 \]</span></p>
 </div>
 </div>
-<div id="gibbs-sampling" class="section level3">
-<h3><span class="header-section-number">2.5.4</span> Gibbs Sampling</h3>
-<p>Gibbs sampling is a Markov Chain Monte Carlo technique that can be used for estimating parameters by walking through a given parameter space. A generalized way to think of Gibbs sampling is estimating a given parameter based on what we currently know about all other parameters. You may be thinking ‘What other parameters?’. Gibbs sampling is only really applicable when you are trying to estimate multiple parameters.</p>
-<p>The coin flip example will now be expanded so that we have more than one parameter to estimate. We are going to compare the bias of two coins to see if the there is any discernable difference between the two coins.</p>
-<p>Mathematical representation of what happens in Gibbs Sampling:</p>
+<div id="gibbs-sampling-1" class="section level3">
+<h3><span class="header-section-number">2.6.4</span> Gibbs Sampling</h3>
+<p>Gibbs sampling is a Markov Chain Monte Carlo technique that can be used for estimating parameters by walking through a given parameter space. A generalized way to think of Gibbs sampling is estimating a given parameter based on what we currently know about observed data and the other parameters of the model. You may be thinking ‘What other parameters?’. Gibbs sampling is only really applicable when you are trying to estimate multiple parameters otherwise you would use ML, MAP, or analytical Bayesian inference.</p>
+<p>Since Gibbs sampling is suited for the estimation of multiple parameters our coin flip example will be expanded slightly. We will now attempt to calculate the bias of two coins and determine if there is a difference in bias between the two using Gibbs sampling.</p>
+<p>For the purposes of Gibbs Sampling we need to do a bit of math to determine the equations for our posterior conditional equations. The posterior conditional is the posterior of a single parameter, given the current values of all other parameters in the model. This is where the Markov Chain component of Gibbs sampling comes into play. The conditional posterior of a parameter, i.e. the next state, is determined based on all the current parameter values, i.e. the current state.</p>
+<p>Now is a good time to highlight the general structure for using your conjugate priors and how to get to the equations required for the sampling process.</p>
+<p>The general process for derivation of our sampling distribution, as outlined in <span class="citation">(Yildirim <a href="references.html#ref-yildirim2012bayesian">2012</a>)</span>, is as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Derive the full joint density.</li>
+<li>Derive the posterior conditionals for each of the random variables in the model.</li>
+<li>Simulate samples from the posterior joint distribution based on the posterior conditionals.</li>
+</ol>
+<p>So how do we get the posterior conditionals for our two coin problem? First let’s go over what we need to know:</p>
+<ul>
+<li><span class="math inline">\(\theta_{1}\)</span> : Bias of coin 1</li>
+<li><span class="math inline">\(\theta_{2}\)</span> : Bias of coin 2</li>
+</ul>
+<p>The full joint density that defines our problem is shown in Equation <a href="parameter-estimation.html#eq:bernFullJoint">(2.29)</a>.</p>
+<p><span class="math display" id="eq:bernFullJoint">\[
+\begin{equation}
+\begin{aligned}
+p(\theta_{1}, \theta_{2}|z_{1}, z_{2}, N) &amp;\propto p(\theta_{1}|z_{1}, N)p(\theta_{2}|z_{2}, N) \\
+p(\theta_{1}, \theta_{2}|z_{1}, z_{2}, N) &amp;\propto p(z_{1}|\theta_{1})p(z_{2}|\theta_{2})p(\theta_{1})p(\theta_{2})
+\tag{2.29}
+\end{aligned}
+\end{equation}
+\]</span></p>
+<p>Then we break down the full joint density into our posterior conditionals: <span class="math display">\[
+\begin{equation}
+\begin{aligned}
+p(\theta_{1}|z_{1}, N) &amp;\propto p(z_{1}|\theta_{1})p(\theta_{1}) \\
+p(\theta_{2}|z_{2}, N) &amp;\propto p(z_{2}|\theta_{2})p(\theta_{2}) 
+(\#eq:bernFullJointStep2)
+\end{aligned}
+\end{equation}
+\]</span></p>
+<p>We plug in posterior conditional for a single coin, which we derived in Equation <a href="parameter-estimation.html#eq:bernGibbsFinal">(2.28)</a>. The resulting posterior conditionals are shown below in Equation <a href="parameter-estimation.html#eq:bernPosteriorConditionals">(2.30)</a>.</p>
+<p><span class="math display" id="eq:bernPosteriorConditionals">\[
+\begin{equation}
+\begin{aligned}
+p(\theta_{1}|z_{1},N) &amp;\propto Beta(a_{1}+z_{1}, N-z_{1}+b_{1}) \\
+p(\theta_{2}|z_{2},N) &amp;\propto Beta(a_{2}+z_{2}, N-z_{2}+b_{2})
+\end{aligned}
+\tag{2.30}
+\end{equation}
+\]</span></p>
+<p>Now that we have our posterior conditionals we can move on to estimating our parameters via Gibbs sampling. The general form of Gibbs Sampling is shown in Equation <a href="parameter-estimation.html#eq:GibbsGeneral">(2.31)</a>.</p>
 <p><span class="math display" id="eq:GibbsGeneral">\[
 \begin{equation}
 \begin{aligned}
+For \ i \ in \ iterations:\\
 &amp;p(\theta_{1}^{i+1}) \sim p(\theta_{1}^{i}|\theta_{2}^{i}, \theta_{3}^{i},..., \theta{n}^{i}) \\
 &amp;p(\theta_{2}^{i+1}) \sim p(\theta_{2}^{i}|\theta_{1}^{i+1}, \theta_{3}^{i},..., \theta{n}^{i}) \\
 &amp;p(\theta_{3}^{i+1}) \sim p(\theta_{3}^{i}|\theta_{1}^{i+1}, \theta_{2}^{i+1},..., \theta{n}^{i}) \\
 &amp;................................ \\ 
 &amp;p(\theta_{n}^{i+1}) \sim p(\theta_{n}^{i}|\theta_{1}^{i+1}, \theta_{2}^{i+1},..., \theta_{n-1}^{i+1}) \\
 \end{aligned}
-\tag{2.29}
+\tag{2.31}
 \end{equation}
 \]</span></p>
-<p>In Equation <a href="parameter-estimation.html#eq:GibbsGeneral">(2.29)</a> we see the next estimate, <em>i+1</em>, of <span class="math inline">\(\theta_{1}\)</span> is based on all other current parameter values. When estimating <span class="math inline">\(\theta_{2}\)</span> the <em>i+1</em> value of <span class="math inline">\(\theta_{1}\)</span> is used along with all of the current (<em>i</em>) parameter values. The is continues for all parameter values. After the the <em>nth</em> parameter is estimated, the process starts all over again until a specific stopping criteria is met.</p>
+<p>Gibbs sampling works by estimating all parameters via the posterior conditional iteratively for a set number of iterations or a distinct stopping criteria/convergence measure. For the sake of our example we will stick with a set number of iterations. In Equation <a href="parameter-estimation.html#eq:GibbsGeneral">(2.31)</a> we see the next estimate, <em>i+1</em>, of <span class="math inline">\(\theta_{1}\)</span> is based on all other current parameter values. When estimating <span class="math inline">\(\theta_{2}\)</span> the <em>i+1</em> value of <span class="math inline">\(\theta_{1}\)</span> is used along with all of the current (<em>i</em>) parameter values. This continues for all parameter values. After the the <em>nth</em> parameter is estimated, the process starts all over again for the next iteration.</p>
 <p>Without the math it looks like this:</p>
 <p>FIGURE OF 3 CIRCLES CROSSED OUT/OPEN/COLORED - BEING ESTIMATED, CURRENT STEP, PAST STEP</p>
+<p>The calculations done in our example are shown in Equation <a href="parameter-estimation.html#eq:TwoCoinsGibbsGeneral">(2.32)</a>. Note that since the two coins are independent of one another, we are sampling from a Beta distribution based on each coin’s priors and evidence then repeating.</p>
+<p><span class="math display" id="eq:TwoCoinsGibbsGeneral">\[
+\begin{equation}
+\begin{aligned}
+For \ i \ in \ iterations:\\
+p(\theta_{1}^{i+1}|z_{1},N) &amp;\propto Beta(a_{1}+z_{1}, N-z_{1}+b_{1}) \\
+p(\theta_{2}^{i+1}|z_{2},N) &amp;\propto Beta(a_{2}+z_{2}, N-z_{2}+b_{2})
+\end{aligned}
+\tag{2.32}
+\end{equation}
+\]</span></p>
+<p><strong>Burn In Period</strong></p>
+<p>The purpose of Gibbs Sampling is to sample from the posterior and estimate a parameter value assuming our sampling converges on the true parameter. However it often takes time, i.e. many samples, to move into an area of convergence. To be clear, this is a non-issue for the current example due to the independence between the coins. In the change point example that follows, the parameters are not independent of one another and therefore a burn-in period will be necessary.</p>
 </div>
 <div id="bias-of-two-coins" class="section level3">
-<h3><span class="header-section-number">2.5.5</span> Bias of Two Coins</h3>
-<p>Below is an example to compare two coins. We use a fairly weak prior by setting <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> to 2 for both coins. Coin 1 has 11 heads out of 14 flips while coin 2 has 7 heads out of 14 flips.</p>
+<h3><span class="header-section-number">2.6.5</span> Bias of Two Coins</h3>
+<p>The following example will generate samples from the posterior distributions of two different coins via Gibbs sampling for the purposes of estimating each coin’s bias. We use a fairly weak prior by setting <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> to a value of 2 for each coins. We have the results of 20 coin flips for each coin. Coin 1 has 10 heads out of 20 flips while coin 2 has 3 heads out of 20 flips.</p>
+<p>The Gibbs sampling code below is based on the example provided on Duke’s Computational Statistics and Statistical Computing course website. <span class="citation">(Chan and McCarthy <a href="references.html#ref-DukeMCMC">2017</a>)</span></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a =<span class="st"> </span><span class="dv">2</span>
 b =<span class="st"> </span><span class="dv">2</span>
 
-z1 =<span class="st"> </span><span class="dv">11</span>
-N1 =<span class="st"> </span><span class="dv">14</span>
-z2 =<span class="st"> </span><span class="dv">7</span>
-N2 =<span class="st"> </span><span class="dv">14</span>
+z1 =<span class="st"> </span><span class="dv">10</span>
+N1 =<span class="st"> </span><span class="dv">20</span>
+z2 =<span class="st"> </span><span class="dv">3</span>
+N2 =<span class="st"> </span><span class="dv">20</span>
 
 
 theta =<span class="st"> </span><span class="kw">rep</span>(<span class="fl">0.5</span>,<span class="dv">2</span>)
@@ -774,51 +850,50 @@ Figure 2.10: Bias of Two Coins: Theta 1
 Figure 2.11: Bias of Two Coins - Theta 2
 </p>
 </div>
-<p>In the Figures above we can see the distribution of samples drawn from the Beta distribution using the prior parameters and the observed data we have. To compare the coins we look at the 95% confidence interval of the mean…????</p>
+<p>In the Figures <a href="parameter-estimation.html#fig:2coins2">2.11</a> and <a href="parameter-estimation.html#fig:2coins">2.10</a> we can see the distribution of samples drawn from the Beta distribution using the prior parameters and the observed data we have. The red line represents the mean of the samples for each coin. Our resulting bias values are:</p>
+<ul>
+<li><span class="math inline">\(\theta_{1}\)</span> = 0.5000585</li>
+<li><span class="math inline">\(\theta_{2}\)</span> = 0.209348</li>
+</ul>
 </div>
 <div id="change-point-example" class="section level3">
-<h3><span class="header-section-number">2.5.6</span> Change Point Example</h3>
+<h3><span class="header-section-number">2.6.6</span> Change Point Example</h3>
 <p>IMAGE PLACE HOLDER - MAKE A DRAWING OF FLIPPING TWO COINS ON A TIME SCALE</p>
-<p>What if the problem we are solving is more complicated. Let’s say I flip a coin repeatedly, but at some point I switch to another coin with a different bias (<span class="math inline">\(\theta\)</span>). I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem however now is a good time to highlight the general structure for using your conjugate priors and how to get to the equations required for the sampling process.</p>
-<p>The general process for derivation of our sampling distribution, as outlined in <span class="citation">(Yildirim <a href="references.html#ref-yildirim2012bayesian">2012</a>)</span>, is as follows:</p>
-<ol style="list-style-type: decimal">
-<li>Derive the full joint density.</li>
-<li>Derive the posterior conditionals for each of the random variables in the model.</li>
-<li>Simulate samples from the posterior joint distribution based on the posterior conditionals.</li>
-</ol>
-<p>In the previous example we only needed to get a posterior of a single variable (technically there were two variables, but both have the same posterior). In this case we have 3 variables that we need to estimate:</p>
+<p>What if the problem we are solving is more complicated. Let’s say I flip a coin repeatedly, but at some point I switch to another coin with a different bias (<span class="math inline">\(\theta\)</span>). I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem.</p>
+<p>In the previous example we only needed to get a posterior of a single variable (technically there were two variables, but both have the same posterior conditional and were independent of one another). In this case we have 3 variables that we need to estimate:</p>
 <ol style="list-style-type: decimal">
 <li>Coin bias for coin 1: <span class="math inline">\(\theta_{1}\)</span></li>
 <li>Coin bias for coin 2: <span class="math inline">\(\theta_{2}\)</span></li>
 <li>The point in time, i.e. on which flip, the coin was swapped from coin 1 to coin 2: <em>n</em></li>
 </ol>
-<p>We have three variables, but how do we describe the actual process we are modeling? In Equation <a href="parameter-estimation.html#eq:cptDistributions">(2.30)</a> the distrutions for each variable are displayed. The coinflips, <em>x</em>, are drawn from a bernoulli distribution, but are dependent on the coin being flipped and the bias that coin has. The change point, <em>n</em>, NEED TO FINISH THIS EXPLANATION</p>
+<p>We have three variables, but how do we describe the actual process we are modeling? In Equation <a href="parameter-estimation.html#eq:cptDistributions">(2.33)</a> the distrutions for each variable are displayed. The coinflips, <em>x</em>, are drawn from a bernoulli distribution, but are dependent on the coin being flipped and the bias of that coin, <span class="math inline">\(\theta_{i}\)</span>. From the previous examples we know <span class="math inline">\(\theta\)</span> is modeled using a beta distribution. The change point, <em>n</em>, is the time when coin 2 replaces coin 1. Therefore the possible values of <em>n</em> are between 2, the second sample in discrete time, and <em>N</em>, the final discrete time in our example. All values of <em>n</em> are equally probable and therefore can be modeled as a uniform distribution.</p>
 <p><span class="math display" id="eq:cptDistributions">\[
 \begin{equation}
 \begin{aligned}
   x &amp;\sim
     \begin{cases}
       Bern(x_{i};\theta_{1}) \quad 1 \le i \le n \\
-      Bern(x_{i};\theta_{1}) \quad n \lt i \lt N 
+      Bern(x_{i};\theta_{2}) \quad n \lt i \lt N 
     \end{cases} \\
-  n &amp;\sim Uniform(1...N) \\
+  n &amp;\sim Uniform(2...N) \\
   \theta_{i} &amp;\sim Beta(\theta_{i}, a,b)
 \end{aligned}
-\tag{2.30}
+\tag{2.33}
 \end{equation}
 \]</span></p>
 <div id="derivation-of-joint-distribution" class="section level4">
-<h4><span class="header-section-number">2.5.6.1</span> Derivation of Joint Distribution</h4>
+<h4><span class="header-section-number">2.6.6.1</span> Derivation of Joint Distribution</h4>
+<p>Now that we have defined all the unknowns of our model, we derive the full joint distribution.</p>
 <p><span class="math display" id="eq:cptJointDistribution">\[
 \begin{equation}
 p(\theta_{1}, \theta_{2}, n| x_{1:n}) \propto \overbrace{p(x_{1:N}|\theta_{1})
 p(x_{n+1:N}|\theta_{2})}^{Likelihoods}
 \overbrace{p(\theta_{1})p(\theta_{2})p(n)}^{Priors}
-\tag{2.31}
+\tag{2.34}
 \end{equation}
 \]</span></p>
 <p>Our goal here is to get one equation to estimate the posterior of each of our variables, aka the posterior conditionals. The easiest way to accomplish this task is to identify the terms of the joint distribution that contain the variable you want the posterior conditional for.</p>
-<p>Let’s start by breaking <a href="parameter-estimation.html#eq:cptJointDistribution">(2.31)</a> a bit further.</p>
+<p>Let’s start by breaking <a href="parameter-estimation.html#eq:cptJointDistribution">(2.34)</a> a bit further.</p>
 $$
 <span class="math display" id="eq:cptJointDistExpand">\[\begin{equation}
 \begin{aligned}
@@ -838,10 +913,10 @@ p(\theta_{1}, \theta_{2}, n| x_{1:n}) &amp;\propto
   \\
 
 \end{aligned}
-\tag{2.32}
+\tag{2.35}
 \end{equation}\]</span>
 <p>$$</p>
-<p>Let’s start by solving for <em>n</em>’s posterior conditional. In Equation <a href="parameter-estimation.html#eq:cptJointDistExpand">(2.32)</a> we see that only the likelihood terms and the priors for the <span class="math inline">\(\theta\)</span>’s contain <em>n</em>. Using these terms we can solve for the posterior conditional. While we are at it we will also take the log of the conditional posterior as is good practice to prevent issues such as underflow.</p>
+<p>Then we move on to solving for <em>n</em>’s posterior conditional. In Equation <a href="parameter-estimation.html#eq:cptJointDistExpand">(2.35)</a> we see that only the likelihood terms and the priors for the <span class="math inline">\(\theta\)</span>’s contain <em>n</em>. Using these terms we can solve for the posterior conditional. While we are at it we will also take the log of the conditional posterior as is good practice to prevent issues such as underflow.</p>
 <p><span class="math display">\[
 \begin{equation}
 \begin{aligned}
@@ -863,7 +938,8 @@ p(\theta_{1}, \theta_{2}, n| x_{1:n}) &amp;\propto
 &amp;\propto Beta(a_{1}+z_{1}, n-z_{1}+b_{1}) Beta(z_{2}+a_{2}, N-n-1-z_{2}+b_{2})({1\over N})
 \end{aligned}
 \end{equation}
-\]</span> Now we can solve for each of the <span class="math inline">\(\theta\)</span>’s posterior conditionals.</p>
+\]</span></p>
+<p>Now we can solve for each of the <span class="math inline">\(\theta\)</span>’s posterior conditionals.</p>
 <p><span class="math display">\[
 \begin{equation}
 \begin{aligned}
@@ -880,7 +956,8 @@ log(p(\theta_{2}| x_{1:n},\theta_{1}, n)) &amp;\propto log(Beta(z_{2}+a_{2}, N-n
 \end{aligned}
 \end{equation}
 \]</span></p>
-<p>Now let’s put our derived posteriors to work and Gibb’s sample our change point and coin biases.</p>
+<p>Now let’s put our derived posteriors to work use Gibbs sampling to estimate our change point and coin biases.</p>
+<p>NEED TO DEBUG THIS - IT SHOULD START AT N=2 TO N-1, RIGHT????? Discussion of results…. CI’s????</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">real_thetas &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.2</span>, <span class="fl">0.6</span>)
 N &lt;-<span class="st"> </span><span class="dv">300</span>
 a =<span class="st"> </span><span class="dv">2</span>
@@ -900,8 +977,8 @@ theta2 &lt;-<span class="st"> </span><span class="kw">rbeta</span>(<span class="
 
 
 
-niters =<span class="st"> </span><span class="dv">10000</span>
-burnin =<span class="st"> </span><span class="dv">2000</span>
+niters =<span class="st"> </span><span class="dv">3000</span>
+burnin =<span class="st"> </span><span class="dv">1000</span>
 <span class="co"># sigma = np.diag([0.2,0.2])</span>
 
 <span class="co"># thetas = np.zeros((niters-burnin,2), np.float)</span>
@@ -923,7 +1000,7 @@ params =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv"
   ## 2 things: 1 - should I be summing all the values over these? 
   <span class="co"># No - the product is being calculated due to the sum - should be fine</span>
   n_multi &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, N)
-  <span class="cf">for</span>(steps <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N){
+  <span class="cf">for</span>(steps <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span>N){
     <span class="cf">if</span>(steps<span class="op">==</span>N <span class="op">||</span><span class="st"> </span>theta2 <span class="op">==</span><span class="st"> </span><span class="dv">1</span>){
       n_multi[steps] &lt;-<span class="st"> </span><span class="kw">log</span>(theta1<span class="op">^</span><span class="kw">sum</span>(x[<span class="dv">1</span><span class="op">:</span>steps]) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>theta1)<span class="op">^</span>(steps<span class="op">-</span><span class="kw">sum</span>(x[<span class="dv">1</span><span class="op">:</span>steps])))
     }<span class="cf">else</span>{
@@ -932,9 +1009,11 @@ params =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv"
     }
   }
   
-  n_multi &lt;-<span class="st"> </span><span class="kw">exp</span>(n_multi <span class="op">-</span><span class="st"> </span><span class="kw">max</span>(n_multi))
-  <span class="co"># what about for n? </span>
-  n &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>, <span class="dv">1</span>, n_multi<span class="op">/</span><span class="kw">sum</span>(n_multi))[,<span class="dv">1</span>] <span class="op">==</span><span class="dv">1</span>)
+  n_multi &lt;-<span class="st"> </span><span class="kw">exp</span>(n_multi[<span class="dv">2</span><span class="op">:</span>N] <span class="op">-</span><span class="st"> </span><span class="kw">max</span>(n_multi[<span class="dv">2</span><span class="op">:</span>N]))
+  <span class="co"># offset by 1 </span>
+  <span class="co"># you n is equally probably between 2 and N and zero at n=1</span>
+  <span class="co"># we only calculate p(n) from n=2 to N</span>
+  n &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>, <span class="dv">1</span>, n_multi<span class="op">/</span><span class="kw">sum</span>(n_multi))[,<span class="dv">1</span>] <span class="op">==</span><span class="dv">1</span>) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
   <span class="cf">if</span> (i <span class="op">&gt;=</span><span class="st"> </span>burnin){
     params[(i<span class="op">-</span>burnin), ] =<span class="st"> </span><span class="kw">c</span>(theta1,theta2, n)
   }
@@ -947,8 +1026,9 @@ ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class=
 <span class="kw">names</span>(params_df) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;theta1&#39;</span>, <span class="st">&#39;theta2&#39;</span>, <span class="st">&#39;change_point&#39;</span>)
 
 <span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> change_point)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span>, <span class="dt">binwidth =</span> <span class="dv">5</span>, <span class="dt">bins =</span> <span class="kw">floor</span>(N<span class="op">/</span><span class="dv">5</span>)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,N)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(params_df<span class="op">$</span>change_point), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Change Point Estimate&#39;</span>, <span class="dt">x=</span><span class="st">&#39;Change Point&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) </code></pre></div>
 <div class="figure"><span id="fig:bernChangePointN"></span>
@@ -958,8 +1038,9 @@ Figure 2.12: Estimated Change Point
 </p>
 </div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> theta1)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span> ) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span> , <span class="dt">binwidth =</span> <span class="fl">0.025</span>) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(params_df<span class="op">$</span>theta1), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(theta[<span class="dv">1</span>]<span class="op">~</span>Estimate), <span class="dt">x=</span><span class="kw">expression</span>(theta[<span class="dv">1</span>]), <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) </code></pre></div>
 <div class="figure"><span id="fig:bernChangePointTheta1"></span>
@@ -969,8 +1050,9 @@ Figure 2.13: Estimated Theta 1
 </p>
 </div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> theta2)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span> ) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span> , <span class="dt">binwidth =</span> <span class="fl">0.025</span>) <span class="op">+</span><span class="st"> </span>
 <span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(params_df<span class="op">$</span>theta2), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(theta[<span class="dv">2</span>]<span class="op">~</span>Estimate), <span class="dt">x=</span><span class="kw">expression</span>(theta[<span class="dv">2</span>]), <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) </code></pre></div>
 <div class="figure"><span id="fig:bernChangePointTheta2"></span>

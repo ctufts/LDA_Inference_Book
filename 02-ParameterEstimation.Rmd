@@ -199,6 +199,7 @@ L(\theta) &= \prod\limits_{n=1}^{10} \theta^{x}(1-\theta)^{1-x}
 (\#eq:bernL)
 \end{equation}
 $$
+
 What is shown in Equation \@ref(eq:bernL) is the joint probability mass function. Each coin flip is independent so we calculate the product of the PMF's for each trial. This is known as the likelihood function - the likelihood of a value of $\theta$ given our observed data. 
 
 __Back to the maximum likelihood....__
@@ -451,6 +452,8 @@ In summary:
 
 ## Bayesian Inference
 
+### Analytical Solution
+
 Another option we have for estimating parameters is to estimate the posterior of the distribution via Bayesian inference. In our MAP estimation example we included prior assumptions as part of our calculation. We are going to do the same via Bayesian inference however instead of a point estimate of $\theta$, we will be calculating the posterior distribution over all possible values of $\theta$. From this we can take the expected value of $\theta$ as our estimated parameter. 
 
 
@@ -540,8 +543,12 @@ ggplot(beta_ds, aes(x = theta, y = density)) +
 ```
 
 
+## Gibbs Sampling
+
+The remainder of this chapter will tackle the concept of Gibbs sampling for estimating a posterior distribution. Before getting into specifics let's touch on why a person may need to use a method such as Gibbs sampling. 
+
 ### The Issue of Intractability
-The coin flip example solved via Bayesian inference was capable of being solved analytically. However in many cases of Bayesian inference this is not possible due to the intractability of solving for the marginal likelihood (evidence term). We do have other options for solutions such as Gibbs sampling, expectation-maximization, and Metropolis-Hastings methods. This book will only focus on Gibbs Sampling, but be aware other types of solvers are used for Bayesian inference, and in particular LDA.
+The coin flip example solved via Bayesian inference was capable of being solved analytically. However in many cases of Bayesian inference this is not possible due to the intractability of solving for the marginal likelihood (evidence term). We do have other options for solutions such as Gibbs sampling, expectation-maximization, and Metropolis-Hastings methods. This book will only focus on Gibbs Sampling, but be aware other types of solvers are used for Bayesian inference problems including LDA.
 
 ### A Tale of Two MC's
 Gibbs Sampling is a Markov Chain Monte Carlo (MCMC) technique for parameter estimation.  Let's break down the two MC's. A markov chain is a process where the next state is determined by the current state. More importantly it does not rely on any information prior to the current state. 
@@ -554,7 +561,7 @@ Gibbs Sampling is a Markov Chain Monte Carlo (MCMC) technique for parameter esti
 ????
 
 
-The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of $\pi$.[@resnik2010gibbs] All we need is some chalk and a bucket of rice. First I draw a circle on the ground. Then I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. (Side note: you could save yourself a bunch of time and just weight the two proportions of rice instead of straining your vision and wasting your time.) From here I can infer the value of $\pi$ as follows:
+The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of $\pi$. [@resnik2010gibbs] All we need is some chalk and a bucket of rice. First I draw a circle on the ground. Then I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. (Side note: you could save yourself a bunch of time and just weight the two proportions of rice instead of straining your vision and wasting your time.) From here I can infer the value of $\pi$ as follows:
 
 $$
 \begin{equation}
@@ -567,27 +574,25 @@ $$
 $$
 
 
+### Conjugate Distributions and Priors
 
-### Conjugate Priors
+Before wading into the deeper water that is Gibbs sampling I need to touch on the concept of conjugate distributions and priors. A __conjugate distribution__ pair is a posterior distribution that have the same form as the prior distribution. Bernoulli and beta distributions are conjugate distributions. The posterior of the bernoulli distribution has the same general form as the prior, the beta distribution. Therefore we call the beta distribution a __conjugate prior__ of the bernoulli distribution. We will cover this specific conjugate relationship in detail in the following section, but you can look ahead at Equations \@ref(eq:bernGibbs) \@ref(eq:bernGibbsFinal) to see the similar form of the posterior compared to the prior. 
 
-Before wading into the deeper water that is Gibbs sampling I need to touch on the concept of conjugate priors. 
-The general premise of conjugate priors is that the prior has the same form 
-as the posterior distribution. Ok, but what does that mean for us? In a pragmatic 
-sense, it means we need to look for a __pattern__ when solving for our posterior. 
+Ok, but what does that mean for us? We can use the conjugate relationship to:
 
-__PATTERN MATCHING__
+1. Simplify our posterior estimation to the same from as the prior.
+2. Step 1 allows us to then sample from a known distribution to estimate our posterior distribution. 
 
-
-????????? Double check the 'observed data' statement here ???????????????
-
-Let's take the coin flip example. We want to estimate the posterior, the 
-probability of $\theta$ given the the results of all experiments (this includes experiments that we haven't yet completed). Obviously we don't have data which does not yet exist (i.e. all experiments) so we will need to use the likelihood and the prior to estimate the posterior. 
+Step 2 is a crucial component in Gibbs sampling - it is the Monte Carlo piece of the method.  To help reinforce the concept of conjugate priors we will go through an example.  
 
 #### Bernoulli & Beta
 
-In previous example we have used the Beta distribution to calculate the prior. What I did not point out is that the Beta distribution is the conjugate prior of the Bernoulli distribution. 
+We return to our coin flip example. We want to estimate the posterior, the 
+probability of $\theta$ given the the results of all experiments (this includes experiments that we haven't yet completed). Obviously we don't have data which does not yet exist (i.e. all experiments) so we will need to use the likelihood and the prior to estimate the posterior. 
 
-We start with our base relationship between posterior, likelihood, prior, and posterior. 
+In the previous example we used the Beta distribution for our prior. As we now know, the Beta distribution is the conjugate prior of the Bernoulli distribution. We will take a closer look at this relationship now. 
+
+We start with our base relationship between posterior, likelihood, prior, and posterior as shown in Equation \@ref(eq:posteriorGibbs). 
 
 $$
 \begin{equation}
@@ -599,6 +604,8 @@ $$
 
 When estimating the posterior we drop out the evidence term. To reiterate, we can drop out the evidence term because it is constant and is used as a normalizing factor for scaling our probabilities to so that they sum to 1. We will see in the upcoming section that Gibbs sampling accounts for the scaling issue and allows us to infer probabilities at the correct scale. 
 
+MAYBE ADD SOMETHING HERE ALONG THESE LINES OTHERWISE JUST SAVE IT FOR GIBBS SECTION....(Gibbs sampling accomplishes this normalization by taking a large number of samples and then dividing by the samples by the sum of all samples resulting in a proportion between 0 and 1. )
+
 $$
 \begin{equation}
 \underbrace{p(\theta|D)}_{posterior}  \propto  {\overbrace{p(D|\theta)}^{likelihood}
@@ -607,7 +614,7 @@ $$
 \end{equation}
 $$
 
-To estimate the posterior of the bernoulli distribution we plug in our likelihood and prior (_Beta distribution_) equations. 
+To estimate the posterior of the bernoulli distribution we plug in our likelihood and prior (_Beta distribution_) equations in Equation \@ref(eq:bernGibbs). 
 
 
 
@@ -618,7 +625,7 @@ p(\theta|z,N) \propto \overbrace{\theta^z(1-\theta)^{(N-z)}}^{likelihood} \overb
 \end{equation}
 $$
 
-After combining terms we end up with Equation \@ref(eq:bernGibbsFinal) which looks very similar to \ref@(bernBIFinal). This is a very simple example where an analytical solution for the posterior is possible, so the equations are effectively the same with the exeption of the $\propto$ in place of the $=$. The $\propto$ is used because we are going to base our posterior off of random samples from the Beta distribution with the parameters shown in \@ref(eq:bernGibbsFinal), unlike the BI example where the solution was found analytically. 
+After combining terms we end up with Equation \@ref(eq:bernGibbsFinal) which looks very similar to \ref@(bernBIFinal). This is a very simple example where an analytical solution for the posterior is possible, so the equations are effectively the same with the exeption of the $\propto$ in place of the $=$. The $\propto$ is used because we are going to base our posterior off of random samples from the Beta distribution with the parameters shown in \@ref(eq:bernGibbsFinal).
 
 $$
 \begin{equation}
@@ -631,19 +638,69 @@ p(\theta|z,N) &\propto Beta(a+z, N-z+b)
 $$
 
 
-
-
 ### Gibbs Sampling
 
-Gibbs sampling is a Markov Chain Monte Carlo technique that can be used for estimating parameters by walking through a given parameter space. A generalized way to think of Gibbs sampling is estimating a given parameter based on what we currently know about all other parameters. You may be thinking 'What other parameters?'. Gibbs sampling is only really applicable when you are trying to estimate multiple parameters. 
+Gibbs sampling is a Markov Chain Monte Carlo technique that can be used for estimating parameters by walking through a given parameter space. A generalized way to think of Gibbs sampling is estimating a given parameter based on what we currently know about observed data and the other parameters of the model. You may be thinking 'What other parameters?'. Gibbs sampling is only really applicable when you are trying to estimate multiple parameters otherwise you would use ML, MAP, or analytical Bayesian inference.
 
-The coin flip example will now be expanded so that we have more than one parameter to estimate. We are going to compare the bias of two coins to see if the there is any discernable difference between the two coins. 
+Since Gibbs sampling is suited for the estimation of multiple parameters our coin flip example will be expanded slightly. We will now attempt to calculate the bias of two coins and determine if there is a difference in bias between the two using Gibbs sampling. 
 
-Mathematical representation of what happens in Gibbs Sampling:
+For the purposes of Gibbs Sampling we need to do a bit of math to determine the equations for our posterior conditional equations. The posterior conditional is the posterior of a single parameter, given the current values of all other parameters in the model. This is where the Markov Chain component of Gibbs sampling comes into play. The conditional posterior of a parameter, i.e. the next state, is determined based on all the current parameter values, i.e. the current state. 
+
+Now is a good time to highlight the general structure for using your conjugate priors and how to get to the equations required for the sampling process. 
+
+The general process for derivation of our sampling distribution, as outlined in [@yildirim2012bayesian], is as follows:
+
+1. Derive the full joint density.
+2. Derive the posterior conditionals for each of the random variables in the model.
+3. Simulate samples from the posterior joint distribution based on the posterior conditionals. 
+
+So how do we get the posterior conditionals for our two coin problem? First let's go over what we need to know:
+
+* $\theta_{1}$ : Bias of coin 1
+* $\theta_{2}$ : Bias of coin 2
+
+
+The full joint density that defines our problem is shown in Equation \@ref(eq:bernFullJoint). 
 
 $$
 \begin{equation}
 \begin{aligned}
+p(\theta_{1}, \theta_{2}|z_{1}, z_{2}, N) &\propto p(\theta_{1}|z_{1}, N)p(\theta_{2}|z_{2}, N) \\
+p(\theta_{1}, \theta_{2}|z_{1}, z_{2}, N) &\propto p(z_{1}|\theta_{1})p(z_{2}|\theta_{2})p(\theta_{1})p(\theta_{2})
+(\#eq:bernFullJoint)
+\end{aligned}
+\end{equation}
+$$
+
+Then we break down the full joint density into our posterior conditionals:
+$$
+\begin{equation}
+\begin{aligned}
+p(\theta_{1}|z_{1}, N) &\propto p(z_{1}|\theta_{1})p(\theta_{1}) \\
+p(\theta_{2}|z_{2}, N) &\propto p(z_{2}|\theta_{2})p(\theta_{2}) 
+(\#eq:bernFullJointStep2)
+\end{aligned}
+\end{equation}
+$$
+
+We plug in posterior conditional for a single coin, which we derived in Equation \@ref(eq:bernGibbsFinal).  The resulting posterior conditionals are shown below in Equation \@ref(eq:bernPosteriorConditionals).
+
+$$
+\begin{equation}
+\begin{aligned}
+p(\theta_{1}|z_{1},N) &\propto Beta(a_{1}+z_{1}, N-z_{1}+b_{1}) \\
+p(\theta_{2}|z_{2},N) &\propto Beta(a_{2}+z_{2}, N-z_{2}+b_{2})
+\end{aligned}
+(\#eq:bernPosteriorConditionals)
+\end{equation}
+$$
+
+Now that we have our posterior conditionals we can move on to estimating our parameters via Gibbs sampling. The general form of Gibbs Sampling is shown in Equation \@ref(eq:GibbsGeneral). 
+
+$$
+\begin{equation}
+\begin{aligned}
+For \ i \ in \ iterations:\\
 &p(\theta_{1}^{i+1}) \sim p(\theta_{1}^{i}|\theta_{2}^{i}, \theta_{3}^{i},..., \theta{n}^{i}) \\
 &p(\theta_{2}^{i+1}) \sim p(\theta_{2}^{i}|\theta_{1}^{i+1}, \theta_{3}^{i},..., \theta{n}^{i}) \\
 &p(\theta_{3}^{i+1}) \sim p(\theta_{3}^{i}|\theta_{1}^{i+1}, \theta_{2}^{i+1},..., \theta{n}^{i}) \\
@@ -654,7 +711,7 @@ $$
 \end{equation}
 $$
 
-In Equation \@ref(eq:GibbsGeneral) we see the next estimate, _i+1_, of $\theta_{1}$ is based on all other current parameter values. When estimating $\theta_{2}$ the _i+1_ value of $\theta_{1}$ is used along with all of the current (_i_) parameter values. The is continues for all parameter values. After the the _nth_ parameter is estimated, the process starts all over again until a specific stopping criteria is met. 
+Gibbs sampling works by estimating all parameters via the posterior conditional iteratively for a set number of iterations or a distinct stopping criteria/convergence measure. For the sake of our example we will stick with a set number of iterations. In Equation \@ref(eq:GibbsGeneral) we see the next estimate, _i+1_, of $\theta_{1}$ is based on all other current parameter values. When estimating $\theta_{2}$ the _i+1_ value of $\theta_{1}$ is used along with all of the current (_i_) parameter values. This continues for all parameter values. After the the _nth_ parameter is estimated, the process starts all over again for the next iteration. 
 
 Without the math it looks like this: 
 
@@ -662,18 +719,39 @@ FIGURE OF 3 CIRCLES CROSSED OUT/OPEN/COLORED - BEING ESTIMATED, CURRENT STEP, PA
 
 
 
+
+The calculations done in our example are shown in Equation \@ref(eq:TwoCoinsGibbsGeneral). Note that since the two coins are independent of one another, we are sampling from a Beta distribution based on each coin's priors and evidence then repeating.   
+
+$$
+\begin{equation}
+\begin{aligned}
+For \ i \ in \ iterations:\\
+p(\theta_{1}^{i+1}|z_{1},N) &\propto Beta(a_{1}+z_{1}, N-z_{1}+b_{1}) \\
+p(\theta_{2}^{i+1}|z_{2},N) &\propto Beta(a_{2}+z_{2}, N-z_{2}+b_{2})
+\end{aligned}
+(\#eq:TwoCoinsGibbsGeneral)
+\end{equation}
+$$
+
+
+__Burn In Period__   
+
+The purpose of Gibbs Sampling is to sample from the posterior and estimate a parameter value assuming our sampling converges on the true parameter. However it often takes time, i.e. many samples, to move into an area of convergence. To be clear, this is a non-issue for the current example due to the independence between the coins. In the change point example that follows, the parameters are not independent of one another and therefore a burn-in period will be necessary.  
+
 ### Bias of Two Coins
 
-Below is an example to compare two coins. We use a fairly weak prior by setting $\alpha$ and $\beta$ to 2 for both coins. Coin 1 has 11 heads out of 14 flips while coin 2 has 7 heads out of 14 flips.
+The following example will generate samples from the posterior distributions of two different coins via Gibbs sampling for the purposes of estimating each coin's bias. We use a fairly weak prior by setting $\alpha$ and $\beta$ to a value of 2 for each coins.  We have the results of 20 coin flips for each coin. Coin 1 has 10 heads out of 20 flips while coin 2 has 3 heads out of 20 flips. 
+
+The Gibbs sampling code below is based on the example provided on Duke's Computational Statistics and Statistical Computing course website. [@DukeMCMC] 
 
 ```{r 2coins, echo = TRUE, warning=FALSE, message=FALSE, cache = FALSE, fig.cap = 'Bias of Two Coins: Theta 1'}
 a = 2
 b = 2
 
-z1 = 11
-N1 = 14
-z2 = 7
-N2 = 14
+z1 = 10
+N1 = 20
+z2 = 3
+N2 = 20
 
 
 theta = rep(0.5,2)
@@ -709,7 +787,10 @@ ggplot(ds, aes(x=theta2)) + geom_histogram(aes(y=..density..),color='#1A384A', f
 
 ```
 
-In the Figures above we can see the distribution of samples drawn from the Beta distribution using the prior parameters and the observed data we have. To compare the coins we look at the 95% confidence interval of the mean...????
+In the Figures \@ref(fig:2coins2) and \@ref(fig:2coins) we can see the distribution of samples drawn from the Beta distribution using the prior parameters and the observed data we have. The red line represents the mean of the samples for each coin. Our resulting bias values are:
+
+* $\theta_{1}$ = `r round(mean(ds$theta1),2)`
+* $\theta_{2}$ = `r round(mean(ds$theta2),2)`
 
 
 
@@ -718,21 +799,15 @@ In the Figures above we can see the distribution of samples drawn from the Beta 
 
 IMAGE PLACE HOLDER - MAKE A DRAWING OF FLIPPING TWO COINS ON A TIME SCALE
 
-What if the problem we are solving is more complicated. Let's say I flip a coin repeatedly, but at some point I switch to another coin with a different bias ($\theta$). I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem however now is a good time to highlight the general structure for using your conjugate priors and how to get to the equations required for the sampling process. 
+What if the problem we are solving is more complicated. Let's say I flip a coin repeatedly, but at some point I switch to another coin with a different bias ($\theta$). I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem. 
 
-The general process for derivation of our sampling distribution, as outlined in [@yildirim2012bayesian], is as follows:
-
-1. Derive the full joint density.
-2. Derive the posterior conditionals for each of the random variables in the model.
-3. Simulate samples from the posterior joint distribution based on the posterior conditionals. 
-
-In the previous example we only needed to get a posterior of a single variable (technically there were two variables, but both have the same posterior). In this case we have 3 variables that we need to estimate:
+In the previous example we only needed to get a posterior of a single variable (technically there were two variables, but both have the same posterior conditional and were independent of one another). In this case we have 3 variables that we need to estimate:
 
 1. Coin bias for coin 1: $\theta_{1}$
 2. Coin bias for coin 2: $\theta_{2}$
 3. The point in time, i.e. on which flip, the coin was swapped from coin 1 to coin 2: _n_
 
-We have three variables, but how do we describe the actual process we are modeling? In Equation \@ref(eq:cptDistributions) the distrutions for each variable are displayed. The coinflips, _x_, are drawn from a bernoulli distribution, but are dependent on the coin being flipped and the bias that coin has. The change point, _n_, NEED TO FINISH THIS EXPLANATION
+We have three variables, but how do we describe the actual process we are modeling? In Equation \@ref(eq:cptDistributions) the distrutions for each variable are displayed. The coinflips, _x_, are drawn from a bernoulli distribution, but are dependent on the coin being flipped and the bias of that coin, $\theta_{i}$. From the previous examples we know $\theta$ is modeled using a beta distribution. The change point, _n_, is the time when coin 2 replaces coin 1. Therefore the possible values of _n_ are between 2, the second sample in discrete time, and _N_, the final discrete time in our example.  All values of _n_ are equally probable and therefore can be modeled as a uniform distribution.   
 
 
 $$
@@ -741,9 +816,9 @@ $$
   x &\sim
     \begin{cases}
       Bern(x_{i};\theta_{1}) \quad 1 \le i \le n \\
-      Bern(x_{i};\theta_{1}) \quad n \lt i \lt N 
+      Bern(x_{i};\theta_{2}) \quad n \lt i \lt N 
     \end{cases} \\
-  n &\sim Uniform(1...N) \\
+  n &\sim Uniform(2...N) \\
   \theta_{i} &\sim Beta(\theta_{i}, a,b)
 \end{aligned}
 (\#eq:cptDistributions)
@@ -751,6 +826,8 @@ $$
 $$
 
 #### Derivation of Joint Distribution
+
+Now that we have defined all the unknowns of our model, we derive the full joint distribution. 
 
 $$
 \begin{equation}
@@ -788,7 +865,7 @@ p(\theta_{1}, \theta_{2}, n| x_{1:n}) &\propto
 \end{equation}
 $$
 
-Let's start by solving for _n_'s posterior conditional. In Equation \@ref(eq:cptJointDistExpand) we see that only the likelihood terms and the priors for the $\theta$'s contain _n_. Using these terms we can solve for the posterior conditional. While we are at it we will also take the log of the conditional posterior as is good practice to prevent issues such as underflow. 
+Then we move on to solving for _n_'s posterior conditional. In Equation \@ref(eq:cptJointDistExpand) we see that only the likelihood terms and the priors for the $\theta$'s contain _n_. Using these terms we can solve for the posterior conditional. While we are at it we will also take the log of the conditional posterior as is good practice to prevent issues such as underflow. 
 
 $$
 \begin{equation}
@@ -814,6 +891,7 @@ p(\theta_{1}, \theta_{2}, n| x_{1:n}) &\propto
 \end{aligned}
 \end{equation}
 $$
+
 Now we can solve for each of the $\theta$'s posterior conditionals.
 
 $$
@@ -834,8 +912,7 @@ log(p(\theta_{2}| x_{1:n},\theta_{1}, n)) &\propto log(Beta(z_{2}+a_{2}, N-n-1-z
 \end{equation}
 $$
 
-Now let's put our derived posteriors to work and Gibb's sample our change point and coin biases. 
-
+Now let's put our derived posteriors to work use Gibbs sampling to estimate our change point and coin biases. 
 
 ```{r bern_change_point, echo = TRUE, warning=FALSE,message=FALSE, cache = FALSE}
 real_thetas <- c(0.2, 0.6)
@@ -857,8 +934,8 @@ theta2 <- rbeta(1, a, b)
 
 
 
-niters = 10000
-burnin = 2000
+niters = 3000
+burnin = 1000
 # sigma = np.diag([0.2,0.2])
 
 # thetas = np.zeros((niters-burnin,2), np.float)
@@ -880,7 +957,7 @@ for (i in 1:niters){
   ## 2 things: 1 - should I be summing all the values over these? 
   # No - the product is being calculated due to the sum - should be fine
   n_multi <- rep(0, N)
-  for(steps in 1:N){
+  for(steps in 2:N){
     if(steps==N || theta2 == 1){
       n_multi[steps] <- log(theta1^sum(x[1:steps]) * (1-theta1)^(steps-sum(x[1:steps])))
     }else{
@@ -889,9 +966,11 @@ for (i in 1:niters){
     }
   }
   
-  n_multi <- exp(n_multi - max(n_multi))
-  # what about for n? 
-  n <- which(rmultinom(1, 1, n_multi/sum(n_multi))[,1] ==1)
+  n_multi <- exp(n_multi[2:N] - max(n_multi[2:N]))
+  # offset by 1 
+  # you n is equally probably between 2 and N and zero at n=1
+  # we only calculate p(n) from n=2 to N
+  n <- which(rmultinom(1, 1, n_multi/sum(n_multi))[,1] ==1) + 1
   if (i >= burnin){
     params[(i-burnin), ] = c(theta1,theta2, n)
   }
@@ -909,8 +988,9 @@ params_df <- as.data.frame(params)
 names(params_df) <- c('theta1', 'theta2', 'change_point')
 
 ggplot(params_df, aes(x = change_point)) + 
-  geom_histogram(fill="#7A99AC", color ='#1A384A') +
+  geom_histogram(fill="#7A99AC", color ='#1A384A', binwidth = 5, bins = floor(N/5)) +
   theme_minimal() + 
+  scale_x_continuous(limits = c(0,N)) +
   geom_vline(xintercept = mean(params_df$change_point), color='#b7091a') +
   labs(title = 'Change Point Estimate', x='Change Point', y = 'Density') 
 
@@ -920,20 +1000,36 @@ ggplot(params_df, aes(x = change_point)) +
 ```{r bernChangePointTheta1, echo = TRUE, warning=FALSE,message=FALSE, fig.cap = 'Estimated Theta 1'}
 
 ggplot(params_df, aes(x = theta1)) + 
-  geom_histogram(fill="#7A99AC", color ='#1A384A' ) + 
+  geom_histogram(fill="#7A99AC", color ='#1A384A' , binwidth = 0.025) + 
   theme_minimal() + 
+  scale_x_continuous(limits = c(0,1)) +
   geom_vline(xintercept = mean(params_df$theta1), color='#b7091a') +
   labs(title = expression(theta[1]~Estimate), x=expression(theta[1]), y = 'Density') 
-
 ```
 
 ```{r bernChangePointTheta2, echo = TRUE, warning=FALSE,message=FALSE, fig.cap = 'Estimated Theta 2'}
 ggplot(params_df, aes(x = theta2)) + 
-  geom_histogram(fill="#7A99AC", color ='#1A384A' ) + 
+  geom_histogram(fill="#7A99AC", color ='#1A384A' , binwidth = 0.025) + 
   theme_minimal() + 
+  scale_x_continuous(limits = c(0,1)) +
   geom_vline(xintercept = mean(params_df$theta2), color='#b7091a') +
   labs(title = expression(theta[2]~Estimate), x=expression(theta[2]), y = 'Density') 
 
 ```
 
+The resulting estimates for each of our parameters is shown below along with the real value used to generate the dataset. 
 
+```{r changePointEstimates}
+data.frame(theta_1 = c(real_thetas[1], mean(params_df$theta1)),
+       theta_2 = c(real_thetas[2], mean(params_df$theta2)),
+       n = c(change_point, floor(mean(params_df$change_point))),
+       row.names = c('True', 'Estimated')) %>% 
+  kable(col.names = c('\u03b8\u2081', '\u03b8\u2082', 'n'),
+        digits = 2,
+        row.names = TRUE, 
+        caption = 'Change Point Parameters and Estimates')
+```
+
+* $\hat{\theta_{1}}$ = `r round(params_df$theta1,2)`
+* $\hat{\theta_{2}}$ = `r round(params_df$theta2,2)`
+* _n_ = `r round(mean(params_df$change_point),2)`

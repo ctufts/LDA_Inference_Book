@@ -117,12 +117,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="2.3" data-path="parameter-estimation.html"><a href="parameter-estimation.html#maximum-likelihood"><i class="fa fa-check"></i><b>2.3</b> Maximum Likelihood</a></li>
 <li class="chapter" data-level="2.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#maximum-a-posteriori"><i class="fa fa-check"></i><b>2.4</b> Maximum a Posteriori</a></li>
 <li class="chapter" data-level="2.5" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bayesian-inference"><i class="fa fa-check"></i><b>2.5</b> Bayesian Inference</a><ul>
-<li class="chapter" data-level="2.5.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#the-issue-of-intractability"><i class="fa fa-check"></i><b>2.5.1</b> The Issue of Intractability</a></li>
-<li class="chapter" data-level="2.5.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#a-tale-of-two-mcs"><i class="fa fa-check"></i><b>2.5.2</b> A Tale of Two MC’s</a></li>
-<li class="chapter" data-level="2.5.3" data-path="parameter-estimation.html"><a href="parameter-estimation.html#conjugate-priors"><i class="fa fa-check"></i><b>2.5.3</b> Conjugate Priors</a></li>
-<li class="chapter" data-level="2.5.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#gibbs-sampling"><i class="fa fa-check"></i><b>2.5.4</b> Gibbs Sampling</a></li>
-<li class="chapter" data-level="2.5.5" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bias-of-two-coins"><i class="fa fa-check"></i><b>2.5.5</b> Bias of Two Coins</a></li>
-<li class="chapter" data-level="2.5.6" data-path="parameter-estimation.html"><a href="parameter-estimation.html#change-point-example"><i class="fa fa-check"></i><b>2.5.6</b> Change Point Example</a></li>
+<li class="chapter" data-level="2.5.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#analytical-solution"><i class="fa fa-check"></i><b>2.5.1</b> Analytical Solution</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="parameter-estimation.html"><a href="parameter-estimation.html#gibbs-sampling"><i class="fa fa-check"></i><b>2.6</b> Gibbs Sampling</a><ul>
+<li class="chapter" data-level="2.6.1" data-path="parameter-estimation.html"><a href="parameter-estimation.html#the-issue-of-intractability"><i class="fa fa-check"></i><b>2.6.1</b> The Issue of Intractability</a></li>
+<li class="chapter" data-level="2.6.2" data-path="parameter-estimation.html"><a href="parameter-estimation.html#a-tale-of-two-mcs"><i class="fa fa-check"></i><b>2.6.2</b> A Tale of Two MC’s</a></li>
+<li class="chapter" data-level="2.6.3" data-path="parameter-estimation.html"><a href="parameter-estimation.html#conjugate-distributions-and-priors"><i class="fa fa-check"></i><b>2.6.3</b> Conjugate Distributions and Priors</a></li>
+<li class="chapter" data-level="2.6.4" data-path="parameter-estimation.html"><a href="parameter-estimation.html#gibbs-sampling-1"><i class="fa fa-check"></i><b>2.6.4</b> Gibbs Sampling</a></li>
+<li class="chapter" data-level="2.6.5" data-path="parameter-estimation.html"><a href="parameter-estimation.html#bias-of-two-coins"><i class="fa fa-check"></i><b>2.6.5</b> Bias of Two Coins</a></li>
+<li class="chapter" data-level="2.6.6" data-path="parameter-estimation.html"><a href="parameter-estimation.html#change-point-example"><i class="fa fa-check"></i><b>2.6.6</b> Change Point Example</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html"><i class="fa fa-check"></i><b>3</b> Multinomial Distribution</a><ul>
@@ -407,13 +410,13 @@ word_encodings &lt;-<span class="st"> </span><span class="kw">tibble</span>(<spa
 
 thetas &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(ndocs<span class="op">*</span>nwords, alphas)
 <span class="kw">print</span>(<span class="kw">head</span>(thetas))</code></pre></div>
-<pre><code>##      [,1]  [,2]   [,3]
-## [1,] 0.63 0.335 0.0387
-## [2,] 0.86 0.072 0.0636
-## [3,] 0.83 0.027 0.1436
-## [4,] 0.94 0.055 0.0051
-## [5,] 0.76 0.195 0.0406
-## [6,] 0.90 0.022 0.0765</code></pre>
+<pre><code>##           [,1]       [,2]        [,3]
+## [1,] 0.6259047 0.33535589 0.038739455
+## [2,] 0.8641536 0.07229474 0.063551631
+## [3,] 0.8292271 0.02713615 0.143636766
+## [4,] 0.9399257 0.05494752 0.005126745
+## [5,] 0.7641922 0.19525569 0.040552159
+## [6,] 0.9015058 0.02198210 0.076512137</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">selected_words &lt;-<span class="st"> </span><span class="kw">apply</span>(thetas, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,x)<span class="op">==</span><span class="dv">1</span>))
 
 ds &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span>ndocs, <span class="dt">each =</span> nwords),
@@ -522,13 +525,13 @@ word_encodings &lt;-<span class="st"> </span><span class="kw">tibble</span>(<spa
 
 thetas &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(ndocs<span class="op">*</span>nwords, alphas)
 <span class="kw">print</span>(<span class="kw">head</span>(thetas))</code></pre></div>
-<pre><code>##      [,1]  [,2]  [,3]
-## [1,] 0.52 0.404 0.081
-## [2,] 0.85 0.121 0.026
-## [3,] 0.78 0.146 0.073
-## [4,] 0.84 0.063 0.093
-## [5,] 0.72 0.116 0.162
-## [6,] 0.86 0.010 0.126</code></pre>
+<pre><code>##           [,1]       [,2]       [,3]
+## [1,] 0.5154606 0.40401130 0.08052810
+## [2,] 0.8526076 0.12103847 0.02635393
+## [3,] 0.7801023 0.14641427 0.07348343
+## [4,] 0.8444930 0.06278609 0.09272094
+## [5,] 0.7224804 0.11597181 0.16154776
+## [6,] 0.8639552 0.01028122 0.12576353</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">selected_words &lt;-<span class="st"> </span><span class="kw">apply</span>(thetas, <span class="dv">1</span>, <span class="cf">function</span>(x) <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,x)<span class="op">==</span><span class="dv">1</span>))
 
 ds &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">1</span><span class="op">:</span>ndocs, <span class="dt">each =</span> nwords),
@@ -574,8 +577,8 @@ thetas =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv"
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># apply(thetas, 2, median)</span>
 n<span class="op">/</span><span class="kw">sum</span>(n)</code></pre></div>
 <pre><code>## 
-##  blue green   red 
-## 0.802 0.101 0.097</code></pre>
+##   blue  green    red 
+## 0.8016 0.1014 0.0970</code></pre>
 
 </div>
 </div>
