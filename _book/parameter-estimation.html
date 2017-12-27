@@ -864,7 +864,7 @@ Figure 2.11: Bias of Two Coins - Theta 2
 Figure 2.12: Change Point Example
 </p>
 </div>
-<p>What if the problem we are solving is more complicated? Let’s say I flip a coin repeatedly, but at some point I switch to another coin with a different bias (<span class="math inline">\(\theta\)</span>) as shown in <a href="parameter-estimation.html#fig:bernChangePointExampleFig">2.12</a>. I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem.</p>
+<p>What if the problem we are solving is more complicated? Let’s say I flip a coin repeatedly, but at some point I switch to another coin with a different bias (<span class="math inline">\(\theta\)</span>) as shown in Figure <a href="parameter-estimation.html#fig:bernChangePointExampleFig">2.12</a>. I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem.</p>
 <p>In the previous example we only needed to get a posterior of a single variable (technically there were two variables, but both have the same posterior conditional and were independent of one another). In this case we have 3 variables that we need to estimate:</p>
 <ol style="list-style-type: decimal">
 <li>Coin bias for coin 1: <span class="math inline">\(\theta_{1}\)</span></li>

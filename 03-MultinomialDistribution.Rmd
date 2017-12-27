@@ -11,10 +11,9 @@ a 6-sided die. Instead of using a die with numbers on each side, let's label the
 
 "Latent" "Dirichlet" "Allocation" "has" "many" "peices"
 
----------------image placeholder-----------------------
-Maybe draw a die with those words on it and consider it a 'document'
--------------------placeholder end--------------------
-
+```{r WordDie, echo = FALSE, fig.cap = 'Dice for Word Selection',  out.width = '33%', out.height='33%'}
+knitr::include_graphics("Images/LDA_Dice.png")
+```
 
 In the example above, we assume it is a fair die which would result in equal probabilities of 'rolling' any of the 6 unique words. Therefore each word has 1/6 chances of being randomly sampled from the die. 
 

@@ -5,7 +5,7 @@ This chapter offers a general overview of how documents and words are viewed and
 ## Bag of Words
 LDA processes documents as a 'bag of words'. Bag of words means you view the frequency of the words in a document with no regard for the order the words appeared in. 
 
-```{r BagOfWords, echo = FALSE, fig.cap = 'Bag of Words Representation'}
+```{r BagOfWords, echo = FALSE, fig.cap = 'Bag of Words Representation', out.width = '50%', out.height='50%', fig.align='center'}
 knitr::include_graphics("Images/BagOfWords.png")
 ```
 
