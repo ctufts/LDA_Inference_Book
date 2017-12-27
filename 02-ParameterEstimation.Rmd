@@ -797,9 +797,55 @@ In the Figures \@ref(fig:2coins2) and \@ref(fig:2coins) we can see the distribut
 
 ### Change Point Example
 
-IMAGE PLACE HOLDER - MAKE A DRAWING OF FLIPPING TWO COINS ON A TIME SCALE
+```{r bernChangePointExampleFig, echo = FALSE, warning=FALSE,message=FALSE, fig.cap = 'Change Point Example'}
+real_thetas <- c(0.1, 0.6)
+N <- 30
+a = 2
+b = 3
+change_point <- 10
+x <- c(rbinom(1:change_point, 1, real_thetas[1]),rbinom((change_point+1):N, 1, real_thetas[2]))
 
-What if the problem we are solving is more complicated. Let's say I flip a coin repeatedly, but at some point I switch to another coin with a different bias ($\theta$). I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem. 
+
+## Initialize all parameters
+
+# n ~ uniform 
+n <- round(N*runif(1))
+# theta1 ~ beta(a,b)
+theta1 <- rbeta(1, a, b)
+# theta2 ~ beta(a,b)
+theta2 <- rbeta(1, a, b)
+
+ds <- data.frame(outcome=x, 
+                 flip=1:N, 
+                 outcome_label=ifelse(x==1, 'H', 'T'),
+                 coin=c(rep(1,change_point),rep(2, N-change_point)),
+                 theta = c(rep(real_thetas[1],change_point), 
+                           rep(real_thetas[2], N-change_point)))
+
+ggplot(ds, aes(x = flip,
+               y = theta, 
+               label = outcome_label)) + 
+  geom_text(color =c(rep('#1520c1', change_point),
+                     rep('#c11520', N-change_point)),
+            size = 4, 
+            nudge_y = 0.1) + 
+  geom_linerange(aes(x=flip,
+                     y=NULL, ymax=theta,
+                     ymin=0)) + 
+  annotate("text", x = floor(change_point/2),
+           y = real_thetas[1] + 0.2, 
+           color="#1520c1",
+           label = "Coin 1") +
+  annotate("text", x = change_point + floor((N-change_point)/2),
+           y = real_thetas[2] + 0.2, 
+           color = '#c11520',
+           label = "Coin 2") +
+  scale_y_continuous(limits=c(0,1)) +
+  labs(y='Coin \U03B8', x="Flip Number") +
+  theme(plot.title = element_text(hjust = 0.5)) + theme_minimal()
+```
+
+What if the problem we are solving is more complicated? Let's say I flip a coin repeatedly, but at some point I switch to another coin with a different bias ($\theta$) as shown in Figure  \@ref(fig:bernChangePointExampleFig). I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem. 
 
 In the previous example we only needed to get a posterior of a single variable (technically there were two variables, but both have the same posterior conditional and were independent of one another). In this case we have 3 variables that we need to estimate:
 
@@ -936,9 +982,7 @@ theta2 <- rbeta(1, a, b)
 
 niters = 3000
 burnin = 1000
-# sigma = np.diag([0.2,0.2])
 
-# thetas = np.zeros((niters-burnin,2), np.float)
 params = matrix(0, nrow = (niters-burnin), ncol=3)
 for (i in 1:niters){
   

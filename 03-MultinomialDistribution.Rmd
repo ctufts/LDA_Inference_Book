@@ -1,8 +1,10 @@
 # Multinomial Distribution
 
+This chapter focuses on the multinomial distribution which we will use to model the probability of words in a document. Similar to the previous chapter, we will cover the conjugate prior for the multinomial distributoin, the Dirichlet distribution.
+
 ## Comparison of Dice vs. Words
 
-The binomial distribution is a special case of the multinomial distribution 
+The premise of Chapter 2 was to lay a foundation for understanding the multinomial distribution. We are now familiar with the binomial distribution which is actually a special case of the multinomial distribution 
 where the number of possible outcomes is 2. A multinomial distribution can 
 have 2 or more outcomes and therefore is normally shown through examples using 
 a 6-sided die. Instead of using a die with numbers on each side, let's label the sides with the following words:
@@ -14,7 +16,7 @@ Maybe draw a die with those words on it and consider it a 'document'
 -------------------placeholder end--------------------
 
 
-In the example above we would assume it is a fair die which would result in equal probabilities of 'rolling' any of the 6 unique words. Therefore each word has 1/6 chances of being randomly sampled from the die. 
+In the example above, we assume it is a fair die which would result in equal probabilities of 'rolling' any of the 6 unique words. Therefore each word has 1/6 chances of being randomly sampled from the die. 
 
 Below is an empirical example where we take each word and assign it to a single side of a fair die. The experiment, a single roll of the die, is repeated 10,000 times. We can see each word comes up at roughly the same frequency.  
 
@@ -41,8 +43,7 @@ Side Note:
 Let's think of how this will be used in the case of LDA. If I wanted to generate a document based on a model, I could use a multinomial distribution to determine what words would be in the document. If I knew the probability of a word I could use the example above to draw a new word with each sample. Obviously some words occur much more often than others, so the 'fair die' example wouldn't work for generation of document.  In later sections we will build on this concept, but its a good idea to start thinking about how this extends to language.
 ```
 
-
-As stated before, the binomial distribution is a special case of the multinomial distribution. The probability mass function for the multinomial distribution is shown in \@ref(eq:multiPMF):
+The probability mass function for the multinomial distribution is shown in \@ref(eq:multiPMF):
 
 
 $$
@@ -58,8 +59,8 @@ $$
 Therefore the multinomial representation of the distributions we've already discussed, binomial and bernoulli, would use the following parameters:
 
 * k sided die rolled n times
-    * n = 1,  k = 2 is bernoulli distribution 
-    * n > 1 , k = 2 is binomial distribution
+    * n = 1,  k = 2 is bernoulli distribution: coin has 2 sides and we are only concerned with single experiments
+    * n > 1 , k = 2 is binomial distribution: coin has 2 sides, but we are concerned with the probability of the outcome of a series of flips. 
 
 
 ## Relationship to Bernoulli 
@@ -68,7 +69,7 @@ Time to connect the dots between Bernoulli and Multinomial distributions . Recal
 
 $$
 \begin{equation}
-f_{x}(x)=P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\}
+f(x)=P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\}
 (\#eq:bernPMFmulti)
 \end{equation}
 $$
@@ -76,13 +77,23 @@ Let's swap in some different terms. We can replace the first term, $\theta$, wit
 
 $$
 \begin{equation}
-{\theta_{1}}^{x_{1}}{\theta_{2}}^{x_{2}}
+f(x)={\theta_{1}}^{x_{1}}{\theta_{2}}^{x_{2}} \\
 (\#eq:bern2Multi)
 \end{equation}
 $$
 
-You can see this looks a bit more like Equation \@ref(eq:bernPMFmulti) if the case were _k_=2 and _n_=1. Since _n_=1, _x_'s can only have a value of  1 or zero. Therefore the factorial is always 1 for the case of a bernoulli trial. Factorial of _n_ is also 1 since it is a single trial, i.e. _n_=1, resulting in what we see in equation \@ref(eq:multiPMF). 
+You can see this looks a bit more like Equation \@ref(eq:bernPMFmulti), but the factorial terms are not present. In this case _k_=2 and _n_=1 and _x_'s can only have a value of  1 or zero. The values of a bernoulli distribution are plugged into the multinomial PDF in Equation \@ref(eq:multiWBernSettings). Factorial of _n_ in the numerator is always 1 since it is a single trial, i.e. _n_=1, and the denominator is also always 1 since our only possible outcomes are 0 and 1 (heads or tails), resulting in what we see in equation \@ref(eq:multiPMF). 
 
+$$
+\begin{equation}
+\begin{aligned}
+f(x)&=\dfrac{n!}{x_1!x_2!\cdots x_k!}\theta_1^{x_1} \theta_2^{x_2} \cdots \theta_k^{x_k} \\
+f(x)&=\dfrac{1}{1}\theta_1^{x_1} \theta_2^{x_2} \\
+f(x)&={\theta_{1}}^{x_{1}}{\theta_{2}}^{x_{2}}
+(\#eq:multiWBernSettings)
+\end{aligned}
+\end{equation}
+$$
 
 ## Conjugate Prior: Dirichlet
 The conjugate prior for the multinomial distribution is the Dirichlet distribution. Similar

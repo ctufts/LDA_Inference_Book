@@ -175,12 +175,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="multinomial-distribution" class="section level1">
 <h1><span class="header-section-number">3</span> Multinomial Distribution</h1>
+<p>This chapter focuses on the multinomial distribution which we will use to model the probability of words in a document. Similar to the previous chapter, we will cover the conjugate prior for the multinomial distributoin, the Dirichlet distribution.</p>
 <div id="comparison-of-dice-vs.words" class="section level2">
 <h2><span class="header-section-number">3.1</span> Comparison of Dice vs. Words</h2>
-<p>The binomial distribution is a special case of the multinomial distribution where the number of possible outcomes is 2. A multinomial distribution can have 2 or more outcomes and therefore is normally shown through examples using a 6-sided die. Instead of using a die with numbers on each side, let’s label the sides with the following words:</p>
+<p>The premise of Chapter 2 was to lay a foundation for understanding the multinomial distribution. We are now familiar with the binomial distribution which is actually a special case of the multinomial distribution where the number of possible outcomes is 2. A multinomial distribution can have 2 or more outcomes and therefore is normally shown through examples using a 6-sided die. Instead of using a die with numbers on each side, let’s label the sides with the following words:</p>
 <p>“Latent” “Dirichlet” “Allocation” “has” “many” “peices”</p>
 <p>—————image placeholder———————– Maybe draw a die with those words on it and consider it a ‘document’ ——————-placeholder end——————–</p>
-<p>In the example above we would assume it is a fair die which would result in equal probabilities of ‘rolling’ any of the 6 unique words. Therefore each word has 1/6 chances of being randomly sampled from the die.</p>
+<p>In the example above, we assume it is a fair die which would result in equal probabilities of ‘rolling’ any of the 6 unique words. Therefore each word has 1/6 chances of being randomly sampled from the die.</p>
 <p>Below is an empirical example where we take each word and assign it to a single side of a fair die. The experiment, a single roll of the die, is repeated 10,000 times. We can see each word comes up at roughly the same frequency.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># draw 1000 samples from multinomial distribution</span>
 outcomes &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">10000</span>, <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">6</span>,<span class="dv">6</span>))<span class="op">==</span><span class="dv">1</span>))
@@ -197,7 +198,7 @@ Figure 3.1: Sampling from Multinomial with Equal Parameters
 </div>
 <pre><code>Side Note:
 Let&#39;s think of how this will be used in the case of LDA. If I wanted to generate a document based on a model, I could use a multinomial distribution to determine what words would be in the document. If I knew the probability of a word I could use the example above to draw a new word with each sample. Obviously some words occur much more often than others, so the &#39;fair die&#39; example wouldn&#39;t work for generation of document.  In later sections we will build on this concept, but its a good idea to start thinking about how this extends to language.</code></pre>
-<p>As stated before, the binomial distribution is a special case of the multinomial distribution. The probability mass function for the multinomial distribution is shown in <a href="multinomial-distribution.html#eq:multiPMF">(3.1)</a>:</p>
+<p>The probability mass function for the multinomial distribution is shown in <a href="multinomial-distribution.html#eq:multiPMF">(3.1)</a>:</p>
 <p><span class="math display" id="eq:multiPMF">\[
 \begin{equation}
 f(x)=\dfrac{n!}{x_1!x_2!\cdots x_k!}\theta_1^{x_1} \theta_2^{x_2} \cdots \theta_k^{x_k}
@@ -212,8 +213,8 @@ f(x)=\dfrac{n!}{x_1!x_2!\cdots x_k!}\theta_1^{x_1} \theta_2^{x_2} \cdots \theta_
 <ul>
 <li>k sided die rolled n times
 <ul>
-<li>n = 1, k = 2 is bernoulli distribution</li>
-<li>n &gt; 1 , k = 2 is binomial distribution</li>
+<li>n = 1, k = 2 is bernoulli distribution: coin has 2 sides and we are only concerned with single experiments</li>
+<li>n &gt; 1 , k = 2 is binomial distribution: coin has 2 sides, but we are concerned with the probability of the outcome of a series of flips.</li>
 </ul></li>
 </ul>
 </div>
@@ -222,22 +223,32 @@ f(x)=\dfrac{n!}{x_1!x_2!\cdots x_k!}\theta_1^{x_1} \theta_2^{x_2} \cdots \theta_
 <p>Time to connect the dots between Bernoulli and Multinomial distributions . Recall the bernoulli probability mass function shown in Equation <a href="multinomial-distribution.html#eq:bernPMFmulti">(3.2)</a>.</p>
 <p><span class="math display" id="eq:bernPMFmulti">\[
 \begin{equation}
-f_{x}(x)=P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\}
+f(x)=P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\}
 \tag{3.2}
 \end{equation}
 \]</span> Let’s swap in some different terms. We can replace the first term, <span class="math inline">\(\theta\)</span>, with <span class="math inline">\(\theta_{1}\)</span> and the second term, <span class="math inline">\((1-\theta)\)</span> as <span class="math inline">\(\theta_{2}\)</span>. Then we have:</p>
 <p><span class="math display" id="eq:bern2Multi">\[
 \begin{equation}
-{\theta_{1}}^{x_{1}}{\theta_{2}}^{x_{2}}
+f(x)={\theta_{1}}^{x_{1}}{\theta_{2}}^{x_{2}} \\
 \tag{3.3}
 \end{equation}
 \]</span></p>
-<p>You can see this looks a bit more like Equation <a href="multinomial-distribution.html#eq:bernPMFmulti">(3.2)</a> if the case were <em>k</em>=2 and <em>n</em>=1. Since <em>n</em>=1, <em>x</em>’s can only have a value of 1 or zero. Therefore the factorial is always 1 for the case of a bernoulli trial. Factorial of <em>n</em> is also 1 since it is a single trial, i.e. <em>n</em>=1, resulting in what we see in equation <a href="multinomial-distribution.html#eq:multiPMF">(3.1)</a>.</p>
+<p>You can see this looks a bit more like Equation <a href="multinomial-distribution.html#eq:bernPMFmulti">(3.2)</a>, but the factorial terms are not present. In this case <em>k</em>=2 and <em>n</em>=1 and <em>x</em>’s can only have a value of 1 or zero. The values of a bernoulli distribution are plugged into the multinomial PDF in Equation <a href="multinomial-distribution.html#eq:multiWBernSettings">(3.4)</a>. Factorial of <em>n</em> in the numerator is always 1 since it is a single trial, i.e. <em>n</em>=1, and the denominator is also always 1 since our only possible outcomes are 0 and 1 (heads or tails), resulting in what we see in equation <a href="multinomial-distribution.html#eq:multiPMF">(3.1)</a>.</p>
+<p><span class="math display" id="eq:multiWBernSettings">\[
+\begin{equation}
+\begin{aligned}
+f(x)&amp;=\dfrac{n!}{x_1!x_2!\cdots x_k!}\theta_1^{x_1} \theta_2^{x_2} \cdots \theta_k^{x_k} \\
+f(x)&amp;=\dfrac{1}{1}\theta_1^{x_1} \theta_2^{x_2} \\
+f(x)&amp;={\theta_{1}}^{x_{1}}{\theta_{2}}^{x_{2}}
+\tag{3.4}
+\end{aligned}
+\end{equation}
+\]</span></p>
 </div>
 <div id="conjugate-prior-dirichlet" class="section level2">
 <h2><span class="header-section-number">3.3</span> Conjugate Prior: Dirichlet</h2>
 <p>The conjugate prior for the multinomial distribution is the Dirichlet distribution. Similar to the beta distribution, Dirichlet can be though of as a distribution of distributions. Also note that the beta distribution is the special case of a Dirichlet distribution where the number of possible outcome is 2 similar to the connection between the binomial and multinomial distributions.</p>
-<p>The probability distribution function for the Dirichlet distribution is shown in Equation <a href="multinomial-distribution.html#eq:dirPDF">(3.4)</a>.</p>
+<p>The probability distribution function for the Dirichlet distribution is shown in Equation <a href="multinomial-distribution.html#eq:dirPDF">(3.5)</a>.</p>
 <p><span class="math display" id="eq:dirPDF">\[
 \begin{equation}
 Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
@@ -246,17 +257,17 @@ Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
   \over{\prod _{i=1}^{K}\Gamma (\alpha _{i})}
 }
 \prod _{i=1}^{K}x_{i}^{\alpha _{i}-1}
-\tag{3.4}
+\tag{3.5}
 \end{equation}
 \]</span></p>
-<p>THINK THIS CAN BE REMOVED - IS IN BETA A few notes about equation <a href="multinomial-distribution.html#eq:dirPDF">(3.4)</a>.</p>
+<p>THINK THIS CAN BE REMOVED - IS IN BETA A few notes about equation <a href="multinomial-distribution.html#eq:dirPDF">(3.5)</a>.</p>
 <ol style="list-style-type: decimal">
 <li>The Gamma function is the factorial of the parameter minus 1.</li>
 </ol>
 <p><span class="math display" id="eq:gammaFunction2">\[
 \begin{equation}
 \Gamma (\alpha _{i}) = (\alpha_{i}-1)!
-\tag{3.5}
+\tag{3.6}
 \end{equation}
 \]</span></p>
 <ol start="2" style="list-style-type: decimal">

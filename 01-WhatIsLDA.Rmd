@@ -363,7 +363,7 @@ n_doc_topic_count <- current_state %>% group_by(doc_id, topic) %>%
 n_topic_sum <- current_state %>% group_by(topic) %>%
   summarise(
     count = n()
-  )  %>% select(count) %>% as.matrix() %>% as.vector()
+  )  %>% dplyr::select(count) %>% as.matrix() %>% as.vector()
 
 n_topic_term_count <- current_state %>% group_by(topic, word) %>% 
   summarise(
@@ -407,7 +407,7 @@ row.names(phi_table) <- colnames(phi)
 
 
 ds %>% filter(doc_id < 3) %>% group_by(doc_id) %>% 
-  select_(1, estimated_topic_names[1],
+  dplyr::select_(1, estimated_topic_names[1],
           estimated_topic_names[2],
           estimated_topic_names[3]) %>% distinct() %>% round(2) %>% 
   kable(col.names = c('Document', estimated_topic_names), 
