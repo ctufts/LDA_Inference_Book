@@ -130,7 +130,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="chapter" data-level="3" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html"><i class="fa fa-check"></i><b>3</b> Multinomial Distribution</a><ul>
 <li class="chapter" data-level="3.1" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#comparison-of-dice-vs.words"><i class="fa fa-check"></i><b>3.1</b> Comparison of Dice vs. Words</a></li>
-<li class="chapter" data-level="3.2" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#relationship-to-bernoulli"><i class="fa fa-check"></i><b>3.2</b> Relationship to Bernoulli</a></li>
+<li class="chapter" data-level="3.2" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#how-multinomial-and-bernoulli-relate"><i class="fa fa-check"></i><b>3.2</b> How Multinomial and Bernoulli Relate</a></li>
 <li class="chapter" data-level="3.3" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#conjugate-prior-dirichlet"><i class="fa fa-check"></i><b>3.3</b> Conjugate Prior: Dirichlet</a></li>
 <li class="chapter" data-level="3.4" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#gibbs-sampling---multinomial-dirichlet"><i class="fa fa-check"></i><b>3.4</b> Gibbs Sampling - Multinomial &amp; Dirichlet</a><ul>
 <li class="chapter" data-level="3.4.1" data-path="multinomial-distribution.html"><a href="multinomial-distribution.html#derivation-of-gibbs-sampling-solution-of-word-distribution-single-doc"><i class="fa fa-check"></i><b>3.4.1</b> Derivation of Gibbs Sampling Solution of Word Distribution (Single Doc)</a></li>
@@ -186,7 +186,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 Figure 3.1: Dice for Word Selection
 </p>
 </div>
-<p>In the example above, we assume it is a fair die which would result in equal probabilities of ‘rolling’ any of the 6 unique words. Therefore each word has 1/6 chances of being randomly sampled from the die.</p>
+<p>In the example above, we assume it is a fair die which would result in equal probabilities of ‘rolling’ any of the 6 unique words. Therefore each word has a probability of being randomly sampled from the die of 1/6.</p>
 <p>Below is an empirical example where we take each word and assign it to a single side of a fair die. The experiment, a single roll of the die, is repeated 10,000 times. We can see each word comes up at roughly the same frequency.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># draw 1000 samples from multinomial distribution</span>
 outcomes &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">10000</span>, <span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="kw">rep</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">6</span>,<span class="dv">6</span>))<span class="op">==</span><span class="dv">1</span>))
@@ -201,9 +201,12 @@ ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class=
 Figure 3.2: Sampling from Multinomial with Equal Parameters
 </p>
 </div>
-<pre><code>Side Note:
-Let&#39;s think of how this will be used in the case of LDA. If I wanted to generate a document based on a model, I could use a multinomial distribution to determine what words would be in the document. If I knew the probability of a word I could use the example above to draw a new word with each sample. Obviously some words occur much more often than others, so the &#39;fair die&#39; example wouldn&#39;t work for generation of document.  In later sections we will build on this concept, but its a good idea to start thinking about how this extends to language.</code></pre>
-<p>The probability mass function for the multinomial distribution is shown in <a href="multinomial-distribution.html#eq:multiPMF">(3.1)</a>:</p>
+<p><strong>Quick Note:</strong><br />
+<em>Let’s think of how this will be used in the case of LDA. If I wanted to generate a document based on a model, I could use a multinomial distribution to determine what words would be in the document. If I knew the probability of a word I could use the example above to draw a new word with each sample. Obviously some words occur much more often than others, so the ‘fair die’ example wouldn’t work for generation of document. In later sections we will build on this concept, but its good to start thinking about how this extends to applications in language.</em></p>
+</div>
+<div id="how-multinomial-and-bernoulli-relate" class="section level2">
+<h2><span class="header-section-number">3.2</span> How Multinomial and Bernoulli Relate</h2>
+<p>The probability mass function for the multinomial distribution is shown in Equation <a href="multinomial-distribution.html#eq:multiPMF">(3.1)</a>:</p>
 <p><span class="math display" id="eq:multiPMF">\[
 \begin{equation}
 f(x)=\dfrac{n!}{x_1!x_2!\cdots x_k!}\theta_1^{x_1} \theta_2^{x_2} \cdots \theta_k^{x_k}
@@ -214,76 +217,61 @@ f(x)=\dfrac{n!}{x_1!x_2!\cdots x_k!}\theta_1^{x_1} \theta_2^{x_2} \cdots \theta_
 <li><i>k</i> - number of sides on the die</li>
 <li><i>n</i> - number of times the die will be rolled</li>
 </ul>
-<p>Therefore the multinomial representation of the distributions we’ve already discussed, binomial and bernoulli, would use the following parameters:</p>
+<p>The multinomial representation of the distributions we’ve already discussed, binomial and bernoulli, would use the following parameters:</p>
 <ul>
-<li>k sided die rolled n times
+<li><em>k</em> sided die rolled <em>n</em> times
 <ul>
-<li>n = 1, k = 2 is bernoulli distribution: coin has 2 sides and we are only concerned with single experiments</li>
-<li>n &gt; 1 , k = 2 is binomial distribution: coin has 2 sides, but we are concerned with the probability of the outcome of a series of flips.</li>
+<li><em>n</em> = 1, <em>k</em> = 2 is bernoulli distribution: coin has 2 sides and we are only concerned with single experiments</li>
+<li><em>n</em> &gt; 1 , <em>k</em> = 2 is binomial distribution: coin has 2 sides, but we are concerned with the probability of the outcome of a series of flips.</li>
 </ul></li>
 </ul>
-</div>
-<div id="relationship-to-bernoulli" class="section level2">
-<h2><span class="header-section-number">3.2</span> Relationship to Bernoulli</h2>
-<p>Time to connect the dots between Bernoulli and Multinomial distributions . Recall the bernoulli probability mass function shown in Equation <a href="multinomial-distribution.html#eq:bernPMFmulti">(3.2)</a>.</p>
+<p>To help illustrate the relationship between Bernoulli and Multinomial distributions we need to recall the bernoulli probability mass function shown in Equation <a href="multinomial-distribution.html#eq:bernPMFmulti">(3.2)</a>.</p>
 <p><span class="math display" id="eq:bernPMFmulti">\[
 \begin{equation}
 f(x)=P(X=x)=\theta^{x}(1-\theta)^{1-x}, \hspace{1cm} x = \{0,1\}
 \tag{3.2}
 \end{equation}
-\]</span> Let’s swap in some different terms. We can replace the first term, <span class="math inline">\(\theta\)</span>, with <span class="math inline">\(\theta_{1}\)</span> and the second term, <span class="math inline">\((1-\theta)\)</span> as <span class="math inline">\(\theta_{2}\)</span>. Then we have:</p>
+\]</span> Let’s swap in some different terms. We can replace the first term, <span class="math inline">\(\theta\)</span>, with <span class="math inline">\(\theta_{1}\)</span> and the second term, <span class="math inline">\((1-\theta)\)</span> as <span class="math inline">\(\theta_{2}\)</span>. This can be thought of as <span class="math inline">\(\theta_{heads}\)</span> and <span class="math inline">\(\theta_{tails}\)</span> for our coin flip example.</p>
 <p><span class="math display" id="eq:bern2Multi">\[
 \begin{equation}
 f(x)={\theta_{1}}^{x_{1}}{\theta_{2}}^{x_{2}} \\
 \tag{3.3}
 \end{equation}
 \]</span></p>
-<p>You can see this looks a bit more like Equation <a href="multinomial-distribution.html#eq:bernPMFmulti">(3.2)</a>, but the factorial terms are not present. In this case <em>k</em>=2 and <em>n</em>=1 and <em>x</em>’s can only have a value of 1 or zero. The values of a bernoulli distribution are plugged into the multinomial PDF in Equation <a href="multinomial-distribution.html#eq:multiWBernSettings">(3.4)</a>. Factorial of <em>n</em> in the numerator is always 1 since it is a single trial, i.e. <em>n</em>=1, and the denominator is also always 1 since our only possible outcomes are 0 and 1 (heads or tails), resulting in what we see in equation <a href="multinomial-distribution.html#eq:multiPMF">(3.1)</a>.</p>
+<p>You can see this looks a bit more like the multinomial PDF,Equation <a href="multinomial-distribution.html#eq:bernPMFmulti">(3.2)</a>, but the factorial terms are not present. In this case <em>k</em>=2 and <em>n</em>=1 and <em>x</em>’s can only have a value of 1 or zero. The values of a bernoulli distribution are plugged into the multinomial PDF in Equation <a href="multinomial-distribution.html#eq:multiWBernSettings">(3.4)</a>. Factorial of <em>n</em> in the numerator is always 1 since it is a single trial, i.e. <em>n</em>=1, and the denominator is also always 1 since our only possible outcomes are 0 and 1 (heads or tails). Once we simplify, we see the relationship that was stated previously: the bernoulli distribution is a special case of the multinomial distribution.</p>
 <p><span class="math display" id="eq:multiWBernSettings">\[
 \begin{equation}
 \begin{aligned}
 f(x)&amp;=\dfrac{n!}{x_1!x_2!\cdots x_k!}\theta_1^{x_1} \theta_2^{x_2} \cdots \theta_k^{x_k} \\
 f(x)&amp;=\dfrac{1}{1}\theta_1^{x_1} \theta_2^{x_2} \\
 f(x)&amp;={\theta_{1}}^{x_{1}}{\theta_{2}}^{x_{2}}
-\tag{3.4}
 \end{aligned}
+\tag{3.4}
 \end{equation}
 \]</span></p>
 </div>
 <div id="conjugate-prior-dirichlet" class="section level2">
 <h2><span class="header-section-number">3.3</span> Conjugate Prior: Dirichlet</h2>
-<p>The conjugate prior for the multinomial distribution is the Dirichlet distribution. Similar to the beta distribution, Dirichlet can be though of as a distribution of distributions. Also note that the beta distribution is the special case of a Dirichlet distribution where the number of possible outcome is 2 similar to the connection between the binomial and multinomial distributions.</p>
+<p>The conjugate prior for the multinomial distribution is the Dirichlet distribution. Similar to the beta distribution, Dirichlet can be thought of as a distribution of distributions. Also note that the beta distribution is the special case of a Dirichlet distribution where the number of possible outcome is 2. This is similar to the relationship between the binomial and multinomial distributions.</p>
 <p>The probability distribution function for the Dirichlet distribution is shown in Equation <a href="multinomial-distribution.html#eq:dirPDF">(3.5)</a>.</p>
 <p><span class="math display" id="eq:dirPDF">\[
 \begin{equation}
-Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
+Dir(\overrightarrow{\theta}|\overrightarrow{\alpha})=
 { 
   {\Gamma {\bigl (}\sum _{i=1}^{K}\alpha _{i}{\bigr )}}
   \over{\prod _{i=1}^{K}\Gamma (\alpha _{i})}
 }
-\prod _{i=1}^{K}x_{i}^{\alpha _{i}-1}
+\prod _{i=1}^{K}\theta_{i}^{\alpha _{i}-1}
 \tag{3.5}
 \end{equation}
 \]</span></p>
-<p>THINK THIS CAN BE REMOVED - IS IN BETA A few notes about equation <a href="multinomial-distribution.html#eq:dirPDF">(3.5)</a>.</p>
-<ol style="list-style-type: decimal">
-<li>The Gamma function is the factorial of the parameter minus 1.</li>
-</ol>
-<p><span class="math display" id="eq:gammaFunction2">\[
-\begin{equation}
-\Gamma (\alpha _{i}) = (\alpha_{i}-1)!
-\tag{3.6}
-\end{equation}
-\]</span></p>
-<ol start="2" style="list-style-type: decimal">
-<li>The Dirichlet distribution function is often written using the Beta function in place of the first term as seen below:</li>
-</ol>
+<p>Equation <a href="multinomial-distribution.html#eq:dirPDF">(3.5)</a> is often written using the Beta function in place of the first term as seen below:</p>
 <p><span class="math display">\[
-Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
+Dir(\overrightarrow{\theta}|\overrightarrow{\alpha})=
 { 
   1 \over B(\alpha)
 }
-\prod _{i=1}^{K}x_{i}^{\alpha _{i}-1} 
+\prod _{i=1}^{K}\theta_{i}^{\alpha _{i}-1} 
 \]</span></p>
 <p>Where: <span class="math display">\[
 {1\over B(\alpha)}={ 
@@ -291,7 +279,7 @@ Dir(\overrightarrow{p}|\overrightarrow{\alpha})=
   \over{\prod _{i=1}^{K}\Gamma (\alpha _{i})}
 }
 \]</span></p>
-<p>The Dirichlet distribution is an extension of the beta distribution for <i>k</i> categories. To get a better sense of what the distributions look like let’s visualize a few examples at <i>k</i>=3, think 3 sided die, with varying alpha values. In both of the box plots below 10,000 random samples were drawn from a Dirichlet distribution where <i>k</i>=3 and <span class="math inline">\(\alpha\)</span> is the same for each <i>k</i> in the given plot. The first plot shows the distribution of values drawn when <span class="math inline">\(\alpha\)</span> = 100.</p>
+<p>The Dirichlet distribution is an extension of the beta distribution for <i>k</i> categories, similar to the relationship between multinomial and bernoulli distributions. To get a better sense of what the distributions look like, let’s visualize a few examples at <i>k</i>=3. In both of the box plots below 10,000 random samples were drawn from a Dirichlet distribution where <i>k</i>=3 and <span class="math inline">\(\alpha\)</span> is the same for each <i>k</i> in the given plot. The first plot shows the distribution of values drawn when <span class="math inline">\(\alpha\)</span> = 100.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">alpha &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">100</span>,<span class="dv">100</span>,<span class="dv">100</span>)
 trials &lt;-<span class="st"> </span><span class="dv">10000</span>
 x &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(trials, alpha)
@@ -314,7 +302,7 @@ ds &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">
 Figure 3.3: Sampling from Dirichlet: α=100
 </p>
 </div>
-<p>Below the process is repeated, but this time the <span class="math inline">\(\alpha\)</span> values are set to 1 for each category. We can see the range of distribution of values sampled with the higher <span class="math inline">\(\alpha\)</span> value is much narrower than the distribution of values sampled using <span class="math inline">\(\alpha\)</span> values of 1. This is the same pattern we saw with the beta distribution, as the shape parameters increased the distribution became more dense and the shape of the distribution narrowed.</p>
+<p>Below the process is repeated, but this time the <span class="math inline">\(\alpha\)</span> values are set to 1 for each category. We can see the range of distribution of values sampled with the higher <span class="math inline">\(\alpha\)</span> value is much narrower than the distribution of values sampled using <span class="math inline">\(\alpha\)</span> values of 1. This is the same pattern we saw with the beta distribution; as the shape parameters increased the distribution became more dense and the shape of the distribution narrowed.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">alpha &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)
   x &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(trials, alpha)
 <span class="kw">colnames</span>(x) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;theta_1&#39;</span>, <span class="st">&#39;theta_2&#39;</span>, <span class="st">&#39;theta_3&#39;</span>)
@@ -336,8 +324,7 @@ ds &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">
 Figure 3.4: Sampling from Dirichlet - θ=1
 </p>
 </div>
-<p>So what happens when the <span class="math inline">\(\alpha\)</span> values are not the same, i.e. the distribution is non-symmetrical? In the histogram below, you can see the distribution of values sampled from the dirichlet distribution for each category. Recall the beta distribution shape skews as the difference between the two parameters grows.</p>
-<p>You recall we only need to estimate one value, <span class="math inline">\(\theta_{1}\)</span> generated from the beta distribution with 2 parameters because we can infer <span class="math inline">\(\theta_{2}\)</span> from this value (<span class="math inline">\(\theta_{2} = 1-\theta_{1}\)</span>).</p>
+<p>So what happens when the <span class="math inline">\(\alpha\)</span> values are not the same, i.e. the distribution is asymmetrical? In the histogram below, we see the distribution of values sampled from the dirichlet distribution for each category. The distribution of samples for each category (<span class="math inline">\(\alpha_{i}\)</span> value), are approximately centered at the ratio of the <span class="math inline">\(\alpha_{i}\)</span> value to the sum of all <span class="math inline">\(\alpha\)</span> values. This is similar to the shift of the beta distribution when using hyperparameters that were unequal (see Figure <a href="parameter-estimation.html#fig:betaShapeSkewed">2.3</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">alpha &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">50</span>,<span class="dv">20</span>)
 alpha_prop &lt;-<span class="st"> </span>alpha<span class="op">/</span><span class="kw">sum</span>(alpha)
 x &lt;-<span class="st"> </span><span class="kw">rdirichlet</span>(trials, alpha)
@@ -354,26 +341,22 @@ ds &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="kw">
 <span class="st">  </span><span class="kw">scale_fill_discrete</span>(<span class="dt">label =</span> alpha,
                        <span class="dt">name =</span> <span class="st">&quot;\U03B1&quot;</span> )</code></pre></div>
 <div class="figure"><span id="fig:DirichletAlphaMixed"></span>
-<img src="_main_files/figure-html/DirichletAlphaMixed-1.png" alt="Sampling from Dirichlet - θ=[10,50,20]" width="672" />
+<img src="_main_files/figure-html/DirichletAlphaMixed-1.png" alt="Sampling from Dirichlet: θ=[10,50,20]" width="672" />
 <p class="caption">
-Figure 3.5: Sampling from Dirichlet - θ=[10,50,20]
+Figure 3.5: Sampling from Dirichlet: θ=[10,50,20]
 </p>
 </div>
-<p>General notes on Dirichlet: higher values of beta (or whatever parameter name is), the more uniform the probability for each class, the lower the more more likely a specific class is going to be much larger than the rest.</p>
-<p>Let’s try to rationalize this in the same way we do bernoulli. Bernoulli is 2 possible outcomes, beta is it’s prior. Bernoulli is a special case of multinomial where k = 2, so I would assume that means beta is the special case of dirichlet where the number of shape parameters is 2. Think about this a bit more - in the case of beta distribution we use prior data (or assumption) of coin flips - 5 heads, 5 tails - means a = 5, b = 5. From this we make our distribution and we can randomly sample a valid value of theta (and remember we only use theta for bernoulli because if we have one probability, we can infer the other via subtraction from 1, but in reality there is a p value for heads, and a p value for tails… this makes it a bit eaiser to understand the transfer to multinomial) based on this prior information. So it would be no different if we have 3 different words in a topic, we use the prior info as the parameters for the Dirichlet distribution - 3 red, 2 blue, 1 green which would translate to alpha1 = 3, alpha2 = 2, alpha3 = 1, from there we can build our multidimensional distribution and select the most likely value for our thetas (or the probability of a specific outcome where all those p’s sum to one).</p>
-<p>[May want to put a plot or two here showing the dirichlet code, but creating the same beta distributions, so this makes more sense]</p>
 </div>
 <div id="gibbs-sampling---multinomial-dirichlet" class="section level2">
 <h2><span class="header-section-number">3.4</span> Gibbs Sampling - Multinomial &amp; Dirichlet</h2>
-<p>Prior to getting into an example of Gibbs sampling as it applies to inferring the parameters of a multinomial distribution, let’s first describe a model which generates words for a single document. As you can imagine this would be modeled as a multinomial distribution with parameters <span class="math inline">\(\overrightarrow{\theta} = \theta_{1}, \theta_{2}, ... \theta_{n}\)</span> for words 1 to n. The model would be capable of generating a bag of words representation of a document. The term <i>‘bag of words’</i> refers to words in no particular order, i.e. the document we would be generating would not have structured sentences, but would contain all the components of the document.</p>
-<p>Let’s start by defining our model. Let’s start with a basic composition for our ideal document. We are going to have a document with only 3 distinct words 📘,📕,📗. Remember a document is just a mixture of words, obviously this is not a fine work of literature and has a very limited vocabulary, but it is meant as a basic example of document composition.</p>
-<p>First we are going to create a seed document, i.e. the document that will be used as a basis of our <span class="math inline">\(\alpha\)</span>’s for our prior. In order to do this we need to identify the mixture proportions for each word in the vocabulary.</p>
+<p>Prior to getting into an example of Gibbs sampling as it applies to inferring the parameters of a multinomial distribution, let’s first describe a model which generates words for a single document. As you can imagine this would be modeled as a multinomial distribution with parameters <span class="math inline">\(\overrightarrow{\theta} = \theta_{1}, \theta_{2}, ... \theta_{n}\)</span> for words 1 to n. The model would be capable of generating a bag of words representation of a document. The term <i>‘bag of words’</i> refers to words in no particular order, i.e. the document we would be generating would not have structured sentences, but would contain all the components of the document. The model will be used to generate a document using a limited vocabulary, only 3 distinct words: 📘,📕,📗.</p>
+<p>First we are going to create a seed document which I will refer to as an <em>ideal</em> document. The document is used as a basis of our <span class="math inline">\(\alpha\)</span>’s for our prior described by the Dirichlet distribution. To create this document we first define the mixture of words in the document:</p>
 <ul>
 <li>📘 : 10%</li>
 <li>📕 : 10%</li>
 <li>📗 : 80%</li>
 </ul>
-<p>To clarify this means the document will contain 80% blue books, 10% green books, and 10% red books:</p>
+<p>To clarify, this means the document will contain 80% blue books, 10% green books, and 10% red books:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># use letters function as your vocabulary</span>
 v &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;red&#39;</span>, <span class="st">&#39;green&#39;</span>, <span class="st">&#39;blue&#39;</span>)
 nwords &lt;-<span class="st"> </span><span class="dv">10</span>
@@ -384,21 +367,9 @@ books &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="
 
 <span class="kw">cat</span>(<span class="kw">sapply</span>(document, <span class="cf">function</span>(x) books<span class="op">$</span>code[<span class="kw">which</span>(books<span class="op">$</span>label <span class="op">==</span><span class="st"> </span>x)]))</code></pre></div>
 <pre><code>## 📕 📗 📘 📘 📘 📘 📘 📘 📘 📘</code></pre>
-<p>So what is the structure of the document generator?</p>
-<ul>
-<li>Alpha -&gt; Dirichlet -&gt; Multinomial</li>
-</ul>
-<p>(Maybe here is when you can introduce the terrible idea of block diagrams????, It might be good to introduce them even though you aren’t a fan, for all you know people might even understant them better this way…)</p>
 <p>Do you recall the beta/bernoulli example? The way we informed our prior was using some prior information we had, i.e. the number of heads and tails previously obtained from flipping the two coins. We will use the document above as the basis of our <span class="math inline">\(\alpha\)</span> paramters for the Dirichlet distribution, i.e. our prior for the multinomial. In more general language, we want to generate documents similar to our ‘ideal’ document.</p>
 <p>So let’s generate a new document using the word counts from our <i>ideal</i> document as our <span class="math inline">\(\alpha\)</span> values for the dirichlet prior. Then we use the <span class="math inline">\(\theta\)</span> values generated by the dirichlet prior as the parameters for a multinomial distribution to generate the next term in the document.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># generate text based only on document #1</span>
-
-<span class="co"># leave this code, I like the for loop for creating a single document, shows the process </span>
-<span class="co"># in a straight forward manner, the next code chunk shows a faster way, which is good as well</span>
-
-words &lt;-<span class="st"> </span>document
-<span class="co"># lenght of new document</span>
- <span class="co">#rep(1,length(unique(words)))</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">words &lt;-<span class="st"> </span>document
 word_counts &lt;-<span class="st"> </span><span class="kw">table</span>(words)
 alphas &lt;-<span class="st">  </span>word_counts
 new_doc &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="st">&#39;&#39;</span>, nwords)
@@ -408,14 +379,10 @@ new_doc &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="s
   <span class="kw">set.seed</span>(i)
   new_doc[i] &lt;-<span class="st"> </span><span class="kw">names</span>(word_counts)[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>, <span class="dv">1</span>, p) <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)]
 }
-<span class="kw">table</span>(new_doc)</code></pre></div>
-<pre><code>## new_doc
-## blue  red 
-##    9    1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(<span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>, <span class="kw">sapply</span>(new_doc, <span class="cf">function</span>(x) books<span class="op">$</span>code[<span class="kw">which</span>(books<span class="op">$</span>label <span class="op">==</span><span class="st"> </span>x)]))</code></pre></div>
+<span class="kw">cat</span>(<span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>, <span class="kw">sapply</span>(new_doc, <span class="cf">function</span>(x) books<span class="op">$</span>code[<span class="kw">which</span>(books<span class="op">$</span>label <span class="op">==</span><span class="st"> </span>x)]))</code></pre></div>
 <pre><code>## 
 ##  📘 📘 📘 📘 📘 📘 📕 📘 📘 📘</code></pre>
-<p>It’s not quite the same as the original, but that should be expected. This is a model that generates documents probabalistically based on some prior information. So let’s make a few more and see how this changes.</p>
+<p>It’s not quite the same as the original, but that should be expected. This is a model that generates documents probabalistically based on some prior information. So let’s make a few more documents and see how this changes.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">word_counts &lt;-<span class="st"> </span><span class="kw">table</span>(words)
 alphas &lt;-<span class="st">  </span>word_counts
 nwords &lt;-<span class="st"> </span><span class="dv">10</span>
@@ -473,21 +440,19 @@ ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group
 </tr>
 </tbody>
 </table>
-<p>As we can see each document composition is similar, but the word counts and order are different each time. This is to be expected (maybe say why? )</p>
+<p>As we can see each document composition is similar, but the word counts and order are different each time. This is to be expected as we are using a model with some degree of randomness to generate our documents.</p>
 <p>So now onto inferernce ….</p>
-<p>The process above is known as a generative model. We created documents using a model with a given set of parameters. Inference is going to take this general concept and look at it from a different angle. Instead of generating documents with our model we are going to take a series of pre-existing documents and infer what model created them. We are going to make the assumption that the structure of the model is the same as the generative example, i.e. all documents are generated based on the same word mixture ratios.</p>
-<p>Let’s use the 10 documents we previously generated as our basis and see if we can infer the parameters used to generate them.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># counts -&gt; alphas</span>
-<span class="co"># for each of the 3 thetas iterate 1k times</span>
-<span class="co"># plot distributions</span>
-alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">nrow</span>(books))
-<span class="co"># alphas &lt;- 1:6 </span>
+<p>The process above is known as a generative model. We created documents using a model with a given set of parameters. Inference is going to take this general concept and look at it from a different angle. Instead of generating documents with our model we are going to take a series of pre-existing documents and infer what model created them. We are going to make the assumption that the structure of the model is the same as the generative example, i.e. all documents are generated based on the same word mixture ratios:</p>
+<ul>
+<li>📘 : 10%</li>
+<li>📕 : 10%</li>
+<li>📗 : 80%</li>
+</ul>
+<p>Let’s use the 5 documents we previously generated as our basis and infer the parameters used to generate them via Gibbs sampling.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">nrow</span>(books))
 n &lt;-<span class="st"> </span><span class="kw">table</span>(ds<span class="op">$</span>word)
-<span class="kw">head</span>(n)</code></pre></div>
-<pre><code>## 
-##  blue green   red 
-##    38     3     9</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">niters =<span class="st"> </span><span class="dv">2000</span>
+
+niters =<span class="st"> </span><span class="dv">2000</span>
 burnin =<span class="st"> </span><span class="dv">500</span>
 
 thetas =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> (niters<span class="op">-</span>burnin), <span class="dt">ncol=</span><span class="kw">nrow</span>(books), 
@@ -501,20 +466,22 @@ thetas =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv"
   }
 }
 
- <span class="co"># hist(thetas[, 1])</span>
- <span class="co"># hist(thetas[, 2])</span>
- <span class="co"># </span>
+
  df &lt;-<span class="st"> </span><span class="kw">as.tibble</span>(thetas) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">   </span><span class="kw">gather</span>(word, theta)
-<span class="co"># map book colors to each segment of plot to avoid bothering with the emoji labels (for now)</span>
-<span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">y=</span>theta, <span class="dt">x =</span> word)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_violin</span>()</code></pre></div>
-<p><img src="_main_files/figure-html/unigramInference10-1.png" width="672" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># apply(thetas, 2, median)</span>
-<span class="co"># n/sum(n)</span></code></pre></div>
+<span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">y=</span>theta, <span class="dt">x =</span> word, <span class="dt">fill=</span>word)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_violin</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values=</span><span class="kw">c</span>(<span class="st">&#39;#0057e7&#39;</span>,  <span class="st">&#39;#008744&#39;</span>,<span class="st">&#39;#d62d20&#39;</span>))</code></pre></div>
+<div class="figure"><span id="fig:unigramInference10"></span>
+<img src="_main_files/figure-html/unigramInference10-1.png" alt="Gibbs Sampling with 5 Documents" width="672" />
+<p class="caption">
+Figure 3.6: Gibbs Sampling with 5 Documents
+</p>
+</div>
 <div id="derivation-of-gibbs-sampling-solution-of-word-distribution-single-doc" class="section level3">
 <h3><span class="header-section-number">3.4.1</span> Derivation of Gibbs Sampling Solution of Word Distribution (Single Doc)</h3>
-<p>Below is a general overview of how inferrence can be carried out using Gibbs sampling. Recall conjugate priors have the same posterior form as their conjugate distribution. In equation 24 we start with the now familiar proportional solution for estimating a posterior through sampling. We need the likelihood, which is derived from the multinomial distribution, and the prior, which is derived from the dirichlet distribution. Once we plug in the prior and likelihood and simplify, we find that we are left with a Dirichlet PDF with the input parameters of <span class="math inline">\(\overrightarrow{\alpha} + \overrightarrow{n}\)</span> where <em>n</em> are the observed word counts.</p>
-<p><span class="math display">\[
+<p>Below is a general overview of how inferrence can be carried out using Gibbs sampling. Recall a conjugate priors has the same form as the posterior distribution. In equation <a href="multinomial-distribution.html#eq:uniGramGibbs">(3.6)</a> we start with the proportional solution, i.e. no evidence term, for estimating a posterior through sampling. We need the likelihood, which is derived from the multinomial distribution, and the prior, which is derived from the dirichlet distribution. Once we plug in the prior and likelihood and simplify, we find that we are left with a Dirichlet PDF with the input parameters of <span class="math inline">\(\overrightarrow{\alpha} + \overrightarrow{n}\)</span> where <em>n</em> are the observed word counts.</p>
+<p><span class="math display" id="eq:uniGramGibbs">\[
+\begin{equation}
 \begin{aligned}
 p(\theta|D) &amp;\propto p(D|\theta)p(\theta)\\
 &amp;\propto \prod _{i=1}^{K}\theta^{n(k)} { 
@@ -528,9 +495,10 @@ p(\theta|D) &amp;\propto p(D|\theta)p(\theta)\\
 }\prod _{i=1}^{K}\theta_{i}^{\alpha _{i}+n_{k}-1} \\
 &amp;\propto Dir(\overrightarrow{\alpha} + \overrightarrow{n})
 \end{aligned}
-\tag{24}
+\tag{3.6}
+\end{equation}
 \]</span></p>
-<p>We can see our mixture estimates are significantly different from the real model used to generate the documents. So why is this? One of the issues here is that our sample are documents with only 10 words. Therefore an average document has 8 …, 1 …, and 1…, but it is not unusual to see a slight variation which causes mixture shifts of 10% or more. And with Let’s try the same example but this time instead of only generating 5 documents we will genertate 500 and use this as our sample to draw inference from.</p>
+<p>We can see our mixture estimates are significantly different from the real model used to generate the documents in Figure <a href="multinomial-distribution.html#fig:unigramInference10">3.6</a>. So why is this? One of the issues here is that our sample are documents with only 10 words. Therefore an average document has 1 📘, 1 📕, and 8 📗, but it is not unusual to see a slight variation which causes mixture shifts of 10% or more. Let’s try the same example, but this time instead of only generating 5 documents we will genertate 500 and use this as our sample to infer the word mixtures from.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">word_counts &lt;-<span class="st"> </span><span class="kw">table</span>(words)
 alphas &lt;-<span class="st">  </span>word_counts
 nwords &lt;-<span class="st"> </span><span class="dv">10</span>
@@ -555,14 +523,7 @@ ds &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt"
              <span class="dt">word_uni =</span> word_encodings<span class="op">$</span>code[selected_words])
 
 
-<span class="co"># counts -&gt; alphas</span>
-<span class="co"># for each of the 3 thetas iterate 1k times</span>
-<span class="co"># plot distributions</span>
-
-
-
 alphas &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>,<span class="kw">nrow</span>(books))
-<span class="co"># alphas &lt;- 1:6 </span>
 n &lt;-<span class="st"> </span><span class="kw">table</span>(ds<span class="op">$</span>word)
 <span class="kw">head</span>(n)</code></pre></div>
 <pre><code>## 
@@ -582,19 +543,18 @@ thetas =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv"
   }
 }
 
- <span class="co"># hist(thetas[, 1])</span>
- <span class="co"># hist(thetas[, 2])</span>
- <span class="co"># </span>
+
  df &lt;-<span class="st"> </span><span class="kw">as.tibble</span>(thetas) <span class="op">%&gt;%</span><span class="st"> </span>
 <span class="st">   </span><span class="kw">gather</span>(word, theta)
-<span class="co"># map book colors to each segment of plot to avoid bothering with the emoji labels (for now)</span>
-<span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">y=</span>theta, <span class="dt">x =</span> word)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_violin</span>()</code></pre></div>
-<p><img src="_main_files/figure-html/unigramInference500-1.png" width="672" /></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># apply(thetas, 2, median)</span>
-n<span class="op">/</span><span class="kw">sum</span>(n)</code></pre></div>
-<pre><code>## 
-##   blue  green    red 
-## 0.8016 0.1014 0.0970</code></pre>
+<span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">y=</span>theta, <span class="dt">x =</span> word, <span class="dt">fill=</span>word)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_violin</span>() <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_fill_manual</span>(<span class="dt">values=</span><span class="kw">c</span>(<span class="st">&#39;#0057e7&#39;</span>,  <span class="st">&#39;#008744&#39;</span>,<span class="st">&#39;#d62d20&#39;</span>))</code></pre></div>
+<div class="figure"><span id="fig:unigramInference500"></span>
+<img src="_main_files/figure-html/unigramInference500-1.png" alt="Gibbs Sampling with 500 Documents" width="672" />
+<p class="caption">
+Figure 3.7: Gibbs Sampling with 500 Documents
+</p>
+</div>
+<p>In Figure <a href="multinomial-distribution.html#fig:unigramInference500">3.7</a> we can see the distribution of estimates are more dense and centered at approximately the true values used to generate the sample documents.</p>
 
 </div>
 </div>
