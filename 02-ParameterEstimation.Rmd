@@ -357,11 +357,6 @@ ggplot(beta_ds, aes(x = theta, y = density)) + geom_point(color='#7A99AC') +
 In the next example we have the same number of samples, but we assume a much stronger prior. In particular, we assume the coin is most likely fair by selecting $\alpha$ and $\beta$ parameters both equal to 100. These parameters represent a Beta distribution that is centered at 0.5 and is very dense around that point. We can see the resuting MAP estimate is much closer to 0.5 than our previous example with the uniformed prior. 
 
 ```{r mapSmallnInformedPrior, echo = TRUE, fig.cap = 'MAP: Small number of experiments and informed prior'}
-# description:
-# the strong assumption of a 'fair' coin prior reduces the width of the 
-# distribution, i.e. much higher probability density near theta (p) of 0.5
-# This forces the MAP theta value to stay much closer to the prior due to the 
-# small amount of observed evidence
 
 n <- 20
 heads <- 14

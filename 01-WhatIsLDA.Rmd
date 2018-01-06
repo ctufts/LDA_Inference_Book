@@ -10,7 +10,9 @@ Latent Dirichlet Allocation (LDA) is a generative probablistic model for collect
 
 A topic is a probability distribution over words.[@steyvers2007probabilistic]  Imagine you have a bag that has a bunch of little squares in it with a word printed on each (similar to the game Scrabble, but words instead of letters). Any word not in the bag has a probability of being drawn equal to zero. However all other words in the bag have a probability greater than zero. Let's say we have 2 chips with the word 'philadelphia' and 1 with the word 'eagles' on it. We would say you have a 1/3 chance of drawing 'eagles', 2/3 chance of drawing 'philadelphia', and 0 for any other word. This is effectively what a topic is; it provides us with the probabilities of a set of words for the given topic. 
 
------------------IMAGE PLACE HOLDER - different bags of topics-------------------------
+```{r BOWScrabble, echo = FALSE, fig.cap = 'Topic Scrabble: Philadelphia and Seattle', out.width = '75%', out.height='75%', fig.align='center'}
+knitr::include_graphics("Images/BOW_scrabble.png")
+```
 
 The general idea of LDA is that each document is generated from a mixture of topics and each of those topics is a mixture of words. This can be used as a mechanism for generating new documents, i.e. we know the topics a priori, or for inferring topics present in a set of documents we already have.
 
