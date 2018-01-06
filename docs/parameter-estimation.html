@@ -470,13 +470,7 @@ Figure 2.5: MAP: Small number of experiments and uninformed prior
 </p>
 </div>
 <p>In the next example we have the same number of samples, but we assume a much stronger prior. In particular, we assume the coin is most likely fair by selecting <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> parameters both equal to 100. These parameters represent a Beta distribution that is centered at 0.5 and is very dense around that point. We can see the resuting MAP estimate is much closer to 0.5 than our previous example with the uniformed prior.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># description:</span>
-<span class="co"># the strong assumption of a &#39;fair&#39; coin prior reduces the width of the </span>
-<span class="co"># distribution, i.e. much higher probability density near theta (p) of 0.5</span>
-<span class="co"># This forces the MAP theta value to stay much closer to the prior due to the </span>
-<span class="co"># small amount of observed evidence</span>
-
-n &lt;-<span class="st"> </span><span class="dv">20</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">20</span>
 heads &lt;-<span class="st"> </span><span class="dv">14</span>
 tails &lt;-<span class="st"> </span><span class="dv">6</span>
 
@@ -766,9 +760,14 @@ For \ i \ in \ iterations:\\
 \end{equation}
 \]</span></p>
 <p>Gibbs sampling works by estimating all parameters via the posterior conditional iteratively for a set number of iterations or a distinct stopping criteria/convergence measure. For the sake of our example we will stick with a set number of iterations. In Equation <a href="parameter-estimation.html#eq:GibbsGeneral">(2.31)</a> we see the next estimate, <em>i+1</em>, of <span class="math inline">\(\theta_{1}\)</span> is based on all other current parameter values. When estimating <span class="math inline">\(\theta_{2}\)</span> the <em>i+1</em> value of <span class="math inline">\(\theta_{1}\)</span> is used along with all of the current (<em>i</em>) parameter values. This continues for all parameter values. After the the <em>nth</em> parameter is estimated, the process starts all over again for the next iteration.</p>
-<p>Without the math it looks like this:</p>
-<p>FIGURE OF 3 CIRCLES CROSSED OUT/OPEN/COLORED - BEING ESTIMATED, CURRENT STEP, PAST STEP</p>
-<p>The calculations done in our example are shown in Equation <a href="parameter-estimation.html#eq:TwoCoinsGibbsGeneral">(2.32)</a>. Note that since the two coins are independent of one another, we are sampling from a Beta distribution based on each coin’s priors and evidence then repeating.</p>
+<p>The process without the math is shown in Figure <a href="parameter-estimation.html#fig:GibbsViz">2.12</a>. The red circles represent the parameters yet to be estimated in this iteration where the blue represent those that have been previously estimated during the current iteration. Note that the purple circle in each row is the parameter currently being estimated in that step (the current row) and that it takes into account all the available info, i.e. all the red and blue circles in that row.</p>
+<div class="figure" style="text-align: center"><span id="fig:GibbsViz"></span>
+<img src="Images/GibbsSamplingViz.png" alt="Gibbs Sampling - The Process" width="75%" height="75%" />
+<p class="caption">
+Figure 2.12: Gibbs Sampling - The Process
+</p>
+</div>
+<p>The calculations used for our example are shown in Equation <a href="parameter-estimation.html#eq:TwoCoinsGibbsGeneral">(2.32)</a>. Note that since the two coins are independent of one another, we are sampling from a Beta distribution based on each coin’s priors and evidence then repeating.</p>
 <p><span class="math display" id="eq:TwoCoinsGibbsGeneral">\[
 \begin{equation}
 \begin{aligned}
@@ -820,7 +819,7 @@ ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class=
 <div class="figure"><span id="fig:2coins"></span>
 <img src="_main_files/figure-html/2coins-1.png" alt="Bias of Two Coins: Theta 1" width="672" />
 <p class="caption">
-Figure 2.12: Bias of Two Coins: Theta 1
+Figure 2.13: Bias of Two Coins: Theta 1
 </p>
 </div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x=</span>theta2)) +<span class="st"> </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y=</span>..density..),<span class="dt">color=</span><span class="st">&#39;#1A384A&#39;</span>, <span class="dt">fill=</span><span class="st">&#39;#7A99AC&#39;</span>) +<span class="st"> </span>
@@ -830,10 +829,10 @@ Figure 2.12: Bias of Two Coins: Theta 1
 <div class="figure"><span id="fig:2coins2"></span>
 <img src="_main_files/figure-html/2coins2-1.png" alt="Bias of Two Coins - Theta 2" width="672" />
 <p class="caption">
-Figure 2.13: Bias of Two Coins - Theta 2
+Figure 2.14: Bias of Two Coins - Theta 2
 </p>
 </div>
-<p>In the Figures <a href="parameter-estimation.html#fig:2coins2">2.13</a> and <a href="parameter-estimation.html#fig:2coins">2.12</a> we can see the distribution of samples drawn from the Beta distribution using the prior parameters and the observed data we have. The red line represents the mean of the samples for each coin. Our resulting bias values are:</p>
+<p>In the Figures <a href="parameter-estimation.html#fig:2coins2">2.14</a> and <a href="parameter-estimation.html#fig:2coins">2.13</a> we can see the distribution of samples drawn from the Beta distribution using the prior parameters and the observed data we have. The red line represents the mean of the samples for each coin. Our resulting bias values are:</p>
 <ul>
 <li><span class="math inline">\(\theta_{1}\)</span> = 0.5</li>
 <li><span class="math inline">\(\theta_{2}\)</span> = 0.21</li>
@@ -844,10 +843,10 @@ Figure 2.13: Bias of Two Coins - Theta 2
 <div class="figure"><span id="fig:bernChangePointExampleFig"></span>
 <img src="_main_files/figure-html/bernChangePointExampleFig-1.png" alt="Change Point Example" width="672" />
 <p class="caption">
-Figure 2.14: Change Point Example
+Figure 2.15: Change Point Example
 </p>
 </div>
-<p>What if the problem we are solving is more complicated? Let’s say I flip a coin repeatedly, but at some point I switch to another coin with a different bias (<span class="math inline">\(\theta\)</span>) as shown in Figure <a href="parameter-estimation.html#fig:bernChangePointExampleFig">2.14</a>. I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem.</p>
+<p>What if the problem we are solving is more complicated? Let’s say I flip a coin repeatedly, but at some point I switch to another coin with a different bias (<span class="math inline">\(\theta\)</span>) as shown in Figure <a href="parameter-estimation.html#fig:bernChangePointExampleFig">2.15</a>. I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem.</p>
 <p>In the previous example we only needed to get a posterior of a single variable (technically there were two variables, but both have the same posterior conditional and were independent of one another). In this case we have 3 variables that we need to estimate:</p>
 <ol style="list-style-type: decimal">
 <li>Coin bias for coin 1: <span class="math inline">\(\theta_{1}\)</span></li>
@@ -1019,7 +1018,7 @@ ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class=
 <div class="figure"><span id="fig:bernChangePointN"></span>
 <img src="_main_files/figure-html/bernChangePointN-1.png" alt="Estimated Change Point" width="672" />
 <p class="caption">
-Figure 2.15: Estimated Change Point
+Figure 2.16: Estimated Change Point
 </p>
 </div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> theta1)) +<span class="st"> </span>
@@ -1031,7 +1030,7 @@ Figure 2.15: Estimated Change Point
 <div class="figure"><span id="fig:bernChangePointTheta1"></span>
 <img src="_main_files/figure-html/bernChangePointTheta1-1.png" alt="Estimated Theta 1" width="672" />
 <p class="caption">
-Figure 2.16: Estimated Theta 1
+Figure 2.17: Estimated Theta 1
 </p>
 </div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> theta2)) +<span class="st"> </span>
@@ -1043,7 +1042,7 @@ Figure 2.16: Estimated Theta 1
 <div class="figure"><span id="fig:bernChangePointTheta2"></span>
 <img src="_main_files/figure-html/bernChangePointTheta2-1.png" alt="Estimated Theta 2" width="672" />
 <p class="caption">
-Figure 2.17: Estimated Theta 2
+Figure 2.18: Estimated Theta 2
 </p>
 </div>
 <p>The resulting estimates for each of our parameters is shown below along with the real value used to generate the dataset.</p>

@@ -688,14 +688,16 @@ $$
 
 Gibbs sampling works by estimating all parameters via the posterior conditional iteratively for a set number of iterations or a distinct stopping criteria/convergence measure. For the sake of our example we will stick with a set number of iterations. In Equation \@ref(eq:GibbsGeneral) we see the next estimate, _i+1_, of $\theta_{1}$ is based on all other current parameter values. When estimating $\theta_{2}$ the _i+1_ value of $\theta_{1}$ is used along with all of the current (_i_) parameter values. This continues for all parameter values. After the the _nth_ parameter is estimated, the process starts all over again for the next iteration. 
 
-Without the math it looks like this: 
+The process without the math is shown in Figure \@ref(fig:GibbsViz). The red circles represent the parameters yet to be estimated in this iteration where the blue represent those that have been previously estimated during the current iteration. Note that the purple circle in each row is the parameter currently being estimated in that step (the current row) and that it takes into account all the available info, i.e. all the red and blue circles in that row.     
 
-FIGURE OF 3 CIRCLES CROSSED OUT/OPEN/COLORED - BEING ESTIMATED, CURRENT STEP, PAST STEP
+```{r GibbsViz, echo = FALSE, fig.cap = 'Gibbs Sampling - The Process', out.width = '75%', out.height='75%', fig.align='center'}
+knitr::include_graphics("Images/GibbsSamplingViz.png")
+```
 
 
 
 
-The calculations done in our example are shown in Equation \@ref(eq:TwoCoinsGibbsGeneral). Note that since the two coins are independent of one another, we are sampling from a Beta distribution based on each coin's priors and evidence then repeating.   
+The calculations used for our example are shown in Equation \@ref(eq:TwoCoinsGibbsGeneral). Note that since the two coins are independent of one another, we are sampling from a Beta distribution based on each coin's priors and evidence then repeating.   
 
 $$
 \begin{equation}

@@ -11,7 +11,7 @@ a 6-sided die. Instead of using a die with numbers on each side, let's label the
 
 "Latent" "Dirichlet" "Allocation" "has" "many" "peices"
 
-```{r WordDie, echo = FALSE, fig.cap = 'Dice for Word Selection',  out.width = '33%', out.height='33%'}
+```{r WordDie, echo = FALSE, fig.cap = 'Die for Word Selection',  out.width = '33%', out.height='33%'}
 knitr::include_graphics("Images/LDA_Dice.png")
 ```
 
