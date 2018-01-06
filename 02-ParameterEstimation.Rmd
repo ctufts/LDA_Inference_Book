@@ -8,7 +8,7 @@ output:
 
 LDA is a generative probabilistic model, so to understand exactly how this works we need to understand the underlying probability distributions. In this chapter we will focus on the Bernoulli distribution and the Beta distribution. Both of these distributions are very closely related to (and also special cases of) the multinomial and Dirichlet distributions utilized by LDA, but they are a bit easier to comprehend. Once we have made our way through Bernoulli and beta, we will go over how they are linked to the multinomial and Dirichlet distributions. 
 
-Throughout the chapter I'm going to build off of a simple example - a single coin flip. Let's begin. 
+Throughout the chapter I'm going to build off of a simple example - a single coin flip.  
 
 ## Distributions
 ### Bernoulli
@@ -309,13 +309,11 @@ $$
 
 Next, we plug in the PDF of the beta distribution in the place of the prior (Equation \@ref(eq:bernMAPTheta)).
 
-
 $$
 \begin{equation}
 \begin{aligned}
 \theta_{MAP}&= \mathcal{L}(\theta|D) + log(p(\theta)) \\\\
 \theta_{MAP}&= n^{(1)}log(\theta) + n^{(0)}log(1-\theta) + log({\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \beta)}}) \\\\
-
 \theta_{MAP}&= n^{(1)}log(\theta) + n^{(0)}log(1-\theta)  + \\ &\quad log({\theta^{\alpha-1}) + log((1-\theta)^{\beta-1}) - log({B(\alpha, \beta)}}) \\\\
 {d \over d\theta} \mathcal{L}(\theta|D) + log(p(\theta)) &= {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} + {\alpha - 1\over\theta} - {\beta - 1 \over 1-\theta}
 \\\\
@@ -327,6 +325,7 @@ $$
 \end{equation}
 $$
 
+
 Now that we know how to calculate the parameter $\theta$ that maximizes the posterior, lets take a look at how choices of different priors and different numbers of observed trials effects our outcome.  
 
 In the Figure \@ref(fig:mapSmallnUninformedPrior) we see the MAP estimation of $\theta$ with a relatively uninformed prior, low $\alpha$ and $\beta$ values and a small number of observed experiments (n=20). Uninformed means we are going to make a weak assumption about the prior. In more general terms, this means that we don't have a strong intuition that our coin is fair or unfair. In a mathematical sense, uninformed means a low sum of the two parameters, if you had $\alpha=1000$ and $\beta=1$ this would __not__ be considered as uninformed whereas $\alpha$ and $\beta$ both equal to 1 is normally referred to as uniformed or naive. The Beta distribution has $\alpha$ and $\beta$ parameters of 2 resulting in the blue density curve shown in Figure \@ref(fig:mapSmallnUninformedPrior). 
@@ -335,18 +334,12 @@ In the Figure \@ref(fig:mapSmallnUninformedPrior) we see the MAP estimation of $
 __NOTE__: The terms weak, uninformed, and naive are often used interchangeably when referencing priors. The same goes for the terms strong and informed. 
 
 ```{r mapSmallnUninformedPrior, echo = TRUE, fig.cap = 'MAP: Small number of experiments and uninformed prior'}
-# description:
-# ml will yeild the expected average and is not effected by the prior
-# map uses a weak assumption - uniform density for all values of theta
-# this results in a theta_map value very similar to the ml value
+
 n <- 20
 heads <- 14
 tails <- 6
 
 
-# ml
-ml_theta <- heads/n
-# map
 B <- 2
 alpha <- 2
 
@@ -374,10 +367,6 @@ n <- 20
 heads <- 14
 tails <- 6
 
-
-# ml
-ml_theta <- heads/n
-# map
 B <- 100
 alpha <- 100
 
@@ -395,18 +384,12 @@ What happens when we have a much larger number of observed experiments and an un
 
 
 ```{r mapLargenUninformedPrior, echo = TRUE, fig.cap = 'MAP: Large number of experiments and uninformed prior'}
-# description
-# high number of observed samples (evidence)
-# weak prior - uniform 
-# ml and map are close to one another - close... as expected
+
 n <- 1000
 heads <- 723
 tails <- n-heads
 
 
-# ml
-ml_theta <- heads/n
-# map
 B <- 2
 alpha <- 2
 map_theta <- (heads + alpha - 1)/(heads + tails + alpha + B -2)
@@ -427,10 +410,6 @@ n <- 1000
 heads <- 723
 tails <- n-heads
 
-
-# ml
-ml_theta <- heads/n
-# map
 B <- 100
 alpha <- 100
 possible_theta <- seq(0,1,0.001)
@@ -526,10 +505,6 @@ n <- 20
 heads <- 14
 tails <- n-heads
 
-
-# ml
-ml_theta <- heads/n
-# map
 B <- 2
 alpha <- 2
 possible_theta <- seq(0,1,0.001)
@@ -553,21 +528,26 @@ The coin flip example solved via Bayesian inference was capable of being solved 
 ### A Tale of Two MC's
 Gibbs Sampling is a Markov Chain Monte Carlo (MCMC) technique for parameter estimation.  Let's break down the two MC's. A markov chain is a process where the next state is determined by the current state. More importantly it does not rely on any information prior to the current state. 
 
-?????
-1. This needs a diagram and possibly a general example. 
- * Weather - Sunny/Rainy (it's always sunny in philadelphia), Next word in sentence (probably too complicated), board game (dice rolls) 
- 
-2. LETS MAKE SURE TO REITERATE THIS AFTER SHOWING THE GENERAL GIBBS SAMPLING MATH AND DIAGRAM 
-????
+```{r MarkovChain, echo = FALSE, fig.cap = 'Markov Chain: Rain or Shine', out.width = '50%', out.height='50%', fig.align='center'}
+knitr::include_graphics("Images/MarkovChain.png")
+```
 
 
-The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of $\pi$. [@resnik2010gibbs] All we need is some chalk and a bucket of rice. First I draw a circle on the ground. Then I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. (Side note: you could save yourself a bunch of time and just weight the two proportions of rice instead of straining your vision and wasting your time.) From here I can infer the value of $\pi$ as follows:
+
+The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of $\pi$. [@resnik2010gibbs] All we need is some chalk and a bucket of rice. First I draw a circle on the ground. Then I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. (Side note: you could save yourself a bunch of time and just weight the two proportions of rice instead of straining your vision and wasting your time.) 
+
+```{r MonteCarlo, echo = FALSE, fig.cap = 'Monte Carlo: Estimating &#960;', out.width = '75%', out.height='75%', fig.align='center'}
+knitr::include_graphics("Images/MonteCarlo.png")
+```
+
+From here I can infer the value of $\pi$ as follows:
 
 $$
 \begin{equation}
 \begin{aligned}
 {\pi r^{2} \over (2r)^{2}} &= {Rice_{circle}\over Rice_{circle + square}} \\\\
-\pi &\approx {4Rice_{circle}\over Rice_{circle + square}}
+\pi &\approx {4Rice_{circle}\over Rice_{circle + square}}\\
+\hat{\pi} &= {4*1kg \over 1.2kg} = 3.333
 \end{aligned}
 (\#eq:MCRice)
 \end{equation}
@@ -667,8 +647,8 @@ $$
 \begin{aligned}
 p(\theta_{1}, \theta_{2}|z_{1}, z_{2}, N) &\propto p(\theta_{1}|z_{1}, N)p(\theta_{2}|z_{2}, N) \\
 p(\theta_{1}, \theta_{2}|z_{1}, z_{2}, N) &\propto p(z_{1}|\theta_{1})p(z_{2}|\theta_{2})p(\theta_{1})p(\theta_{2})
-(\#eq:bernFullJoint)
 \end{aligned}
+(\#eq:bernFullJoint)
 \end{equation}
 $$
 
@@ -1074,6 +1054,3 @@ data.frame(theta_1 = c(real_thetas[1], mean(params_df$theta1)),
         caption = 'Change Point Parameters and Estimates')
 ```
 
-* $\hat{\theta_{1}}$ = `r round(params_df$theta1,2)`
-* $\hat{\theta_{2}}$ = `r round(params_df$theta2,2)`
-* _n_ = `r round(mean(params_df$change_point),2)`

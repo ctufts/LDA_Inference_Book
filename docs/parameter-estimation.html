@@ -176,7 +176,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="parameter-estimation" class="section level1">
 <h1><span class="header-section-number">2</span> Parameter Estimation</h1>
 <p>LDA is a generative probabilistic model, so to understand exactly how this works we need to understand the underlying probability distributions. In this chapter we will focus on the Bernoulli distribution and the Beta distribution. Both of these distributions are very closely related to (and also special cases of) the multinomial and Dirichlet distributions utilized by LDA, but they are a bit easier to comprehend. Once we have made our way through Bernoulli and beta, we will go over how they are linked to the multinomial and Dirichlet distributions.</p>
-<p>Throughout the chapter I’m going to build off of a simple example - a single coin flip. Let’s begin.</p>
+<p>Throughout the chapter I’m going to build off of a simple example - a single coin flip.</p>
 <div id="distributions" class="section level2">
 <h2><span class="header-section-number">2.1</span> Distributions</h2>
 <div id="bernoulli" class="section level3">
@@ -189,7 +189,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 I will use the term <i>success</i> interchangably with the term <i>heads</i> when describing Bernoulli distribution. In reality <i>success</i> could be <i>tails</i> if you choose to define it that way. </em></p>
 <p>To clarify, if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However, if I want to know the probability of getting 2 heads (or more) in a row, we would use the binomial distribution. For our purposes we are only concerned about the outcome of a single coin flip and will therefore stick to the Bernoulli distribution.</p>
 <div class="figure"><span id="fig:BernVSBin"></span>
-<img src="Images/Bern_Binomial.png" alt="Bernoulli and Binomial Distributions"  />
+<img src="Images/Bern_Binomial.png" alt="Bernoulli and Binomial Distributions" width="678" />
 <p class="caption">
 Figure 2.1: Bernoulli and Binomial Distributions
 </p>
@@ -228,15 +228,15 @@ b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</sp
 params &lt;-<span class="st"> </span><span class="kw">cbind</span>(a,b)
 ds &lt;-<span class="st"> </span><span class="ot">NULL</span>
 n &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.01</span>)
-<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(params)){
+for(i in <span class="dv">1</span>:<span class="kw">nrow</span>(params)){
   ds &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">data.frame</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> <span class="kw">dbeta</span>(n, params[i,<span class="dv">1</span>], params[i,<span class="dv">2</span>]),
                              <span class="dt">parameters =</span> <span class="kw">paste0</span>(<span class="st">&quot;\U03B1 = &quot;</span>,params[i,<span class="dv">1</span>],
                                                  <span class="st">&quot;, \U03B2 = &quot;</span>, params[i,<span class="dv">2</span>])), ds)
 }
 
-<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y, <span class="dt">color=</span>parameters)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Probability Density&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">name=</span><span class="ot">NULL</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
+<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y, <span class="dt">color=</span>parameters)) +<span class="st"> </span><span class="kw">geom_line</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Probability Density&#39;</span>) +
+<span class="st">  </span><span class="kw">scale_color_discrete</span>(<span class="dt">name=</span><span class="ot">NULL</span>) +<span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
 <div class="figure"><span id="fig:betashape"></span>
 <img src="_main_files/figure-html/betashape-1.png" alt="Beta Distribution" width="672" />
 <p class="caption">
@@ -249,15 +249,15 @@ b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2</sp
 params &lt;-<span class="st"> </span><span class="kw">cbind</span>(a,b)
 ds &lt;-<span class="st"> </span><span class="ot">NULL</span>
 n &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.01</span>)
-<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(params)){
+for(i in <span class="dv">1</span>:<span class="kw">nrow</span>(params)){
   ds &lt;-<span class="st"> </span><span class="kw">rbind</span>(<span class="kw">data.frame</span>(<span class="dt">x =</span> n, <span class="dt">y =</span> <span class="kw">dbeta</span>(n, params[i,<span class="dv">1</span>], params[i,<span class="dv">2</span>]),
                              <span class="dt">parameters =</span> <span class="kw">paste0</span>(<span class="st">&quot;\U03B1 = &quot;</span>,params[i,<span class="dv">1</span>],
                                                  <span class="st">&quot;, \U03B2 = &quot;</span>, params[i,<span class="dv">2</span>])), ds)
 }
 
-<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y, <span class="dt">color=</span>parameters)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Probability Density&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">name=</span><span class="ot">NULL</span>, <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;#7A99AC&quot;</span>, <span class="st">&quot;#E4002B&quot;</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
+<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x =</span> x, <span class="dt">y =</span> y, <span class="dt">color=</span>parameters)) +<span class="st"> </span><span class="kw">geom_line</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Probability Density&#39;</span>) +
+<span class="st">  </span><span class="kw">scale_color_manual</span>(<span class="dt">name=</span><span class="ot">NULL</span>, <span class="dt">values =</span> <span class="kw">c</span>(<span class="st">&quot;#7A99AC&quot;</span>, <span class="st">&quot;#E4002B&quot;</span>)) +<span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
 <div class="figure"><span id="fig:betaShapeSkewed"></span>
 <img src="_main_files/figure-html/betaShapeSkewed-1.png" alt="Beta Distribution - Skewed" width="672" />
 <p class="caption">
@@ -373,21 +373,21 @@ n^{(1)} &amp;= \theta(n^{(1)} + n^{0}) \\ \\
 \end{equation}
 \]</span></p>
 <p>The value of <span class="math inline">\(\theta\)</span> that maximizes the likelihood is the number of heads over the number of flips. The maximum likelihood value for 1 out of 10 flips equal to head up to 10 heads out of 10 flips is shown in Figure <a href="parameter-estimation.html#fig:bernoulliml">2.4</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">heads =<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">10</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">heads =<span class="st"> </span><span class="dv">1</span>:<span class="dv">10</span>
 flips =<span class="st"> </span><span class="dv">10</span>
 ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(heads, <span class="dt">flips =</span> <span class="kw">rep</span>(flips, <span class="kw">length</span>(heads)))
-ds<span class="op">$</span>theta &lt;-<span class="st"> </span>ds<span class="op">$</span>heads<span class="op">/</span>ds<span class="op">$</span>flips
+ds$theta &lt;-<span class="st"> </span>ds$heads/ds$flips
 
 
 <span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x =</span> heads,
-               <span class="dt">y =</span> theta)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">color =</span><span class="st">&#39;#1520c1&#39;</span>, <span class="dt">size =</span> <span class="dv">3</span>) <span class="op">+</span><span class="st"> </span>
+               <span class="dt">y =</span> theta)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">color =</span><span class="st">&#39;#1520c1&#39;</span>, <span class="dt">size =</span> <span class="dv">3</span>) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">geom_linerange</span>(<span class="kw">aes</span>(<span class="dt">x=</span>heads,
                      <span class="dt">y=</span><span class="ot">NULL</span>, <span class="dt">ymax=</span>theta,
-                     <span class="dt">ymin=</span><span class="dv">0</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">2</span>), <span class="dt">labels =</span> <span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">2</span>)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">y=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">x=</span><span class="st">&quot;Number of Heads&quot;</span>, <span class="dt">title =</span><span class="st">&quot;ML Parameter Estimation: 10 Bernoulli Trials&quot;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>)) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
+                     <span class="dt">ymin=</span><span class="dv">0</span>)) +
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">2</span>), <span class="dt">labels =</span> <span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">2</span>)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">y=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">x=</span><span class="st">&quot;Number of Heads&quot;</span>, <span class="dt">title =</span><span class="st">&quot;ML Parameter Estimation: 10 Bernoulli Trials&quot;</span>) +
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>)) +<span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
 <div class="figure"><span id="fig:bernoulliml"></span>
 <img src="_main_files/figure-html/bernoulliml-1.png" alt="Bernoulli Maximum Likelihood" width="672" />
 <p class="caption">
@@ -430,12 +430,11 @@ p(\theta|\alpha,\beta) = {\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \
 \end{equation}
 \]</span></p>
 <p>Next, we plug in the PDF of the beta distribution in the place of the prior (Equation <a href="parameter-estimation.html#eq:bernMAPTheta">(2.17)</a>).</p>
-$$
-<span class="math display" id="eq:bernMAPTheta">\[\begin{equation}
+<p><span class="math display" id="eq:bernMAPTheta">\[
+\begin{equation}
 \begin{aligned}
 \theta_{MAP}&amp;= \mathcal{L}(\theta|D) + log(p(\theta)) \\\\
 \theta_{MAP}&amp;= n^{(1)}log(\theta) + n^{(0)}log(1-\theta) + log({\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \beta)}}) \\\\
-
 \theta_{MAP}&amp;= n^{(1)}log(\theta) + n^{(0)}log(1-\theta)  + \\ &amp;\quad log({\theta^{\alpha-1}) + log((1-\theta)^{\beta-1}) - log({B(\alpha, \beta)}}) \\\\
 {d \over d\theta} \mathcal{L}(\theta|D) + log(p(\theta)) &amp;= {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} + {\alpha - 1\over\theta} - {\beta - 1 \over 1-\theta}
 \\\\
@@ -444,33 +443,26 @@ $$
 \theta_{MAP}&amp;= {{n^{(1)} + \alpha -1} \over {n^{(1)} + n^{0} + \alpha + \beta - 2}}
 \end{aligned}
 \tag{2.17}
-\end{equation}\]</span>
-<p>$$</p>
+\end{equation}
+\]</span></p>
 <p>Now that we know how to calculate the parameter <span class="math inline">\(\theta\)</span> that maximizes the posterior, lets take a look at how choices of different priors and different numbers of observed trials effects our outcome.</p>
 <p>In the Figure <a href="parameter-estimation.html#fig:mapSmallnUninformedPrior">2.5</a> we see the MAP estimation of <span class="math inline">\(\theta\)</span> with a relatively uninformed prior, low <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> values and a small number of observed experiments (n=20). Uninformed means we are going to make a weak assumption about the prior. In more general terms, this means that we don’t have a strong intuition that our coin is fair or unfair. In a mathematical sense, uninformed means a low sum of the two parameters, if you had <span class="math inline">\(\alpha=1000\)</span> and <span class="math inline">\(\beta=1\)</span> this would <strong>not</strong> be considered as uninformed whereas <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> both equal to 1 is normally referred to as uniformed or naive. The Beta distribution has <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> parameters of 2 resulting in the blue density curve shown in Figure <a href="parameter-estimation.html#fig:mapSmallnUninformedPrior">2.5</a>.</p>
 <p><strong>NOTE</strong>: The terms weak, uninformed, and naive are often used interchangeably when referencing priors. The same goes for the terms strong and informed.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># description:</span>
-<span class="co"># ml will yeild the expected average and is not effected by the prior</span>
-<span class="co"># map uses a weak assumption - uniform density for all values of theta</span>
-<span class="co"># this results in a theta_map value very similar to the ml value</span>
-n &lt;-<span class="st"> </span><span class="dv">20</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">20</span>
 heads &lt;-<span class="st"> </span><span class="dv">14</span>
 tails &lt;-<span class="st"> </span><span class="dv">6</span>
 
 
-<span class="co"># ml</span>
-ml_theta &lt;-<span class="st"> </span>heads<span class="op">/</span>n
-<span class="co"># map</span>
 B &lt;-<span class="st"> </span><span class="dv">2</span>
 alpha &lt;-<span class="st"> </span><span class="dv">2</span>
 
-map_theta &lt;-<span class="st"> </span>(heads <span class="op">+</span><span class="st"> </span>alpha <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)<span class="op">/</span>(heads <span class="op">+</span><span class="st"> </span>tails <span class="op">+</span><span class="st"> </span>alpha <span class="op">+</span><span class="st"> </span>B <span class="op">-</span><span class="dv">2</span>)
+map_theta &lt;-<span class="st"> </span>(heads +<span class="st"> </span>alpha -<span class="st"> </span><span class="dv">1</span>)/(heads +<span class="st"> </span>tails +<span class="st"> </span>alpha +<span class="st"> </span>B -<span class="dv">2</span>)
 possible_theta &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.01</span>)
 beta_ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">theta =</span> possible_theta, <span class="dt">density =</span> <span class="kw">dbeta</span>(possible_theta, alpha,B))
-<span class="kw">ggplot</span>(beta_ds, <span class="kw">aes</span>(<span class="dt">x =</span> theta, <span class="dt">y =</span> density)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_point</span>(<span class="dt">color=</span><span class="st">&#39;#7A99AC&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span>map_theta, <span class="dt">color =</span> <span class="st">&#39;#ba0223&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> map_theta <span class="op">+</span><span class="st"> </span><span class="fl">0.1</span>, <span class="dt">y=</span><span class="fl">0.5</span>, <span class="dt">label=</span> <span class="kw">paste</span>(<span class="st">&quot;\U03B8[MAP]==&quot;</span>, <span class="kw">round</span>(map_theta,<span class="dv">2</span>)), <span class="dt">parse=</span>T)<span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;\U03B8&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
+<span class="kw">ggplot</span>(beta_ds, <span class="kw">aes</span>(<span class="dt">x =</span> theta, <span class="dt">y =</span> density)) +<span class="st"> </span><span class="kw">geom_point</span>(<span class="dt">color=</span><span class="st">&#39;#7A99AC&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span>map_theta, <span class="dt">color =</span> <span class="st">&#39;#ba0223&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> map_theta +<span class="st"> </span><span class="fl">0.1</span>, <span class="dt">y=</span><span class="fl">0.5</span>, <span class="dt">label=</span> <span class="kw">paste</span>(<span class="st">&quot;\U03B8[MAP]==&quot;</span>, <span class="kw">round</span>(map_theta,<span class="dv">2</span>)), <span class="dt">parse=</span>T)+
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;\U03B8&#39;</span>) +<span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
 <div class="figure"><span id="fig:mapSmallnUninformedPrior"></span>
 <img src="_main_files/figure-html/mapSmallnUninformedPrior-1.png" alt="MAP: Small number of experiments and uninformed prior" width="672" />
 <p class="caption">
@@ -488,20 +480,16 @@ n &lt;-<span class="st"> </span><span class="dv">20</span>
 heads &lt;-<span class="st"> </span><span class="dv">14</span>
 tails &lt;-<span class="st"> </span><span class="dv">6</span>
 
-
-<span class="co"># ml</span>
-ml_theta &lt;-<span class="st"> </span>heads<span class="op">/</span>n
-<span class="co"># map</span>
 B &lt;-<span class="st"> </span><span class="dv">100</span>
 alpha &lt;-<span class="st"> </span><span class="dv">100</span>
 
-map_theta &lt;-<span class="st"> </span>(heads <span class="op">+</span><span class="st"> </span>alpha <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)<span class="op">/</span>(heads <span class="op">+</span><span class="st"> </span>tails <span class="op">+</span><span class="st"> </span>alpha <span class="op">+</span><span class="st"> </span>B <span class="op">-</span><span class="dv">2</span>)
+map_theta &lt;-<span class="st"> </span>(heads +<span class="st"> </span>alpha -<span class="st"> </span><span class="dv">1</span>)/(heads +<span class="st"> </span>tails +<span class="st"> </span>alpha +<span class="st"> </span>B -<span class="dv">2</span>)
 possible_theta &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>)
 beta_ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">theta =</span> possible_theta, <span class="dt">density =</span> <span class="kw">dbeta</span>(possible_theta, alpha,B))
-<span class="kw">ggplot</span>(beta_ds, <span class="kw">aes</span>(<span class="dt">x =</span> theta, <span class="dt">y =</span> density)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&#39;#7A99AC&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span>map_theta, <span class="dt">color =</span> <span class="st">&#39;#ba0223&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> map_theta <span class="op">+</span><span class="st"> </span><span class="fl">0.1</span>, <span class="dt">y=</span><span class="dv">11</span>, <span class="dt">label=</span> <span class="kw">paste</span>(<span class="st">&quot;\U03B8[MAP]==&quot;</span>, <span class="kw">round</span>(map_theta,<span class="dv">2</span>)), <span class="dt">parse=</span>T)<span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
+<span class="kw">ggplot</span>(beta_ds, <span class="kw">aes</span>(<span class="dt">x =</span> theta, <span class="dt">y =</span> density)) +<span class="st"> </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&#39;#7A99AC&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span>map_theta, <span class="dt">color =</span> <span class="st">&#39;#ba0223&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> map_theta +<span class="st"> </span><span class="fl">0.1</span>, <span class="dt">y=</span><span class="dv">11</span>, <span class="dt">label=</span> <span class="kw">paste</span>(<span class="st">&quot;\U03B8[MAP]==&quot;</span>, <span class="kw">round</span>(map_theta,<span class="dv">2</span>)), <span class="dt">parse=</span>T)+
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) +<span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
 <div class="figure"><span id="fig:mapSmallnInformedPrior"></span>
 <img src="_main_files/figure-html/mapSmallnInformedPrior-1.png" alt="MAP: Small number of experiments and informed prior" width="672" />
 <p class="caption">
@@ -509,27 +497,20 @@ Figure 2.6: MAP: Small number of experiments and informed prior
 </p>
 </div>
 <p>What happens when we have a much larger number of observed experiments and an uninformed prior? In this case the MAP estimate will give us a value that is very close to a maximum likelihood estimate, i.e. heads divide by number of trials.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># description</span>
-<span class="co"># high number of observed samples (evidence)</span>
-<span class="co"># weak prior - uniform </span>
-<span class="co"># ml and map are close to one another - close... as expected</span>
-n &lt;-<span class="st"> </span><span class="dv">1000</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">1000</span>
 heads &lt;-<span class="st"> </span><span class="dv">723</span>
-tails &lt;-<span class="st"> </span>n<span class="op">-</span>heads
+tails &lt;-<span class="st"> </span>n-heads
 
 
-<span class="co"># ml</span>
-ml_theta &lt;-<span class="st"> </span>heads<span class="op">/</span>n
-<span class="co"># map</span>
 B &lt;-<span class="st"> </span><span class="dv">2</span>
 alpha &lt;-<span class="st"> </span><span class="dv">2</span>
-map_theta &lt;-<span class="st"> </span>(heads <span class="op">+</span><span class="st"> </span>alpha <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)<span class="op">/</span>(heads <span class="op">+</span><span class="st"> </span>tails <span class="op">+</span><span class="st"> </span>alpha <span class="op">+</span><span class="st"> </span>B <span class="op">-</span><span class="dv">2</span>)
+map_theta &lt;-<span class="st"> </span>(heads +<span class="st"> </span>alpha -<span class="st"> </span><span class="dv">1</span>)/(heads +<span class="st"> </span>tails +<span class="st"> </span>alpha +<span class="st"> </span>B -<span class="dv">2</span>)
 possible_theta &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>)
 beta_ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">theta =</span> possible_theta, <span class="dt">density =</span> <span class="kw">dbeta</span>(possible_theta, alpha,B))
-<span class="kw">ggplot</span>(beta_ds, <span class="kw">aes</span>(<span class="dt">x =</span> theta, <span class="dt">y =</span> density)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&#39;#7A99AC&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span>map_theta, <span class="dt">color =</span> <span class="st">&#39;#ba0223&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> map_theta <span class="op">+</span><span class="st"> </span><span class="fl">0.1</span>, <span class="dt">y=</span><span class="fl">1.2</span>, <span class="dt">label=</span> <span class="kw">paste</span>(<span class="st">&quot;\U03B8[MAP]==&quot;</span>, <span class="kw">round</span>(map_theta,<span class="dv">2</span>)), <span class="dt">parse=</span>T)<span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
+<span class="kw">ggplot</span>(beta_ds, <span class="kw">aes</span>(<span class="dt">x =</span> theta, <span class="dt">y =</span> density)) +<span class="st"> </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&#39;#7A99AC&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span>map_theta, <span class="dt">color =</span> <span class="st">&#39;#ba0223&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> map_theta +<span class="st"> </span><span class="fl">0.1</span>, <span class="dt">y=</span><span class="fl">1.2</span>, <span class="dt">label=</span> <span class="kw">paste</span>(<span class="st">&quot;\U03B8[MAP]==&quot;</span>, <span class="kw">round</span>(map_theta,<span class="dv">2</span>)), <span class="dt">parse=</span>T)+
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) +<span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
 <div class="figure"><span id="fig:mapLargenUninformedPrior"></span>
 <img src="_main_files/figure-html/mapLargenUninformedPrior-1.png" alt="MAP: Large number of experiments and uninformed prior" width="672" />
 <p class="caption">
@@ -539,22 +520,18 @@ Figure 2.7: MAP: Large number of experiments and uninformed prior
 <p>Now let’s assume a much stronger prior, i.e. more confidence a priori the coin is fair, while using the same number of experiments. Notice that when we use a larger number of experiments it overpowers the strong prior and gives us a very similar MAP estimate in comparison to the example with the uninformed prior and the same number of experiments (Uninformed - Figure <a href="parameter-estimation.html#fig:mapLargenUninformedPrior">2.7</a> and Informed - Figure <a href="parameter-estimation.html#fig:mapLargeInformedPrior">2.8</a>).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">1000</span>
 heads &lt;-<span class="st"> </span><span class="dv">723</span>
-tails &lt;-<span class="st"> </span>n<span class="op">-</span>heads
+tails &lt;-<span class="st"> </span>n-heads
 
-
-<span class="co"># ml</span>
-ml_theta &lt;-<span class="st"> </span>heads<span class="op">/</span>n
-<span class="co"># map</span>
 B &lt;-<span class="st"> </span><span class="dv">100</span>
 alpha &lt;-<span class="st"> </span><span class="dv">100</span>
 possible_theta &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>)
 beta_ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">theta =</span> possible_theta, <span class="dt">density =</span> <span class="kw">dbeta</span>(possible_theta, alpha,B))
-map_theta &lt;-<span class="st"> </span>(heads <span class="op">+</span><span class="st"> </span>alpha <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)<span class="op">/</span>(heads <span class="op">+</span><span class="st"> </span>tails <span class="op">+</span><span class="st"> </span>alpha <span class="op">+</span><span class="st"> </span>B <span class="op">-</span><span class="dv">2</span>)
-<span class="kw">ggplot</span>(beta_ds, <span class="kw">aes</span>(<span class="dt">x =</span> theta, <span class="dt">y =</span> density)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&#39;#7A99AC&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span>map_theta, <span class="dt">color =</span> <span class="st">&#39;#ba0223&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> map_theta <span class="op">+</span><span class="st"> </span><span class="fl">0.1</span>, <span class="dt">y=</span><span class="fl">8.2</span>, <span class="dt">label=</span> <span class="kw">paste</span>(<span class="st">&quot;\U03B8[MAP]==&quot;</span>, <span class="kw">round</span>(map_theta,<span class="dv">2</span>)), <span class="dt">parse=</span>T)<span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
+map_theta &lt;-<span class="st"> </span>(heads +<span class="st"> </span>alpha -<span class="st"> </span><span class="dv">1</span>)/(heads +<span class="st"> </span>tails +<span class="st"> </span>alpha +<span class="st"> </span>B -<span class="dv">2</span>)
+<span class="kw">ggplot</span>(beta_ds, <span class="kw">aes</span>(<span class="dt">x =</span> theta, <span class="dt">y =</span> density)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&#39;#7A99AC&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span>map_theta, <span class="dt">color =</span> <span class="st">&#39;#ba0223&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> map_theta +<span class="st"> </span><span class="fl">0.1</span>, <span class="dt">y=</span><span class="fl">8.2</span>, <span class="dt">label=</span> <span class="kw">paste</span>(<span class="st">&quot;\U03B8[MAP]==&quot;</span>, <span class="kw">round</span>(map_theta,<span class="dv">2</span>)), <span class="dt">parse=</span>T)+
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) +<span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
 <div class="figure"><span id="fig:mapLargeInformedPrior"></span>
 <img src="_main_files/figure-html/mapLargeInformedPrior-1.png" alt="MAP: Large number of experiments and informed prior" width="672" />
 <p class="caption">
@@ -624,22 +601,18 @@ E[\theta] &amp;= {z+a \over {z+a + n-z+b}}\\\\
 <p>Figure <a href="parameter-estimation.html#fig:BISmallUninformedPrior">2.9</a> shows an example of the analytical Bayesian inference solution for a small number of flips, 20, resulting in 14 heads while assuming a weak prior (<span class="math inline">\(\alpha\)</span>=<span class="math inline">\(\beta\)</span> = 2). It is worth noting that Bayesian inference is effected by the selection of a prior and the number of observations in the same way MAP estimation is.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">20</span>
 heads &lt;-<span class="st"> </span><span class="dv">14</span>
-tails &lt;-<span class="st"> </span>n<span class="op">-</span>heads
+tails &lt;-<span class="st"> </span>n-heads
 
-
-<span class="co"># ml</span>
-ml_theta &lt;-<span class="st"> </span>heads<span class="op">/</span>n
-<span class="co"># map</span>
 B &lt;-<span class="st"> </span><span class="dv">2</span>
 alpha &lt;-<span class="st"> </span><span class="dv">2</span>
 possible_theta &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>)
 beta_ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">theta =</span> possible_theta, <span class="dt">density =</span> <span class="kw">dbeta</span>(possible_theta, alpha,B))
-map_theta &lt;-<span class="st"> </span>(heads <span class="op">+</span><span class="st"> </span>alpha)<span class="op">/</span>(alpha <span class="op">+</span><span class="st"> </span>n <span class="op">+</span><span class="st"> </span>B) 
-<span class="kw">ggplot</span>(beta_ds, <span class="kw">aes</span>(<span class="dt">x =</span> theta, <span class="dt">y =</span> density)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&#39;#7A99AC&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span>map_theta, <span class="dt">color =</span> <span class="st">&#39;#ba0223&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> map_theta <span class="op">+</span><span class="st"> </span><span class="fl">0.08</span>, <span class="dt">y=</span><span class="fl">1.4</span>, <span class="dt">label=</span> <span class="kw">paste</span>(<span class="st">&quot;\U03B8[BI]==&quot;</span>, <span class="kw">round</span>(map_theta,<span class="dv">2</span>)), <span class="dt">parse=</span>T)<span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
+map_theta &lt;-<span class="st"> </span>(heads +<span class="st"> </span>alpha)/(alpha +<span class="st"> </span>n +<span class="st"> </span>B) 
+<span class="kw">ggplot</span>(beta_ds, <span class="kw">aes</span>(<span class="dt">x =</span> theta, <span class="dt">y =</span> density)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&#39;#7A99AC&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept=</span>map_theta, <span class="dt">color =</span> <span class="st">&#39;#ba0223&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> map_theta +<span class="st"> </span><span class="fl">0.08</span>, <span class="dt">y=</span><span class="fl">1.4</span>, <span class="dt">label=</span> <span class="kw">paste</span>(<span class="st">&quot;\U03B8[BI]==&quot;</span>, <span class="kw">round</span>(map_theta,<span class="dv">2</span>)), <span class="dt">parse=</span>T)+
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&#39;\U03B8&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) +<span class="st"> </span><span class="kw">theme_minimal</span>()</code></pre></div>
 <div class="figure"><span id="fig:BISmallUninformedPrior"></span>
 <img src="_main_files/figure-html/BISmallUninformedPrior-1.png" alt="Bayesian Inference: Analytical Solution (n=20)" width="672" />
 <p class="caption">
@@ -658,11 +631,20 @@ Figure 2.9: Bayesian Inference: Analytical Solution (n=20)
 <div id="a-tale-of-two-mcs" class="section level3">
 <h3><span class="header-section-number">2.6.2</span> A Tale of Two MC’s</h3>
 <p>Gibbs Sampling is a Markov Chain Monte Carlo (MCMC) technique for parameter estimation. Let’s break down the two MC’s. A markov chain is a process where the next state is determined by the current state. More importantly it does not rely on any information prior to the current state.</p>
-<p>????? 1. This needs a diagram and possibly a general example. * Weather - Sunny/Rainy (it’s always sunny in philadelphia), Next word in sentence (probably too complicated), board game (dice rolls)</p>
-<ol start="2" style="list-style-type: decimal">
-<li>LETS MAKE SURE TO REITERATE THIS AFTER SHOWING THE GENERAL GIBBS SAMPLING MATH AND DIAGRAM ????</li>
-</ol>
-<p>The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of <span class="math inline">\(\pi\)</span>. <span class="citation">(Resnik and Hardisty <a href="references.html#ref-resnik2010gibbs">2010</a>)</span> All we need is some chalk and a bucket of rice. First I draw a circle on the ground. Then I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. (Side note: you could save yourself a bunch of time and just weight the two proportions of rice instead of straining your vision and wasting your time.) From here I can infer the value of <span class="math inline">\(\pi\)</span> as follows:</p>
+<div class="figure" style="text-align: center"><span id="fig:MarkovChain"></span>
+<img src="Images/MarkovChain.png" alt="Markov Chain: Rain or Shine" width="50%" height="50%" />
+<p class="caption">
+Figure 2.10: Markov Chain: Rain or Shine
+</p>
+</div>
+<p>The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of <span class="math inline">\(\pi\)</span>. <span class="citation">(Resnik and Hardisty <a href="references.html#ref-resnik2010gibbs">2010</a>)</span> All we need is some chalk and a bucket of rice. First I draw a circle on the ground. Then I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. (Side note: you could save yourself a bunch of time and just weight the two proportions of rice instead of straining your vision and wasting your time.)</p>
+<div class="figure" style="text-align: center"><span id="fig:MonteCarlo"></span>
+<img src="Images/MonteCarlo.png" alt="Monte Carlo: Estimating &amp;#960;" width="75%" height="75%" />
+<p class="caption">
+Figure 2.11: Monte Carlo: Estimating π
+</p>
+</div>
+<p>From here I can infer the value of <span class="math inline">\(\pi\)</span> as follows:</p>
 <p><span class="math display" id="eq:MCRice">\[
 \begin{equation}
 \begin{aligned}
@@ -745,8 +727,8 @@ p(\theta|z,N) &amp;\propto Beta(a+z, N-z+b)
 \begin{aligned}
 p(\theta_{1}, \theta_{2}|z_{1}, z_{2}, N) &amp;\propto p(\theta_{1}|z_{1}, N)p(\theta_{2}|z_{2}, N) \\
 p(\theta_{1}, \theta_{2}|z_{1}, z_{2}, N) &amp;\propto p(z_{1}|\theta_{1})p(z_{2}|\theta_{2})p(\theta_{1})p(\theta_{2})
-\tag{2.29}
 \end{aligned}
+\tag{2.29}
 \end{equation}
 \]</span></p>
 <p>Then we break down the full joint density into our posterior conditionals: <span class="math display">\[
@@ -816,41 +798,41 @@ theta =<span class="st"> </span><span class="kw">rep</span>(<span class="fl">0.5
 niters =<span class="st"> </span><span class="dv">10000</span>
 burnin =<span class="st"> </span><span class="dv">500</span>
 
-thetas =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> (niters<span class="op">-</span>burnin), <span class="dt">ncol=</span><span class="dv">2</span>)
-<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>niters){
+thetas =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> (niters-burnin), <span class="dt">ncol=</span><span class="dv">2</span>)
+for (i in <span class="dv">1</span>:niters){
 
-  theta1 =<span class="st"> </span><span class="kw">rbeta</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">shape1 =</span> a <span class="op">+</span><span class="st"> </span>z1, <span class="dt">shape2 =</span> b <span class="op">+</span><span class="st"> </span>N1 <span class="op">-</span><span class="st"> </span>z1)
+  theta1 =<span class="st"> </span><span class="kw">rbeta</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">shape1 =</span> a +<span class="st"> </span>z1, <span class="dt">shape2 =</span> b +<span class="st"> </span>N1 -<span class="st"> </span>z1)
   <span class="co"># get value theta2| all other vars</span>
-  theta2 =<span class="st"> </span><span class="kw">rbeta</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">shape1 =</span> a <span class="op">+</span><span class="st"> </span>z2, <span class="dt">shape2 =</span>b <span class="op">+</span><span class="st"> </span>N2 <span class="op">-</span><span class="st"> </span>z2)
+  theta2 =<span class="st"> </span><span class="kw">rbeta</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">shape1 =</span> a +<span class="st"> </span>z2, <span class="dt">shape2 =</span>b +<span class="st"> </span>N2 -<span class="st"> </span>z2)
   
-  <span class="cf">if</span> (i <span class="op">&gt;=</span><span class="st"> </span>burnin){
-    thetas[(i<span class="op">-</span>burnin), ] =<span class="st"> </span><span class="kw">c</span>(theta1, theta2)
+  if (i &gt;=<span class="st"> </span>burnin){
+    thetas[(i-burnin), ] =<span class="st"> </span><span class="kw">c</span>(theta1, theta2)
   }
 }
 
 
 ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">theta1 =</span> thetas[,<span class="dv">1</span>], <span class="dt">theta2=</span> thetas[,<span class="dv">2</span>])
-<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x=</span>theta1)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y=</span>..density..),<span class="dt">color=</span><span class="st">&#39;#1A384A&#39;</span>, <span class="dt">fill=</span><span class="st">&#39;#7A99AC&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(theta[<span class="dv">1</span>]<span class="op">~</span>Estimate), <span class="dt">x=</span><span class="kw">expression</span>(theta[<span class="dv">1</span>]), <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(ds<span class="op">$</span>theta1), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) <span class="op">+</span>
+<span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x=</span>theta1)) +<span class="st"> </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y=</span>..density..),<span class="dt">color=</span><span class="st">&#39;#1A384A&#39;</span>, <span class="dt">fill=</span><span class="st">&#39;#7A99AC&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(theta[<span class="dv">1</span>]~Estimate), <span class="dt">x=</span><span class="kw">expression</span>(theta[<span class="dv">1</span>]), <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(ds$theta1), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) +
 <span class="st">  </span><span class="kw">theme_minimal</span>()</code></pre></div>
 <div class="figure"><span id="fig:2coins"></span>
 <img src="_main_files/figure-html/2coins-1.png" alt="Bias of Two Coins: Theta 1" width="672" />
 <p class="caption">
-Figure 2.10: Bias of Two Coins: Theta 1
+Figure 2.12: Bias of Two Coins: Theta 1
 </p>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x=</span>theta2)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y=</span>..density..),<span class="dt">color=</span><span class="st">&#39;#1A384A&#39;</span>, <span class="dt">fill=</span><span class="st">&#39;#7A99AC&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(theta[<span class="dv">2</span>]<span class="op">~</span>Estimate), <span class="dt">x=</span><span class="kw">expression</span>(theta[<span class="dv">2</span>]), <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(ds<span class="op">$</span>theta2), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) <span class="op">+</span><span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x=</span>theta2)) +<span class="st"> </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y=</span>..density..),<span class="dt">color=</span><span class="st">&#39;#1A384A&#39;</span>, <span class="dt">fill=</span><span class="st">&#39;#7A99AC&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(theta[<span class="dv">2</span>]~Estimate), <span class="dt">x=</span><span class="kw">expression</span>(theta[<span class="dv">2</span>]), <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(ds$theta2), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) +<span class="st"> </span>
 <span class="st">  </span><span class="kw">theme_minimal</span>()</code></pre></div>
 <div class="figure"><span id="fig:2coins2"></span>
 <img src="_main_files/figure-html/2coins2-1.png" alt="Bias of Two Coins - Theta 2" width="672" />
 <p class="caption">
-Figure 2.11: Bias of Two Coins - Theta 2
+Figure 2.13: Bias of Two Coins - Theta 2
 </p>
 </div>
-<p>In the Figures <a href="parameter-estimation.html#fig:2coins2">2.11</a> and <a href="parameter-estimation.html#fig:2coins">2.10</a> we can see the distribution of samples drawn from the Beta distribution using the prior parameters and the observed data we have. The red line represents the mean of the samples for each coin. Our resulting bias values are:</p>
+<p>In the Figures <a href="parameter-estimation.html#fig:2coins2">2.13</a> and <a href="parameter-estimation.html#fig:2coins">2.12</a> we can see the distribution of samples drawn from the Beta distribution using the prior parameters and the observed data we have. The red line represents the mean of the samples for each coin. Our resulting bias values are:</p>
 <ul>
 <li><span class="math inline">\(\theta_{1}\)</span> = 0.5</li>
 <li><span class="math inline">\(\theta_{2}\)</span> = 0.21</li>
@@ -861,10 +843,10 @@ Figure 2.11: Bias of Two Coins - Theta 2
 <div class="figure"><span id="fig:bernChangePointExampleFig"></span>
 <img src="_main_files/figure-html/bernChangePointExampleFig-1.png" alt="Change Point Example" width="672" />
 <p class="caption">
-Figure 2.12: Change Point Example
+Figure 2.14: Change Point Example
 </p>
 </div>
-<p>What if the problem we are solving is more complicated? Let’s say I flip a coin repeatedly, but at some point I switch to another coin with a different bias (<span class="math inline">\(\theta\)</span>) as shown in Figure <a href="parameter-estimation.html#fig:bernChangePointExampleFig">2.12</a>. I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem.</p>
+<p>What if the problem we are solving is more complicated? Let’s say I flip a coin repeatedly, but at some point I switch to another coin with a different bias (<span class="math inline">\(\theta\)</span>) as shown in Figure <a href="parameter-estimation.html#fig:bernChangePointExampleFig">2.14</a>. I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem.</p>
 <p>In the previous example we only needed to get a posterior of a single variable (technically there were two variables, but both have the same posterior conditional and were independent of one another). In this case we have 3 variables that we need to estimate:</p>
 <ol style="list-style-type: decimal">
 <li>Coin bias for coin 1: <span class="math inline">\(\theta_{1}\)</span></li>
@@ -967,13 +949,13 @@ N &lt;-<span class="st"> </span><span class="dv">300</span>
 a =<span class="st"> </span><span class="dv">2</span>
 b =<span class="st"> </span><span class="dv">3</span>
 change_point &lt;-<span class="st"> </span><span class="dv">100</span>
-x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rbinom</span>(<span class="dv">1</span><span class="op">:</span>change_point, <span class="dv">1</span>, real_thetas[<span class="dv">1</span>]),<span class="kw">rbinom</span>((change_point<span class="op">+</span><span class="dv">1</span>)<span class="op">:</span>N, <span class="dv">1</span>, real_thetas[<span class="dv">2</span>]))
+x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rbinom</span>(<span class="dv">1</span>:change_point, <span class="dv">1</span>, real_thetas[<span class="dv">1</span>]),<span class="kw">rbinom</span>((change_point<span class="dv">+1</span>):N, <span class="dv">1</span>, real_thetas[<span class="dv">2</span>]))
 
 
 ## Initialize all parameters
 
 <span class="co"># n ~ uniform </span>
-n &lt;-<span class="st"> </span><span class="kw">round</span>(N<span class="op">*</span><span class="kw">runif</span>(<span class="dv">1</span>))
+n &lt;-<span class="st"> </span><span class="kw">round</span>(N*<span class="kw">runif</span>(<span class="dv">1</span>))
 <span class="co"># theta1 ~ beta(a,b)</span>
 theta1 &lt;-<span class="st"> </span><span class="kw">rbeta</span>(<span class="dv">1</span>, a, b)
 <span class="co"># theta2 ~ beta(a,b)</span>
@@ -984,90 +966,90 @@ theta2 &lt;-<span class="st"> </span><span class="kw">rbeta</span>(<span class="
 niters =<span class="st"> </span><span class="dv">3000</span>
 burnin =<span class="st"> </span><span class="dv">1000</span>
 
-params =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> (niters<span class="op">-</span>burnin), <span class="dt">ncol=</span><span class="dv">3</span>)
-<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>niters){
+params =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, <span class="dt">nrow =</span> (niters-burnin), <span class="dt">ncol=</span><span class="dv">3</span>)
+for (i in <span class="dv">1</span>:niters){
   
   
-  z1 &lt;-<span class="st"> </span><span class="kw">sum</span>(x[<span class="dv">1</span><span class="op">:</span>n])
-  <span class="cf">if</span>(n <span class="op">==</span><span class="st"> </span>N){
+  z1 &lt;-<span class="st"> </span><span class="kw">sum</span>(x[<span class="dv">1</span>:n])
+  if(n ==<span class="st"> </span>N){
     z2 &lt;-<span class="st"> </span><span class="dv">0</span>
-  }<span class="cf">else</span>{
-    z2 &lt;-<span class="st"> </span><span class="kw">sum</span>(x[(n<span class="op">+</span><span class="dv">1</span>)<span class="op">:</span>N])
+  }else{
+    z2 &lt;-<span class="st"> </span><span class="kw">sum</span>(x[(n<span class="dv">+1</span>):N])
   }
-  theta1 =<span class="st"> </span><span class="kw">rbeta</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">shape1 =</span> a <span class="op">+</span><span class="st"> </span>z1, <span class="dt">shape2 =</span> b <span class="op">+</span><span class="st"> </span>n <span class="op">-</span><span class="st"> </span>z1)
+  theta1 =<span class="st"> </span><span class="kw">rbeta</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">shape1 =</span> a +<span class="st"> </span>z1, <span class="dt">shape2 =</span> b +<span class="st"> </span>n -<span class="st"> </span>z1)
   <span class="co"># get value theta2| all other vars</span>
-  theta2 =<span class="st"> </span><span class="kw">rbeta</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">shape1 =</span> a <span class="op">+</span><span class="st"> </span>z2, <span class="dt">shape2 =</span>N<span class="op">-</span>n<span class="op">-</span><span class="dv">1</span><span class="op">-</span>z2<span class="op">+</span>b)
+  theta2 =<span class="st"> </span><span class="kw">rbeta</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">shape1 =</span> a +<span class="st"> </span>z2, <span class="dt">shape2 =</span>N-n<span class="dv">-1</span>-z2+b)
   
   
   ## 2 things: 1 - should I be summing all the values over these? 
   <span class="co"># No - the product is being calculated due to the sum - should be fine</span>
   n_multi &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="dv">0</span>, N)
-  <span class="cf">for</span>(steps <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span>N){
-    <span class="cf">if</span>(steps<span class="op">==</span>N <span class="op">||</span><span class="st"> </span>theta2 <span class="op">==</span><span class="st"> </span><span class="dv">1</span>){
-      n_multi[steps] &lt;-<span class="st"> </span><span class="kw">log</span>(theta1<span class="op">^</span><span class="kw">sum</span>(x[<span class="dv">1</span><span class="op">:</span>steps]) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>theta1)<span class="op">^</span>(steps<span class="op">-</span><span class="kw">sum</span>(x[<span class="dv">1</span><span class="op">:</span>steps])))
-    }<span class="cf">else</span>{
-      n_multi[steps] &lt;-<span class="st"> </span><span class="kw">log</span>(theta1<span class="op">^</span><span class="kw">sum</span>(x[<span class="dv">1</span><span class="op">:</span>steps]) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>theta1)<span class="op">^</span>(steps<span class="op">-</span><span class="kw">sum</span>(x[<span class="dv">1</span><span class="op">:</span>steps]))) <span class="op">+</span>
-<span class="st">        </span><span class="kw">log</span>(theta2<span class="op">^</span><span class="kw">sum</span>(x[(steps <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)<span class="op">:</span>N]) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span><span class="op">-</span>theta2)<span class="op">^</span>(N<span class="op">-</span>steps<span class="op">-</span><span class="dv">1</span><span class="op">-</span><span class="kw">sum</span>(x[(steps<span class="op">+</span><span class="dv">1</span>)<span class="op">:</span>N])))
+  for(steps in <span class="dv">2</span>:N){
+    if(steps==N ||<span class="st"> </span>theta2 ==<span class="st"> </span><span class="dv">1</span>){
+      n_multi[steps] &lt;-<span class="st"> </span><span class="kw">log</span>(theta1^<span class="kw">sum</span>(x[<span class="dv">1</span>:steps]) *<span class="st"> </span>(<span class="dv">1</span>-theta1)^(steps-<span class="kw">sum</span>(x[<span class="dv">1</span>:steps])))
+    }else{
+      n_multi[steps] &lt;-<span class="st"> </span><span class="kw">log</span>(theta1^<span class="kw">sum</span>(x[<span class="dv">1</span>:steps]) *<span class="st"> </span>(<span class="dv">1</span>-theta1)^(steps-<span class="kw">sum</span>(x[<span class="dv">1</span>:steps]))) +
+<span class="st">        </span><span class="kw">log</span>(theta2^<span class="kw">sum</span>(x[(steps +<span class="st"> </span><span class="dv">1</span>):N]) *<span class="st"> </span>(<span class="dv">1</span>-theta2)^(N-steps<span class="dv">-1</span>-<span class="kw">sum</span>(x[(steps<span class="dv">+1</span>):N])))
     }
   }
   
-  n_multi &lt;-<span class="st"> </span><span class="kw">exp</span>(n_multi[<span class="dv">2</span><span class="op">:</span>N] <span class="op">-</span><span class="st"> </span><span class="kw">max</span>(n_multi[<span class="dv">2</span><span class="op">:</span>N]))
+  n_multi &lt;-<span class="st"> </span><span class="kw">exp</span>(n_multi[<span class="dv">2</span>:N] -<span class="st"> </span><span class="kw">max</span>(n_multi[<span class="dv">2</span>:N]))
   <span class="co"># offset by 1 </span>
   <span class="co"># you n is equally probably between 2 and N and zero at n=1</span>
   <span class="co"># we only calculate p(n) from n=2 to N</span>
-  n &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>, <span class="dv">1</span>, n_multi<span class="op">/</span><span class="kw">sum</span>(n_multi))[,<span class="dv">1</span>] <span class="op">==</span><span class="dv">1</span>) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
-  <span class="cf">if</span> (i <span class="op">&gt;=</span><span class="st"> </span>burnin){
-    params[(i<span class="op">-</span>burnin), ] =<span class="st"> </span><span class="kw">c</span>(theta1,theta2, n)
+  n &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>, <span class="dv">1</span>, n_multi/<span class="kw">sum</span>(n_multi))[,<span class="dv">1</span>] ==<span class="dv">1</span>) +<span class="st"> </span><span class="dv">1</span>
+  if (i &gt;=<span class="st"> </span>burnin){
+    params[(i-burnin), ] =<span class="st"> </span><span class="kw">c</span>(theta1,theta2, n)
   }
 }
 
-ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> x, <span class="dt">theta =</span> <span class="kw">c</span>(<span class="kw">rep</span>(real_thetas[<span class="dv">1</span>],N<span class="op">-</span>change_point),
+ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x =</span> x, <span class="dt">theta =</span> <span class="kw">c</span>(<span class="kw">rep</span>(real_thetas[<span class="dv">1</span>],N-change_point),
                                   <span class="kw">rep</span>(real_thetas[<span class="dv">2</span>],change_point)), 
-                 <span class="dt">sample_index =</span> <span class="kw">seq</span>(<span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(x)))</code></pre></div>
+                 <span class="dt">sample_index =</span> <span class="kw">seq</span>(<span class="dv">1</span>:<span class="kw">length</span>(x)))</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">params_df &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(params)
 <span class="kw">names</span>(params_df) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;theta1&#39;</span>, <span class="st">&#39;theta2&#39;</span>, <span class="st">&#39;change_point&#39;</span>)
 
-<span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> change_point)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span>, <span class="dt">binwidth =</span> <span class="dv">5</span>, <span class="dt">bins =</span> <span class="kw">floor</span>(N<span class="op">/</span><span class="dv">5</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,N)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(params_df<span class="op">$</span>change_point), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) <span class="op">+</span>
+<span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> change_point)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span>, <span class="dt">binwidth =</span> <span class="dv">5</span>, <span class="dt">bins =</span> <span class="kw">floor</span>(N/<span class="dv">5</span>)) +
+<span class="st">  </span><span class="kw">theme_minimal</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,N)) +
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(params_df$change_point), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) +
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&#39;Change Point Estimate&#39;</span>, <span class="dt">x=</span><span class="st">&#39;Change Point&#39;</span>, <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) </code></pre></div>
 <div class="figure"><span id="fig:bernChangePointN"></span>
 <img src="_main_files/figure-html/bernChangePointN-1.png" alt="Estimated Change Point" width="672" />
 <p class="caption">
-Figure 2.13: Estimated Change Point
+Figure 2.15: Estimated Change Point
 </p>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> theta1)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span> , <span class="dt">binwidth =</span> <span class="fl">0.025</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(params_df<span class="op">$</span>theta1), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(theta[<span class="dv">1</span>]<span class="op">~</span>Estimate), <span class="dt">x=</span><span class="kw">expression</span>(theta[<span class="dv">1</span>]), <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> theta1)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span> , <span class="dt">binwidth =</span> <span class="fl">0.025</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_minimal</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)) +
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(params_df$theta1), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) +
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(theta[<span class="dv">1</span>]~Estimate), <span class="dt">x=</span><span class="kw">expression</span>(theta[<span class="dv">1</span>]), <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) </code></pre></div>
 <div class="figure"><span id="fig:bernChangePointTheta1"></span>
 <img src="_main_files/figure-html/bernChangePointTheta1-1.png" alt="Estimated Theta 1" width="672" />
 <p class="caption">
-Figure 2.14: Estimated Theta 1
+Figure 2.16: Estimated Theta 1
 </p>
 </div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> theta2)) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span> , <span class="dt">binwidth =</span> <span class="fl">0.025</span>) <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span><span class="st"> </span>
-<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)) <span class="op">+</span>
-<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(params_df<span class="op">$</span>theta2), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(theta[<span class="dv">2</span>]<span class="op">~</span>Estimate), <span class="dt">x=</span><span class="kw">expression</span>(theta[<span class="dv">2</span>]), <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) </code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> theta2)) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill=</span><span class="st">&quot;#7A99AC&quot;</span>, <span class="dt">color =</span><span class="st">&#39;#1A384A&#39;</span> , <span class="dt">binwidth =</span> <span class="fl">0.025</span>) +<span class="st"> </span>
+<span class="st">  </span><span class="kw">theme_minimal</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)) +
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(params_df$theta2), <span class="dt">color=</span><span class="st">&#39;#b7091a&#39;</span>) +
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(theta[<span class="dv">2</span>]~Estimate), <span class="dt">x=</span><span class="kw">expression</span>(theta[<span class="dv">2</span>]), <span class="dt">y =</span> <span class="st">&#39;Density&#39;</span>) </code></pre></div>
 <div class="figure"><span id="fig:bernChangePointTheta2"></span>
 <img src="_main_files/figure-html/bernChangePointTheta2-1.png" alt="Estimated Theta 2" width="672" />
 <p class="caption">
-Figure 2.15: Estimated Theta 2
+Figure 2.17: Estimated Theta 2
 </p>
 </div>
 <p>The resulting estimates for each of our parameters is shown below along with the real value used to generate the dataset.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data.frame</span>(<span class="dt">theta_1 =</span> <span class="kw">c</span>(real_thetas[<span class="dv">1</span>], <span class="kw">mean</span>(params_df<span class="op">$</span>theta1)),
-       <span class="dt">theta_2 =</span> <span class="kw">c</span>(real_thetas[<span class="dv">2</span>], <span class="kw">mean</span>(params_df<span class="op">$</span>theta2)),
-       <span class="dt">n =</span> <span class="kw">c</span>(change_point, <span class="kw">floor</span>(<span class="kw">mean</span>(params_df<span class="op">$</span>change_point))),
-       <span class="dt">row.names =</span> <span class="kw">c</span>(<span class="st">&#39;True&#39;</span>, <span class="st">&#39;Estimated&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data.frame</span>(<span class="dt">theta_1 =</span> <span class="kw">c</span>(real_thetas[<span class="dv">1</span>], <span class="kw">mean</span>(params_df$theta1)),
+       <span class="dt">theta_2 =</span> <span class="kw">c</span>(real_thetas[<span class="dv">2</span>], <span class="kw">mean</span>(params_df$theta2)),
+       <span class="dt">n =</span> <span class="kw">c</span>(change_point, <span class="kw">floor</span>(<span class="kw">mean</span>(params_df$change_point))),
+       <span class="dt">row.names =</span> <span class="kw">c</span>(<span class="st">&#39;True&#39;</span>, <span class="st">&#39;Estimated&#39;</span>)) %&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">kable</span>(<span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&#39;\u03b8\u2081&#39;</span>, <span class="st">&#39;\u03b8\u2082&#39;</span>, <span class="st">&#39;n&#39;</span>),
         <span class="dt">digits =</span> <span class="dv">2</span>,
         <span class="dt">row.names =</span> <span class="ot">TRUE</span>, 
@@ -1097,11 +1079,6 @@ Figure 2.15: Estimated Theta 2
 </tr>
 </tbody>
 </table>
-<ul>
-<li><span class="math inline">\(\hat{\theta_{1}}\)</span> = 0.17, 0.19, 0.15, 0.21, 0.12, 0.11, 0.15, 0.18, 0.21, 0.14, 0.2, 0.19, 0.18, 0.18, 0.17, 0.27, 0.24, 0.14, 0.12, 0.17, 0.16, 0.19, 0.16, 0.23, 0.17, 0.23, 0.21, 0.16, 0.21, 0.19, 0.21, 0.22, 0.2, 0.19, 0.08, 0.16, 0.16, 0.22, 0.18, 0.18, 0.18, 0.17, 0.17, 0.15, 0.19, 0.19, 0.2, 0.13, 0.16, 0.16, 0.15, 0.12, 0.18, 0.23, 0.21, 0.14, 0.19, 0.17, 0.16, 0.24, 0.15, 0.2, 0.19, 0.16, 0.12, 0.12, 0.12, 0.22, 0.16, 0.13, 0.19, 0.15, 0.19, 0.17, 0.16, 0.14, 0.15, 0.25, 0.17, 0.17, 0.28, 0.17, 0.14, 0.18, 0.18, 0.19, 0.11, 0.12, 0.14, 0.14, 0.14, 0.16, 0.16, 0.14, 0.27, 0.21, 0.15, 0.11, 0.25, 0.22, 0.18, 0.14, 0.2, 0.17, 0.27, 0.18, 0.17, 0.14, 0.1, 0.12, 0.13, 0.13, 0.2, 0.11, 0.12, 0.23, 0.2, 0.21, 0.15, 0.21, 0.11, 0.18, 0.16, 0.14, 0.16, 0.16, 0.17, 0.17, 0.17, 0.23, 0.15, 0.17, 0.16, 0.18, 0.1, 0.16, 0.21, 0.2, 0.17, 0.18, 0.17, 0.17, 0.2, 0.13, 0.16, 0.17, 0.19, 0.18, 0.16, 0.14, 0.14, 0.13, 0.22, 0.14, 0.12, 0.2, 0.2, 0.25, 0.2, 0.12, 0.22, 0.16, 0.18, 0.17, 0.19, 0.14, 0.19, 0.19, 0.26, 0.14, 0.17, 0.15, 0.15, 0.15, 0.2, 0.24, 0.22, 0.23, 0.18, 0.14, 0.22, 0.21, 0.17, 0.2, 0.17, 0.28, 0.13, 0.09, 0.2, 0.18, 0.22, 0.15, 0.22, 0.19, 0.19, 0.16, 0.15, 0.16, 0.16, 0.1, 0.22, 0.15, 0.18, 0.21, 0.15, 0.18, 0.16, 0.18, 0.19, 0.12, 0.18, 0.16, 0.2, 0.19, 0.2, 0.21, 0.18, 0.22, 0.16, 0.16, 0.24, 0.16, 0.19, 0.17, 0.2, 0.17, 0.17, 0.15, 0.12, 0.14, 0.11, 0.15, 0.23, 0.18, 0.21, 0.1, 0.19, 0.22, 0.25, 0.2, 0.21, 0.25, 0.24, 0.19, 0.19, 0.2, 0.22, 0.16, 0.21, 0.26, 0.19, 0.13, 0.15, 0.13, 0.18, 0.22, 0.18, 0.18, 0.18, 0.2, 0.15, 0.11, 0.22, 0.16, 0.22, 0.16, 0.23, 0.19, 0.18, 0.15, 0.2, 0.13, 0.14, 0.23, 0.21, 0.18, 0.18, 0.2, 0.21, 0.19, 0.13, 0.14, 0.12, 0.2, 0.25, 0.17, 0.19, 0.19, 0.12, 0.19, 0.17, 0.14, 0.24, 0.27, 0.17, 0.15, 0.25, 0.17, 0.22, 0.16, 0.18, 0.23, 0.2, 0.15, 0.19, 0.18, 0.13, 0.17, 0.14, 0.24, 0.26, 0.14, 0.14, 0.17, 0.27, 0.12, 0.15, 0.18, 0.16, 0.11, 0.17, 0.18, 0.2, 0.14, 0.2, 0.23, 0.16, 0.11, 0.16, 0.2, 0.12, 0.19, 0.17, 0.17, 0.16, 0.2, 0.27, 0.16, 0.24, 0.22, 0.18, 0.2, 0.16, 0.13, 0.18, 0.18, 0.25, 0.17, 0.15, 0.15, 0.19, 0.23, 0.23, 0.2, 0.14, 0.19, 0.18, 0.19, 0.16, 0.22, 0.23, 0.16, 0.26, 0.21, 0.21, 0.14, 0.13, 0.21, 0.17, 0.2, 0.18, 0.15, 0.18, 0.12, 0.15, 0.16, 0.19, 0.17, 0.22, 0.12, 0.24, 0.18, 0.2, 0.17, 0.19, 0.19, 0.18, 0.21, 0.16, 0.16, 0.12, 0.12, 0.18, 0.15, 0.13, 0.17, 0.21, 0.12, 0.17, 0.2, 0.14, 0.15, 0.11, 0.19, 0.15, 0.15, 0.23, 0.16, 0.21, 0.14, 0.24, 0.12, 0.22, 0.2, 0.21, 0.18, 0.18, 0.19, 0.14, 0.13, 0.17, 0.21, 0.23, 0.1, 0.24, 0.19, 0.17, 0.16, 0.2, 0.13, 0.22, 0.17, 0.22, 0.17, 0.19, 0.2, 0.17, 0.22, 0.22, 0.16, 0.19, 0.22, 0.18, 0.12, 0.18, 0.26, 0.16, 0.12, 0.18, 0.25, 0.18, 0.18, 0.26, 0.18, 0.14, 0.09, 0.19, 0.19, 0.22, 0.14, 0.18, 0.21, 0.18, 0.1, 0.17, 0.15, 0.12, 0.15, 0.18, 0.1, 0.16, 0.16, 0.16, 0.16, 0.18, 0.16, 0.18, 0.27, 0.18, 0.19, 0.14, 0.16, 0.21, 0.18, 0.17, 0.24, 0.16, 0.18, 0.11, 0.16, 0.24, 0.21, 0.21, 0.16, 0.18, 0.16, 0.23, 0.26, 0.17, 0.2, 0.15, 0.12, 0.25, 0.17, 0.19, 0.18, 0.19, 0.26, 0.2, 0.18, 0.12, 0.13, 0.15, 0.23, 0.23, 0.18, 0.2, 0.13, 0.15, 0.2, 0.15, 0.15, 0.14, 0.17, 0.18, 0.15, 0.15, 0.19, 0.16, 0.14, 0.22, 0.16, 0.16, 0.13, 0.1, 0.2, 0.18, 0.2, 0.14, 0.15, 0.19, 0.16, 0.17, 0.18, 0.18, 0.21, 0.2, 0.13, 0.21, 0.13, 0.12, 0.21, 0.16, 0.22, 0.19, 0.23, 0.15, 0.2, 0.17, 0.18, 0.15, 0.17, 0.2, 0.18, 0.11, 0.18, 0.18, 0.17, 0.17, 0.16, 0.16, 0.09, 0.23, 0.12, 0.18, 0.15, 0.18, 0.11, 0.21, 0.12, 0.17, 0.22, 0.17, 0.22, 0.14, 0.18, 0.13, 0.24, 0.19, 0.25, 0.22, 0.15, 0.18, 0.11, 0.21, 0.2, 0.19, 0.16, 0.18, 0.19, 0.13, 0.18, 0.18, 0.15, 0.18, 0.14, 0.14, 0.16, 0.18, 0.18, 0.18, 0.17, 0.16, 0.17, 0.27, 0.19, 0.19, 0.13, 0.19, 0.17, 0.17, 0.16, 0.16, 0.2, 0.09, 0.22, 0.12, 0.12, 0.15, 0.16, 0.14, 0.21, 0.21, 0.19, 0.16, 0.19, 0.16, 0.14, 0.26, 0.17, 0.22, 0.18, 0.15, 0.14, 0.13, 0.12, 0.16, 0.17, 0.18, 0.19, 0.22, 0.18, 0.16, 0.14, 0.17, 0.07, 0.21, 0.15, 0.17, 0.15, 0.14, 0.19, 0.16, 0.19, 0.18, 0.15, 0.17, 0.18, 0.16, 0.15, 0.2, 0.16, 0.21, 0.16, 0.16, 0.28, 0.17, 0.25, 0.16, 0.12, 0.2, 0.16, 0.23, 0.15, 0.16, 0.16, 0.15, 0.17, 0.22, 0.15, 0.18, 0.21, 0.14, 0.21, 0.21, 0.2, 0.18, 0.23, 0.17, 0.17, 0.18, 0.14, 0.14, 0.2, 0.13, 0.3, 0.15, 0.16, 0.18, 0.24, 0.15, 0.21, 0.22, 0.14, 0.17, 0.14, 0.15, 0.11, 0.15, 0.11, 0.16, 0.12, 0.17, 0.17, 0.15, 0.14, 0.18, 0.18, 0.15, 0.18, 0.14, 0.14, 0.18, 0.18, 0.27, 0.14, 0.12, 0.15, 0.17, 0.24, 0.19, 0.21, 0.17, 0.19, 0.13, 0.16, 0.16, 0.24, 0.18, 0.16, 0.21, 0.18, 0.17, 0.11, 0.13, 0.17, 0.15, 0.16, 0.22, 0.12, 0.16, 0.14, 0.18, 0.17, 0.18, 0.16, 0.13, 0.11, 0.19, 0.21, 0.16, 0.19, 0.2, 0.21, 0.19, 0.16, 0.16, 0.18, 0.13, 0.15, 0.27, 0.1, 0.18, 0.15, 0.18, 0.17, 0.19, 0.14, 0.11, 0.17, 0.15, 0.13, 0.19, 0.23, 0.21, 0.16, 0.21, 0.16, 0.17, 0.21, 0.27, 0.15, 0.13, 0.18, 0.13, 0.11, 0.23, 0.15, 0.16, 0.11, 0.14, 0.16, 0.23, 0.18, 0.16, 0.14, 0.23, 0.23, 0.16, 0.16, 0.17, 0.12, 0.2, 0.15, 0.12, 0.2, 0.15, 0.13, 0.19, 0.17, 0.12, 0.25, 0.17, 0.2, 0.14, 0.12, 0.11, 0.2, 0.18, 0.15, 0.11, 0.15, 0.13, 0.23, 0.15, 0.24, 0.3, 0.2, 0.09, 0.24, 0.25, 0.19, 0.17, 0.18, 0.2, 0.25, 0.22, 0.18, 0.21, 0.15, 0.19, 0.23, 0.2, 0.17, 0.16, 0.23, 0.18, 0.2, 0.18, 0.21, 0.18, 0.17, 0.15, 0.22, 0.2, 0.19, 0.2, 0.14, 0.23, 0.15, 0.17, 0.21, 0.19, 0.14, 0.16, 0.16, 0.15, 0.11, 0.18, 0.23, 0.18, 0.09, 0.12, 0.17, 0.21, 0.17, 0.24, 0.16, 0.12, 0.18, 0.17, 0.2, 0.13, 0.17, 0.15, 0.13, 0.15, 0.16, 0.25, 0.23, 0.24, 0.15, 0.17, 0.22, 0.15, 0.19, 0.15, 0.17, 0.12, 0.22, 0.14, 0.19, 0.13, 0.14, 0.21, 0.13, 0.22, 0.15, 0.11, 0.15, 0.13, 0.13, 0.2, 0.18, 0.13, 0.17, 0.18, 0.12, 0.17, 0.18, 0.21, 0.09, 0.19, 0.19, 0.2, 0.15, 0.16, 0.21, 0.12, 0.18, 0.14, 0.21, 0.16, 0.18, 0.18, 0.19, 0.11, 0.19, 0.12, 0.15, 0.2, 0.16, 0.15, 0.15, 0.24, 0.15, 0.21, 0.16, 0.12, 0.17, 0.17, 0.2, 0.19, 0.19, 0.16, 0.16, 0.16, 0.15, 0.19, 0.19, 0.15, 0.16, 0.19, 0.17, 0.21, 0.15, 0.16, 0.25, 0.24, 0.2, 0.18, 0.16, 0.15, 0.22, 0.17, 0.14, 0.23, 0.2, 0.22, 0.18, 0.18, 0.11, 0.18, 0.22, 0.19, 0.18, 0.18, 0.18, 0.16, 0.15, 0.25, 0.2, 0.15, 0.11, 0.18, 0.17, 0.13, 0.15, 0.13, 0.13, 0.15, 0.23, 0.15, 0.16, 0.16, 0.19, 0.12, 0.14, 0.21, 0.19, 0.23, 0.16, 0.17, 0.18, 0.16, 0.16, 0.17, 0.27, 0.16, 0.18, 0.19, 0.22, 0.22, 0.24, 0.2, 0.15, 0.22, 0.2, 0.17, 0.12, 0.16, 0.07, 0.19, 0.14, 0.25, 0.15, 0.17, 0.12, 0.17, 0.2, 0.17, 0.22, 0.16, 0.18, 0.2, 0.19, 0.19, 0.18, 0.23, 0.17, 0.23, 0.19, 0.13, 0.21, 0.22, 0.13, 0.13, 0.19, 0.2, 0.23, 0.2, 0.11, 0.16, 0.16, 0.22, 0.13, 0.12, 0.21, 0.17, 0.16, 0.2, 0.18, 0.19, 0.19, 0.15, 0.2, 0.21, 0.21, 0.17, 0.17, 0.17, 0.1, 0.14, 0.14, 0.18, 0.19, 0.15, 0.18, 0.26, 0.12, 0.21, 0.2, 0.16, 0.14, 0.14, 0.18, 0.16, 0.15, 0.25, 0.17, 0.12, 0.14, 0.18, 0.2, 0.17, 0.16, 0.18, 0.14, 0.18, 0.19, 0.21, 0.15, 0.19, 0.2, 0.15, 0.15, 0.13, 0.17, 0.19, 0.18, 0.14, 0.19, 0.14, 0.16, 0.24, 0.19, 0.19, 0.14, 0.18, 0.11, 0.17, 0.21, 0.22, 0.18, 0.19, 0.16, 0.13, 0.15, 0.2, 0.21, 0.13, 0.18, 0.18, 0.13, 0.27, 0.15, 0.17, 0.12, 0.19, 0.18, 0.15, 0.18, 0.12, 0.2, 0.18, 0.2, 0.12, 0.13, 0.26, 0.21, 0.18, 0.21, 0.19, 0.19, 0.15, 0.18, 0.2, 0.22, 0.22, 0.18, 0.15, 0.24, 0.14, 0.19, 0.16, 0.2, 0.11, 0.16, 0.16, 0.22, 0.18, 0.18, 0.21, 0.19, 0.17, 0.16, 0.21, 0.15, 0.18, 0.24, 0.19, 0.19, 0.17, 0.16, 0.14, 0.15, 0.18, 0.23, 0.21, 0.14, 0.16, 0.29, 0.19, 0.17, 0.16, 0.1, 0.21, 0.15, 0.13, 0.17, 0.17, 0.12, 0.19, 0.16, 0.13, 0.26, 0.22, 0.16, 0.17, 0.19, 0.19, 0.19, 0.17, 0.21, 0.13, 0.13, 0.16, 0.17, 0.15, 0.21, 0.21, 0.19, 0.22, 0.1, 0.18, 0.2, 0.19, 0.12, 0.18, 0.19, 0.19, 0.11, 0.16, 0.14, 0.18, 0.19, 0.17, 0.17, 0.19, 0.18, 0.23, 0.19, 0.17, 0.17, 0.19, 0.13, 0.17, 0.15, 0.22, 0.17, 0.16, 0.17, 0.17, 0.15, 0.19, 0.15, 0.15, 0.19, 0.23, 0.19, 0.26, 0.16, 0.23, 0.14, 0.18, 0.2, 0.22, 0.12, 0.17, 0.21, 0.17, 0.13, 0.23, 0.16, 0.25, 0.16, 0.21, 0.19, 0.16, 0.13, 0.23, 0.12, 0.18, 0.14, 0.19, 0.16, 0.11, 0.17, 0.13, 0.15, 0.22, 0.19, 0.18, 0.17, 0.18, 0.2, 0.16, 0.13, 0.17, 0.2, 0.24, 0.16, 0.19, 0.2, 0.14, 0.19, 0.17, 0.17, 0.15, 0.18, 0.16, 0.19, 0.17, 0.19, 0.18, 0.18, 0.12, 0.17, 0.21, 0.18, 0.19, 0.14, 0.17, 0.17, 0.11, 0.17, 0.2, 0.14, 0.16, 0.16, 0.2, 0.22, 0.13, 0.14, 0.11, 0.18, 0.22, 0.13, 0.18, 0.16, 0.19, 0.14, 0.1, 0.2, 0.18, 0.07, 0.16, 0.16, 0.32, 0.14, 0.2, 0.16, 0.15, 0.24, 0.23, 0.21, 0.27, 0.13, 0.14, 0.16, 0.18, 0.23, 0.12, 0.19, 0.19, 0.16, 0.2, 0.16, 0.26, 0.17, 0.15, 0.17, 0.19, 0.16, 0.19, 0.19, 0.19, 0.21, 0.2, 0.18, 0.12, 0.13, 0.19, 0.23, 0.18, 0.21, 0.25, 0.18, 0.13, 0.18, 0.19, 0.16, 0.17, 0.26, 0.17, 0.14, 0.17, 0.17, 0.21, 0.14, 0.12, 0.18, 0.18, 0.09, 0.14, 0.21, 0.23, 0.16, 0.15, 0.12, 0.12, 0.19, 0.2, 0.19, 0.16, 0.23, 0.19, 0.15, 0.14, 0.18, 0.15, 0.23, 0.13, 0.19, 0.16, 0.19, 0.23, 0.18, 0.21, 0.23, 0.18, 0.2, 0.2, 0.24, 0.2, 0.2, 0.12, 0.14, 0.17, 0.17, 0.18, 0.15, 0.19, 0.19, 0.27, 0.14, 0.16, 0.17, 0.15, 0.12, 0.16, 0.15, 0.21, 0.14, 0.18, 0.16, 0.16, 0.15, 0.12, 0.13, 0.25, 0.13, 0.21, 0.16, 0.13, 0.15, 0.22, 0.18, 0.16, 0.25, 0.22, 0.12, 0.19, 0.19, 0.14, 0.17, 0.17, 0.18, 0.2, 0.15, 0.15, 0.14, 0.18, 0.17, 0.25, 0.16, 0.14, 0.11, 0.21, 0.15, 0.15, 0.14, 0.17, 0.17, 0.18, 0.13, 0.21, 0.22, 0.21, 0.14, 0.18, 0.15, 0.21, 0.23, 0.16, 0.18, 0.2, 0.18, 0.25, 0.14, 0.15, 0.14, 0.18, 0.12, 0.19, 0.17, 0.2, 0.17, 0.17, 0.16, 0.22, 0.16, 0.21, 0.23, 0.18, 0.12, 0.18, 0.13, 0.17, 0.2, 0.16, 0.26, 0.16, 0.24, 0.19, 0.16, 0.09, 0.14, 0.15, 0.12, 0.16, 0.19, 0.14, 0.23, 0.16, 0.29, 0.24, 0.17, 0.2, 0.16, 0.19, 0.15, 0.22, 0.2, 0.17, 0.22, 0.17, 0.14, 0.24, 0.17, 0.24, 0.13, 0.2, 0.16, 0.19, 0.2, 0.18, 0.13, 0.12, 0.15, 0.14, 0.25, 0.15, 0.12, 0.17, 0.16, 0.1, 0.12, 0.14, 0.27, 0.23, 0.16, 0.17, 0.15, 0.18, 0.24, 0.18, 0.17, 0.17, 0.18, 0.17, 0.18, 0.2, 0.15, 0.16, 0.17, 0.18, 0.17, 0.15, 0.13, 0.17, 0.15, 0.15, 0.18, 0.18, 0.15, 0.21, 0.21, 0.15, 0.19, 0.19, 0.19, 0.1, 0.17, 0.18, 0.14, 0.24, 0.22, 0.26, 0.29, 0.19, 0.15, 0.18, 0.16, 0.23, 0.16, 0.16, 0.21, 0.18, 0.2, 0.11, 0.14, 0.23, 0.19, 0.17, 0.26, 0.19, 0.16, 0.23, 0.16, 0.13, 0.18, 0.18, 0.19, 0.16, 0.14, 0.23, 0.16, 0.14, 0.25, 0.15, 0.23, 0.23, 0.22, 0.16, 0.16, 0.18, 0.15, 0.15, 0.2, 0.17, 0.24, 0.1, 0.14, 0.15, 0.09, 0.26, 0.16, 0.18, 0.19, 0.13, 0.14, 0.19, 0.19, 0.17, 0.23, 0.16, 0.21, 0.23, 0.16, 0.23, 0.21, 0.12, 0.16, 0.14, 0.15, 0.18, 0.17, 0.18, 0.17, 0.16, 0.18, 0.21, 0.17, 0.21, 0.12, 0.15, 0.2, 0.21, 0.14, 0.24, 0.22, 0.16, 0.21, 0.15, 0.14, 0.2, 0.22, 0.2, 0.22, 0.18, 0.15, 0.16, 0.21, 0.18, 0.2, 0.21, 0.2, 0.23, 0.2, 0.19, 0.16, 0.2, 0.17, 0.17, 0.16, 0.21, 0.21, 0.14, 0.25, 0.17, 0.16, 0.16, 0.12, 0.21, 0.15, 0.15, 0.21, 0.29, 0.21, 0.19, 0.12, 0.17, 0.21, 0.12, 0.17, 0.18, 0.17, 0.15, 0.21, 0.19, 0.14, 0.16, 0.17, 0.16, 0.16, 0.19, 0.18, 0.12, 0.17, 0.13, 0.24, 0.14, 0.14, 0.2, 0.21, 0.2, 0.23, 0.17, 0.18, 0.12, 0.18, 0.17, 0.14, 0.22, 0.16, 0.22, 0.18, 0.14, 0.16, 0.21, 0.19, 0.14, 0.19, 0.2, 0.1, 0.17, 0.23, 0.24, 0.21, 0.16, 0.18, 0.18, 0.15, 0.14, 0.14, 0.16, 0.19, 0.21, 0.14, 0.14, 0.19, 0.1, 0.21, 0.14, 0.17, 0.18, 0.16, 0.18, 0.17, 0.17, 0.15, 0.17, 0.18, 0.2, 0.11, 0.19, 0.15, 0.18, 0.14, 0.16, 0.19, 0.3, 0.32, 0.24, 0.2, 0.18, 0.17, 0.2, 0.19, 0.18, 0.21, 0.2, 0.21, 0.14, 0.15, 0.16, 0.23, 0.16, 0.18, 0.19, 0.18, 0.15, 0.26, 0.12, 0.14, 0.18, 0.15, 0.2, 0.14, 0.14, 0.24, 0.13, 0.18, 0.25, 0.23, 0.14, 0.2, 0.17, 0.24, 0.18, 0.18, 0.2, 0.22, 0.16, 0.17, 0.13, 0.18, 0.16, 0.15, 0.12, 0.2, 0.26, 0.17, 0.11, 0.15, 0.2, 0.17, 0.18, 0.2, 0.15, 0.24, 0.22, 0.24, 0.19, 0.17, 0.13, 0.21, 0.24, 0.23, 0.16, 0.19, 0.1, 0.19, 0.18, 0.14, 0.16, 0.19, 0.16, 0.17, 0.13, 0.14, 0.17, 0.18, 0.2, 0.2, 0.12, 0.17, 0.2, 0.23, 0.21, 0.22, 0.23, 0.16, 0.14, 0.15, 0.14, 0.21, 0.2, 0.18, 0.17, 0.11, 0.1, 0.12, 0.18, 0.11, 0.14, 0.28, 0.26, 0.23, 0.17, 0.13, 0.12, 0.13, 0.16, 0.14, 0.16, 0.16, 0.13, 0.21, 0.17, 0.2, 0.21, 0.19, 0.22, 0.08, 0.19, 0.19, 0.14, 0.17, 0.17, 0.21, 0.15, 0.18, 0.14, 0.17, 0.13, 0.19, 0.16, 0.12, 0.2, 0.19, 0.2, 0.16, 0.19, 0.15, 0.17, 0.18, 0.22, 0.14</li>
-<li><span class="math inline">\(\hat{\theta_{2}}\)</span> = 0.53, 0.56, 0.64, 0.61, 0.58, 0.59, 0.53, 0.57, 0.53, 0.58, 0.58, 0.53, 0.52, 0.51, 0.57, 0.6, 0.61, 0.67, 0.57, 0.62, 0.57, 0.56, 0.63, 0.59, 0.66, 0.6, 0.57, 0.58, 0.61, 0.62, 0.56, 0.54, 0.59, 0.61, 0.6, 0.62, 0.57, 0.56, 0.58, 0.59, 0.62, 0.59, 0.53, 0.67, 0.56, 0.56, 0.6, 0.65, 0.57, 0.58, 0.59, 0.55, 0.56, 0.63, 0.58, 0.53, 0.59, 0.55, 0.58, 0.66, 0.54, 0.63, 0.59, 0.56, 0.49, 0.57, 0.57, 0.64, 0.61, 0.53, 0.56, 0.57, 0.51, 0.6, 0.54, 0.46, 0.61, 0.58, 0.53, 0.54, 0.61, 0.56, 0.57, 0.5, 0.51, 0.57, 0.57, 0.61, 0.57, 0.52, 0.58, 0.66, 0.62, 0.63, 0.58, 0.61, 0.56, 0.58, 0.56, 0.53, 0.63, 0.57, 0.52, 0.57, 0.55, 0.56, 0.53, 0.58, 0.55, 0.59, 0.62, 0.56, 0.63, 0.6, 0.53, 0.55, 0.61, 0.56, 0.59, 0.61, 0.5, 0.55, 0.64, 0.62, 0.57, 0.62, 0.57, 0.63, 0.62, 0.57, 0.55, 0.59, 0.57, 0.55, 0.58, 0.58, 0.6, 0.53, 0.53, 0.58, 0.59, 0.6, 0.62, 0.59, 0.6, 0.56, 0.57, 0.63, 0.6, 0.53, 0.6, 0.6, 0.55, 0.57, 0.56, 0.61, 0.54, 0.61, 0.67, 0.56, 0.57, 0.63, 0.64, 0.59, 0.63, 0.6, 0.59, 0.63, 0.53, 0.59, 0.62, 0.61, 0.55, 0.54, 0.55, 0.56, 0.57, 0.58, 0.66, 0.57, 0.52, 0.58, 0.56, 0.54, 0.6, 0.62, 0.55, 0.62, 0.63, 0.57, 0.57, 0.58, 0.6, 0.58, 0.55, 0.55, 0.63, 0.58, 0.51, 0.56, 0.58, 0.54, 0.62, 0.64, 0.59, 0.51, 0.57, 0.53, 0.6, 0.65, 0.62, 0.56, 0.56, 0.62, 0.51, 0.62, 0.54, 0.61, 0.53, 0.58, 0.55, 0.55, 0.59, 0.61, 0.61, 0.56, 0.59, 0.58, 0.58, 0.57, 0.54, 0.58, 0.6, 0.61, 0.64, 0.65, 0.6, 0.59, 0.6, 0.53, 0.6, 0.56, 0.63, 0.64, 0.64, 0.59, 0.56, 0.64, 0.58, 0.59, 0.55, 0.58, 0.57, 0.63, 0.55, 0.6, 0.59, 0.59, 0.59, 0.56, 0.57, 0.62, 0.58, 0.62, 0.57, 0.66, 0.58, 0.6, 0.59, 0.62, 0.57, 0.6, 0.63, 0.57, 0.64, 0.58, 0.57, 0.63, 0.64, 0.66, 0.62, 0.63, 0.57, 0.63, 0.61, 0.57, 0.59, 0.54, 0.5, 0.56, 0.62, 0.62, 0.59, 0.64, 0.63, 0.57, 0.57, 0.57, 0.59, 0.54, 0.53, 0.58, 0.53, 0.54, 0.62, 0.64, 0.67, 0.62, 0.57, 0.65, 0.56, 0.54, 0.6, 0.61, 0.62, 0.56, 0.6, 0.57, 0.59, 0.54, 0.55, 0.61, 0.61, 0.62, 0.57, 0.59, 0.6, 0.58, 0.61, 0.6, 0.54, 0.6, 0.61, 0.62, 0.63, 0.65, 0.65, 0.66, 0.54, 0.64, 0.58, 0.54, 0.53, 0.57, 0.57, 0.6, 0.65, 0.59, 0.64, 0.55, 0.57, 0.54, 0.63, 0.6, 0.6, 0.51, 0.59, 0.62, 0.6, 0.61, 0.49, 0.59, 0.63, 0.61, 0.55, 0.62, 0.57, 0.64, 0.62, 0.59, 0.65, 0.61, 0.62, 0.59, 0.58, 0.52, 0.58, 0.6, 0.61, 0.62, 0.57, 0.59, 0.61, 0.64, 0.55, 0.58, 0.58, 0.59, 0.58, 0.61, 0.56, 0.59, 0.59, 0.55, 0.6, 0.58, 0.65, 0.6, 0.55, 0.58, 0.54, 0.62, 0.56, 0.64, 0.58, 0.56, 0.59, 0.61, 0.6, 0.59, 0.63, 0.52, 0.49, 0.59, 0.62, 0.6, 0.63, 0.62, 0.61, 0.54, 0.61, 0.59, 0.61, 0.63, 0.57, 0.61, 0.53, 0.59, 0.62, 0.66, 0.63, 0.59, 0.6, 0.59, 0.58, 0.59, 0.56, 0.57, 0.53, 0.6, 0.58, 0.62, 0.52, 0.54, 0.57, 0.59, 0.59, 0.58, 0.62, 0.57, 0.63, 0.59, 0.63, 0.59, 0.58, 0.52, 0.59, 0.57, 0.59, 0.63, 0.62, 0.63, 0.61, 0.65, 0.55, 0.62, 0.55, 0.62, 0.6, 0.68, 0.61, 0.6, 0.59, 0.63, 0.58, 0.65, 0.56, 0.61, 0.6, 0.61, 0.55, 0.59, 0.58, 0.58, 0.57, 0.55, 0.6, 0.58, 0.58, 0.64, 0.64, 0.58, 0.62, 0.59, 0.6, 0.6, 0.55, 0.57, 0.59, 0.59, 0.55, 0.58, 0.54, 0.6, 0.58, 0.54, 0.6, 0.57, 0.56, 0.59, 0.64, 0.59, 0.59, 0.62, 0.66, 0.62, 0.55, 0.56, 0.65, 0.52, 0.57, 0.61, 0.57, 0.54, 0.58, 0.61, 0.55, 0.6, 0.61, 0.57, 0.58, 0.63, 0.59, 0.54, 0.6, 0.53, 0.59, 0.62, 0.56, 0.63, 0.62, 0.62, 0.6, 0.54, 0.54, 0.61, 0.64, 0.5, 0.58, 0.62, 0.57, 0.56, 0.6, 0.54, 0.53, 0.59, 0.56, 0.6, 0.56, 0.6, 0.57, 0.59, 0.59, 0.62, 0.59, 0.59, 0.55, 0.51, 0.62, 0.61, 0.5, 0.5, 0.59, 0.64, 0.59, 0.63, 0.63, 0.59, 0.59, 0.64, 0.58, 0.57, 0.55, 0.57, 0.67, 0.58, 0.58, 0.56, 0.6, 0.56, 0.6, 0.55, 0.58, 0.52, 0.56, 0.58, 0.6, 0.58, 0.57, 0.66, 0.59, 0.62, 0.54, 0.54, 0.55, 0.55, 0.57, 0.56, 0.59, 0.58, 0.62, 0.6, 0.56, 0.54, 0.57, 0.59, 0.6, 0.59, 0.6, 0.6, 0.57, 0.58, 0.54, 0.57, 0.57, 0.61, 0.6, 0.55, 0.56, 0.57, 0.55, 0.58, 0.57, 0.61, 0.62, 0.6, 0.59, 0.62, 0.62, 0.63, 0.61, 0.61, 0.6, 0.63, 0.56, 0.63, 0.6, 0.61, 0.54, 0.51, 0.63, 0.56, 0.56, 0.57, 0.53, 0.65, 0.61, 0.52, 0.66, 0.64, 0.62, 0.58, 0.61, 0.62, 0.5, 0.55, 0.57, 0.58, 0.6, 0.58, 0.62, 0.53, 0.64, 0.6, 0.62, 0.55, 0.58, 0.58, 0.62, 0.61, 0.56, 0.6, 0.64, 0.57, 0.55, 0.6, 0.56, 0.64, 0.58, 0.64, 0.54, 0.55, 0.51, 0.55, 0.55, 0.56, 0.6, 0.59, 0.62, 0.55, 0.6, 0.59, 0.58, 0.56, 0.62, 0.55, 0.56, 0.59, 0.6, 0.59, 0.59, 0.64, 0.64, 0.58, 0.62, 0.55, 0.58, 0.62, 0.62, 0.55, 0.59, 0.59, 0.61, 0.58, 0.61, 0.64, 0.59, 0.6, 0.55, 0.56, 0.63, 0.6, 0.6, 0.59, 0.61, 0.63, 0.61, 0.63, 0.62, 0.62, 0.59, 0.62, 0.56, 0.57, 0.5, 0.58, 0.56, 0.57, 0.6, 0.56, 0.59, 0.56, 0.64, 0.6, 0.58, 0.61, 0.68, 0.65, 0.57, 0.6, 0.56, 0.51, 0.59, 0.56, 0.6, 0.58, 0.62, 0.54, 0.58, 0.58, 0.58, 0.61, 0.59, 0.56, 0.54, 0.6, 0.57, 0.61, 0.55, 0.6, 0.58, 0.54, 0.57, 0.61, 0.62, 0.63, 0.55, 0.59, 0.59, 0.59, 0.61, 0.55, 0.57, 0.55, 0.55, 0.6, 0.58, 0.56, 0.65, 0.6, 0.61, 0.58, 0.65, 0.6, 0.66, 0.61, 0.58, 0.61, 0.59, 0.59, 0.63, 0.6, 0.58, 0.6, 0.61, 0.69, 0.61, 0.59, 0.58, 0.55, 0.7, 0.61, 0.63, 0.59, 0.59, 0.66, 0.66, 0.61, 0.58, 0.62, 0.52, 0.62, 0.54, 0.55, 0.63, 0.58, 0.6, 0.64, 0.56, 0.59, 0.61, 0.58, 0.58, 0.56, 0.59, 0.58, 0.57, 0.53, 0.64, 0.59, 0.58, 0.59, 0.57, 0.64, 0.58, 0.54, 0.6, 0.54, 0.59, 0.62, 0.62, 0.54, 0.6, 0.54, 0.56, 0.6, 0.52, 0.61, 0.59, 0.6, 0.58, 0.66, 0.55, 0.58, 0.59, 0.67, 0.66, 0.63, 0.57, 0.65, 0.57, 0.6, 0.58, 0.63, 0.58, 0.58, 0.58, 0.6, 0.6, 0.61, 0.58, 0.54, 0.58, 0.59, 0.55, 0.55, 0.59, 0.6, 0.57, 0.59, 0.65, 0.61, 0.56, 0.6, 0.55, 0.52, 0.64, 0.59, 0.54, 0.57, 0.53, 0.59, 0.59, 0.54, 0.63, 0.63, 0.62, 0.56, 0.57, 0.62, 0.59, 0.58, 0.62, 0.63, 0.56, 0.57, 0.54, 0.61, 0.64, 0.6, 0.6, 0.57, 0.56, 0.6, 0.59, 0.61, 0.57, 0.64, 0.58, 0.63, 0.55, 0.56, 0.61, 0.6, 0.56, 0.59, 0.58, 0.6, 0.61, 0.55, 0.57, 0.66, 0.59, 0.61, 0.58, 0.64, 0.58, 0.61, 0.58, 0.56, 0.57, 0.52, 0.56, 0.57, 0.63, 0.62, 0.59, 0.5, 0.62, 0.66, 0.58, 0.6, 0.6, 0.6, 0.61, 0.61, 0.58, 0.63, 0.6, 0.64, 0.65, 0.62, 0.53, 0.61, 0.55, 0.57, 0.62, 0.57, 0.59, 0.56, 0.6, 0.61, 0.52, 0.57, 0.61, 0.63, 0.62, 0.57, 0.61, 0.64, 0.59, 0.63, 0.58, 0.57, 0.58, 0.58, 0.58, 0.52, 0.58, 0.57, 0.57, 0.58, 0.58, 0.6, 0.59, 0.53, 0.52, 0.62, 0.65, 0.55, 0.6, 0.51, 0.6, 0.59, 0.59, 0.63, 0.57, 0.51, 0.63, 0.64, 0.62, 0.57, 0.61, 0.6, 0.61, 0.62, 0.6, 0.61, 0.6, 0.61, 0.66, 0.67, 0.66, 0.58, 0.66, 0.6, 0.67, 0.54, 0.6, 0.57, 0.58, 0.53, 0.59, 0.58, 0.65, 0.65, 0.62, 0.61, 0.63, 0.6, 0.72, 0.59, 0.58, 0.58, 0.58, 0.54, 0.59, 0.57, 0.56, 0.53, 0.6, 0.58, 0.61, 0.61, 0.56, 0.53, 0.6, 0.55, 0.54, 0.59, 0.6, 0.55, 0.55, 0.61, 0.55, 0.63, 0.57, 0.59, 0.55, 0.64, 0.61, 0.55, 0.63, 0.54, 0.52, 0.57, 0.6, 0.61, 0.54, 0.56, 0.54, 0.61, 0.64, 0.63, 0.56, 0.56, 0.63, 0.53, 0.62, 0.58, 0.62, 0.52, 0.54, 0.59, 0.57, 0.58, 0.62, 0.54, 0.62, 0.56, 0.55, 0.57, 0.64, 0.63, 0.58, 0.58, 0.59, 0.63, 0.54, 0.56, 0.62, 0.6, 0.63, 0.65, 0.63, 0.61, 0.58, 0.62, 0.69, 0.6, 0.6, 0.57, 0.63, 0.59, 0.56, 0.6, 0.57, 0.53, 0.63, 0.59, 0.52, 0.57, 0.57, 0.57, 0.57, 0.61, 0.59, 0.59, 0.59, 0.61, 0.52, 0.59, 0.59, 0.55, 0.61, 0.57, 0.55, 0.56, 0.53, 0.62, 0.55, 0.6, 0.59, 0.65, 0.52, 0.61, 0.62, 0.6, 0.61, 0.66, 0.57, 0.56, 0.65, 0.51, 0.51, 0.57, 0.58, 0.61, 0.58, 0.55, 0.57, 0.58, 0.62, 0.55, 0.57, 0.59, 0.63, 0.58, 0.63, 0.61, 0.59, 0.65, 0.56, 0.63, 0.59, 0.63, 0.55, 0.58, 0.53, 0.6, 0.57, 0.69, 0.6, 0.59, 0.58, 0.53, 0.56, 0.54, 0.58, 0.58, 0.66, 0.56, 0.65, 0.53, 0.6, 0.55, 0.62, 0.65, 0.56, 0.62, 0.56, 0.61, 0.62, 0.61, 0.59, 0.59, 0.55, 0.64, 0.51, 0.61, 0.68, 0.63, 0.55, 0.52, 0.6, 0.55, 0.57, 0.57, 0.62, 0.54, 0.63, 0.52, 0.57, 0.64, 0.64, 0.63, 0.63, 0.66, 0.62, 0.64, 0.62, 0.6, 0.57, 0.64, 0.63, 0.68, 0.57, 0.66, 0.55, 0.57, 0.56, 0.59, 0.56, 0.62, 0.52, 0.55, 0.61, 0.64, 0.57, 0.6, 0.6, 0.56, 0.58, 0.6, 0.61, 0.63, 0.57, 0.65, 0.56, 0.59, 0.65, 0.63, 0.53, 0.63, 0.63, 0.64, 0.54, 0.56, 0.59, 0.53, 0.59, 0.61, 0.58, 0.52, 0.57, 0.52, 0.58, 0.57, 0.65, 0.62, 0.55, 0.58, 0.6, 0.58, 0.61, 0.56, 0.52, 0.6, 0.63, 0.53, 0.63, 0.58, 0.63, 0.65, 0.57, 0.62, 0.6, 0.62, 0.63, 0.63, 0.64, 0.55, 0.56, 0.59, 0.64, 0.65, 0.6, 0.61, 0.59, 0.55, 0.54, 0.6, 0.65, 0.61, 0.56, 0.61, 0.57, 0.59, 0.56, 0.52, 0.59, 0.52, 0.57, 0.66, 0.6, 0.59, 0.56, 0.63, 0.55, 0.66, 0.59, 0.49, 0.53, 0.62, 0.57, 0.54, 0.58, 0.54, 0.54, 0.58, 0.63, 0.58, 0.62, 0.66, 0.6, 0.58, 0.61, 0.69, 0.62, 0.62, 0.63, 0.64, 0.64, 0.57, 0.6, 0.62, 0.6, 0.56, 0.54, 0.63, 0.59, 0.55, 0.56, 0.56, 0.57, 0.58, 0.53, 0.62, 0.59, 0.6, 0.63, 0.6, 0.57, 0.57, 0.58, 0.62, 0.64, 0.55, 0.61, 0.64, 0.53, 0.63, 0.57, 0.57, 0.61, 0.6, 0.61, 0.58, 0.63, 0.56, 0.54, 0.62, 0.63, 0.7, 0.61, 0.57, 0.49, 0.58, 0.57, 0.55, 0.56, 0.53, 0.58, 0.58, 0.57, 0.63, 0.63, 0.6, 0.52, 0.58, 0.59, 0.6, 0.6, 0.61, 0.7, 0.56, 0.62, 0.54, 0.59, 0.56, 0.63, 0.57, 0.58, 0.59, 0.61, 0.59, 0.56, 0.59, 0.64, 0.64, 0.57, 0.61, 0.61, 0.6, 0.61, 0.65, 0.69, 0.58, 0.56, 0.55, 0.64, 0.53, 0.62, 0.58, 0.55, 0.58, 0.57, 0.53, 0.56, 0.58, 0.65, 0.56, 0.59, 0.6, 0.54, 0.59, 0.57, 0.6, 0.54, 0.53, 0.63, 0.54, 0.55, 0.57, 0.64, 0.6, 0.67, 0.58, 0.59, 0.55, 0.65, 0.62, 0.58, 0.6, 0.55, 0.62, 0.56, 0.58, 0.64, 0.6, 0.64, 0.47, 0.55, 0.6, 0.65, 0.54, 0.63, 0.61, 0.61, 0.62, 0.58, 0.57, 0.6, 0.59, 0.57, 0.56, 0.61, 0.67, 0.57, 0.61, 0.58, 0.54, 0.6, 0.59, 0.56, 0.62, 0.6, 0.56, 0.63, 0.58, 0.58, 0.55, 0.54, 0.53, 0.57, 0.59, 0.56, 0.53, 0.65, 0.58, 0.6, 0.52, 0.62, 0.63, 0.57, 0.58, 0.58, 0.63, 0.61, 0.62, 0.56, 0.57, 0.56, 0.56, 0.62, 0.6, 0.6, 0.57, 0.56, 0.5, 0.65, 0.64, 0.62, 0.61, 0.55, 0.61, 0.59, 0.6, 0.62, 0.59, 0.68, 0.57, 0.6, 0.58, 0.55, 0.56, 0.61, 0.57, 0.59, 0.63, 0.54, 0.58, 0.58, 0.58, 0.61, 0.58, 0.55, 0.55, 0.58, 0.55, 0.57, 0.6, 0.6, 0.61, 0.5, 0.59, 0.59, 0.55, 0.6, 0.58, 0.59, 0.56, 0.55, 0.56, 0.65, 0.61, 0.54, 0.53, 0.56, 0.65, 0.65, 0.59, 0.61, 0.54, 0.62, 0.54, 0.49, 0.6, 0.59, 0.62, 0.62, 0.56, 0.57, 0.6, 0.59, 0.55, 0.58, 0.6, 0.51, 0.6, 0.58, 0.57, 0.66, 0.67, 0.53, 0.61, 0.54, 0.53, 0.63, 0.55, 0.57, 0.56, 0.59, 0.56, 0.61, 0.54, 0.6, 0.58, 0.63, 0.6, 0.63, 0.56, 0.58, 0.55, 0.59, 0.58, 0.55, 0.58, 0.6, 0.62, 0.59, 0.63, 0.59, 0.61, 0.62, 0.62, 0.54, 0.59, 0.67, 0.58, 0.51, 0.61, 0.57, 0.64, 0.62, 0.6, 0.55, 0.59, 0.6, 0.56, 0.54, 0.61, 0.63, 0.59, 0.59, 0.58, 0.55, 0.61, 0.56, 0.63, 0.55, 0.62, 0.59, 0.54, 0.59, 0.6, 0.56, 0.56, 0.65, 0.62, 0.53, 0.6, 0.63, 0.52, 0.6, 0.53, 0.57, 0.6, 0.57, 0.59, 0.6, 0.55, 0.59, 0.62, 0.6, 0.65, 0.55, 0.6, 0.63, 0.56, 0.6, 0.6, 0.52, 0.57, 0.6, 0.6, 0.57, 0.63, 0.64, 0.55, 0.57, 0.55, 0.58, 0.57, 0.61, 0.54, 0.68, 0.56, 0.6, 0.62, 0.57, 0.58, 0.63, 0.52, 0.55, 0.54, 0.59, 0.58, 0.54, 0.66, 0.61, 0.54, 0.57, 0.6, 0.57, 0.6, 0.58, 0.64, 0.63, 0.59, 0.48, 0.59, 0.56, 0.64, 0.57, 0.61, 0.59, 0.61, 0.57, 0.6, 0.57, 0.53, 0.57, 0.57, 0.58, 0.56, 0.64, 0.59, 0.64, 0.58, 0.59, 0.55, 0.63, 0.57, 0.56, 0.62, 0.62, 0.65, 0.63, 0.52, 0.63, 0.54, 0.57, 0.65, 0.59, 0.66, 0.58, 0.64, 0.62, 0.62, 0.56, 0.62, 0.56, 0.59, 0.59, 0.53, 0.59, 0.59, 0.62, 0.59, 0.56, 0.59, 0.58, 0.57, 0.53, 0.58, 0.63, 0.56, 0.57, 0.57, 0.57, 0.58, 0.56, 0.6, 0.6, 0.57, 0.58, 0.57, 0.58, 0.62, 0.57, 0.55, 0.56, 0.62, 0.62, 0.57, 0.62, 0.61, 0.51, 0.54, 0.58, 0.63, 0.61, 0.65, 0.56, 0.63, 0.61, 0.62, 0.6, 0.59, 0.59, 0.58, 0.52, 0.57, 0.65, 0.58, 0.64, 0.58, 0.63, 0.62, 0.58, 0.62, 0.6, 0.56, 0.55, 0.63, 0.6, 0.54, 0.63, 0.64, 0.58, 0.63, 0.59, 0.62, 0.6, 0.58, 0.51, 0.63, 0.64, 0.59, 0.57, 0.55, 0.57, 0.59, 0.6, 0.52, 0.62, 0.57, 0.59, 0.65, 0.58, 0.62, 0.55, 0.56, 0.61, 0.61, 0.57, 0.62, 0.56, 0.63, 0.6, 0.57, 0.58, 0.68, 0.61, 0.62, 0.65, 0.51, 0.57, 0.57, 0.59, 0.57, 0.61, 0.59, 0.63, 0.57, 0.57, 0.62, 0.61, 0.61, 0.61, 0.57, 0.58, 0.58, 0.6, 0.58, 0.49, 0.59, 0.54, 0.56, 0.55, 0.63, 0.64, 0.6, 0.61, 0.57, 0.61, 0.59, 0.6, 0.56, 0.63, 0.57, 0.6, 0.53, 0.54, 0.59, 0.6, 0.59, 0.63, 0.61, 0.63, 0.62, 0.59, 0.68, 0.51, 0.55, 0.56, 0.6, 0.6, 0.6, 0.66, 0.61, 0.56, 0.61, 0.59, 0.62, 0.68, 0.57, 0.59, 0.62, 0.62, 0.58, 0.48, 0.6, 0.59, 0.53, 0.6, 0.54, 0.6, 0.52, 0.63, 0.63, 0.55, 0.56, 0.62, 0.61, 0.52, 0.67, 0.65, 0.59</li>
-<li><em>n</em> = 101.26</li>
-</ul>
 
 </div>
 </div>
