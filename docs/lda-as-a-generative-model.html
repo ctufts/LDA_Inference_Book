@@ -250,26 +250,26 @@ phi &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw
 theta &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>)
 
 N &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co">#words in each document</span>
-ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">0</span>,N*M), 
-            <span class="dt">word =</span> <span class="kw">rep</span>(<span class="st">&#39;&#39;</span>, N*M),
-            <span class="dt">topic =</span> <span class="kw">rep</span>(<span class="dv">0</span>, N*M)
+ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span class="kw">rep</span>(<span class="dv">0</span>,N<span class="op">*</span>M), 
+            <span class="dt">word =</span> <span class="kw">rep</span>(<span class="st">&#39;&#39;</span>, N<span class="op">*</span>M),
+            <span class="dt">topic =</span> <span class="kw">rep</span>(<span class="dv">0</span>, N<span class="op">*</span>M)
             ) 
             
 row_index &lt;-<span class="st"> </span><span class="dv">1</span>
-for(m in <span class="dv">1</span>:M){
-  for(n in <span class="dv">1</span>:N){
+<span class="cf">for</span>(m <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>M){
+  <span class="cf">for</span>(n <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N){
     <span class="co"># sample topic index , i.e. select topic</span>
-    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)==<span class="dv">1</span>)
+    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)<span class="op">==</span><span class="dv">1</span>)
     <span class="co"># sample word from topic</span>
-    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])==<span class="dv">1</span>)]
+    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])<span class="op">==</span><span class="dv">1</span>)]
     ds[row_index,] &lt;-<span class="st"> </span><span class="kw">c</span>(m,new_word, topic)
-    row_index &lt;-<span class="st"> </span>row_index +<span class="st"> </span><span class="dv">1</span>
+    row_index &lt;-<span class="st"> </span>row_index <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
   }
 }
 
-ds %&gt;%<span class="st"> </span><span class="kw">group_by</span>(doc_id) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(
+ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(doc_id) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(
   <span class="dt">tokens =</span> <span class="kw">paste</span>(word, <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>)
-) %&gt;%<span class="st"> </span><span class="kw">kable</span>()</code></pre></div>
+) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -371,20 +371,20 @@ ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span cl
             ) 
             
 row_index &lt;-<span class="st"> </span><span class="dv">1</span>
-for(m in <span class="dv">1</span>:M){
-  for(n in <span class="dv">1</span>:N[m]){
+<span class="cf">for</span>(m <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>M){
+  <span class="cf">for</span>(n <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N[m]){
     <span class="co"># sample topic index , i.e. select topic</span>
-    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)==<span class="dv">1</span>)
+    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)<span class="op">==</span><span class="dv">1</span>)
     <span class="co"># sample word from topic</span>
-    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])==<span class="dv">1</span>)]
+    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])<span class="op">==</span><span class="dv">1</span>)]
     ds[row_index,] &lt;-<span class="st"> </span><span class="kw">c</span>(m,new_word, topic)
-    row_index &lt;-<span class="st"> </span>row_index +<span class="st"> </span><span class="dv">1</span>
+    row_index &lt;-<span class="st"> </span>row_index <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
   }
 }
 
-ds %&gt;%<span class="st"> </span><span class="kw">group_by</span>(doc_id) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(
+ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(doc_id) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(
   <span class="dt">tokens =</span> <span class="kw">paste</span>(word, <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>)
-) %&gt;%<span class="st"> </span><span class="kw">kable</span>()</code></pre></div>
+) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -473,24 +473,24 @@ ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span cl
             ) 
             
 row_index &lt;-<span class="st"> </span><span class="dv">1</span>
-for(m in <span class="dv">1</span>:M){
+<span class="cf">for</span>(m <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>M){
   theta &lt;-<span class="st">  </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>, alphas)
   
-  for(n in <span class="dv">1</span>:N[m]){
+  <span class="cf">for</span>(n <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N[m]){
     <span class="co"># sample topic index , i.e. select topic</span>
-    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)==<span class="dv">1</span>)
+    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)<span class="op">==</span><span class="dv">1</span>)
     <span class="co"># sample word from topic</span>
-    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])==<span class="dv">1</span>)]
+    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])<span class="op">==</span><span class="dv">1</span>)]
     ds[row_index,] &lt;-<span class="st"> </span><span class="kw">c</span>(m,new_word, topic,theta)
-    row_index &lt;-<span class="st"> </span>row_index +<span class="st"> </span><span class="dv">1</span>
+    row_index &lt;-<span class="st"> </span>row_index <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
   }
 }
 
-ds %&gt;%<span class="st"> </span><span class="kw">group_by</span>(doc_id) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(
+ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(doc_id) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(
   <span class="dt">tokens =</span> <span class="kw">paste</span>(word, <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>), 
   <span class="dt">topic_a =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_a)), <span class="dv">2</span>), 
   <span class="dt">topic_b =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_b)), <span class="dv">2</span>) 
-) %&gt;%<span class="st"> </span><span class="kw">kable</span>()</code></pre></div>
+) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>()</code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -608,24 +608,24 @@ ds &lt;-<span class="kw">tibble</span>(<span class="dt">doc_id =</span> <span cl
             ) 
             
 row_index &lt;-<span class="st"> </span><span class="dv">1</span>
-for(m in <span class="dv">1</span>:M){
+<span class="cf">for</span>(m <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>M){
   theta &lt;-<span class="st">  </span><span class="kw">rdirichlet</span>(<span class="dv">1</span>, alphas)
   
-  for(n in <span class="dv">1</span>:N[m]){
+  <span class="cf">for</span>(n <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>N[m]){
     <span class="co"># sample topic index , i.e. select topic</span>
-    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)==<span class="dv">1</span>)
+    topic &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,theta)<span class="op">==</span><span class="dv">1</span>)
     <span class="co"># sample word from topic</span>
-    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])==<span class="dv">1</span>)]
+    new_word &lt;-<span class="st"> </span>vocab[<span class="kw">which</span>(<span class="kw">rmultinom</span>(<span class="dv">1</span>,<span class="dv">1</span>,phi[topic, ])<span class="op">==</span><span class="dv">1</span>)]
     ds[row_index,] &lt;-<span class="st"> </span><span class="kw">c</span>(m,new_word, topic,theta)
-    row_index &lt;-<span class="st"> </span>row_index +<span class="st"> </span><span class="dv">1</span>
+    row_index &lt;-<span class="st"> </span>row_index <span class="op">+</span><span class="st"> </span><span class="dv">1</span>
   }
 }
 
-ds %&gt;%<span class="st"> </span><span class="kw">group_by</span>(doc_id, topic) %&gt;%<span class="st"> </span><span class="kw">summarise</span>(
+ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group_by</span>(doc_id, topic) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">summarise</span>(
   <span class="dt">tokens =</span> <span class="kw">paste</span>(word, <span class="dt">collapse =</span> <span class="st">&#39; &#39;</span>), 
   <span class="dt">topic_a =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_a)), <span class="dv">2</span>), 
   <span class="dt">topic_b =</span> <span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">unique</span>(theta_b)), <span class="dv">2</span>) 
-) %&gt;%<span class="st"> </span><span class="kw">kable</span>() </code></pre></div>
+) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>() </code></pre></div>
 <table>
 <thead>
 <tr class="header">
