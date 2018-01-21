@@ -5,19 +5,19 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>LDA Tutorial</title>
-  <meta name="description" content="LDA Tutorial">
+  <title>The Little Book of Latent Dirichlet Allocation</title>
+  <meta name="description" content="The Little Book of Latent Dirichlet Allocation">
   <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
 
-  <meta property="og:title" content="LDA Tutorial" />
+  <meta property="og:title" content="The Little Book of Latent Dirichlet Allocation" />
   <meta property="og:type" content="book" />
-  
+  <meta property="og:url" content="https://ldabook.com/" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="LDA Tutorial" />
+  <meta name="twitter:title" content="The Little Book of Latent Dirichlet Allocation" />
   <meta name="twitter:site" content="@devlintufts" />
   
   
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="index.html">
-<link rel="next" href="layout-of-book.html">
+<link rel="next" href="package-references.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -46,6 +46,15 @@
 
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-62188022-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-62188022-3');
+</script>
 
 
 <style type="text/css">
@@ -100,7 +109,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <ul class="summary">
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
 <li class="chapter" data-level="" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i>Background</a></li>
-<li class="chapter" data-level="" data-path="layout-of-book.html"><a href="layout-of-book.html"><i class="fa fa-check"></i>Layout of Book</a></li>
 <li class="chapter" data-level="" data-path="package-references.html"><a href="package-references.html"><i class="fa fa-check"></i>Package References</a></li>
 <li class="chapter" data-level="1" data-path="what-is-lda.html"><a href="what-is-lda.html"><i class="fa fa-check"></i><b>1</b> What is LDA?</a><ul>
 <li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a><ul>
@@ -165,7 +173,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">LDA Tutorial</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The Little Book of Latent Dirichlet Allocation</a>
           </h1>
         </div>
 
@@ -175,7 +183,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="background" class="section level1 unnumbered">
 <h1>Background</h1>
-<p>I’ve often found that resources covering LDA are either hard to follow, do to a heavy reliance on calculus derivations, or the resources are extremely high level so you get the idea of what LDA accomplishes, but you never fully grasp how it works. The book focuses on LDA for inference via Gibbs Sampling. To aid in understanding both LDA and Gibbs sampling all probability distributions used in LDA will be reviewed along with a variety of different approaches for parameter estimation. Following the introduction of these components, LDA will be presented as a generative model. This will lay the groundwork for understanding how LDA can be used for inference of topics in a corpus.</p>
+<p>I’ve often found that resources covering LDA are difficult to understand. They are often overly technical and amount to being a cobbled collection of calculus derivations or the resources are extremely high level so you get the idea of what LDA accomplishes, but you never fully grasp how it works. The book focuses on LDA for inference via Gibbs Sampling. To aid in understanding both LDA and Gibbs sampling all probability distributions used in LDA will be reviewed along with a variety of different approaches for parameter estimation. Following the introduction of these components, LDA will be presented as a generative model. This will lay the groundwork for understanding how LDA can be used for inference of topics in a corpus.</p>
 <p>I have tried my best to relay an explanation of LDA that fills in the gaps and questions that are sometimes left out of publications. The book contains many code examples, but I do not shy away from walking through mathematical derivations. Where applicable I state mathematical properties used in the derivations so that the reader doesn’t have to ‘take my word for it’, but instead can go from A to B on their own. You will find code examples written in R in the case you would like to try them out at home. I will warn you that my implmentation of LDA is not optimized and if you are doing analysis for any reason other than trying to learn I would suggest using one of the many great peices of open source software available - Mallet, Gensim, LDA(R), tidytext?, scikit? etc. ADD LINKS FOR THESE OR ADD APPENDIX WITH THESE TOOLS AND COMPARISON NOTES (I.E WHAT LANGUAGE, ETC.)</p>
 </div>
             </section>
@@ -184,7 +192,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
         </div>
       </div>
 <a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="layout-of-book.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="package-references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
