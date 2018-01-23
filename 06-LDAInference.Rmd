@@ -9,8 +9,8 @@ p(\theta, \phi, z|w, \alpha, \beta) = {p(\theta, \phi, z, w|\alpha, \beta) \over
 (\#eq:LDAInference)
 \end{equation}
 $$
-Equation \@ref(eq:LDAInference) says the following:   
-The probability of the document topic distribution, the word distribution of each topic, and the topic labels of all words (in all documents) and the hyperparameters $\alpha$ and $\beta$. In particular we are interested in estimating the probability of topic (_z_) for a given word (_w_) (and our prior assumptions, i.e. hyperparameters) for all words and topics. From this we can infer $\phi$ and $\theta$. (NOTE - COME BACK TO THIS AS THIS NEEDS TO BE MORE CLEAR)
+The left side of Equation \@ref(eq:LDAInference) defines the following:   
+The probability of the document topic distribution, the word distribution of each topic, and the topic labels given all words (in all documents) and the hyperparameters $\alpha$ and $\beta$. In particular we are interested in estimating the probability of topic (_z_) for a given word (_w_) (and our prior assumptions, i.e. hyperparameters) for all words and topics. From this we can infer $\phi$ and $\theta$. 
 
 
 
@@ -55,8 +55,9 @@ And on to the parts we don't know....
 * **Word topic assignment (z):** This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture, $\theta$, and the word distribution, $\phi$, of each topic. 
 
 
-## Mathematical Derivations for Inference
-Back to the math...
+## Mathematical Derivations for Inference    
+
+Back to the math...    
 
 The derivation connecting equation \@ref(eq:LDAInference) to the actual Gibbs sampling solution to determine _z_ for each word in each document, $\overrightarrow{\theta}$, and 
 $\overrightarrow{\phi}$ is very complicated and I'm going to gloss over a few steps. For complete derivations see [@heinrich2008parameter] and [@carpenter2010integrating].
@@ -164,7 +165,6 @@ P(B|A) = {P(A,B) \over P(A)}
 $$
  
 
-CHANGE THE -i's  TO THE NEGATION SIGN FOR CONSISTENCY
 
 $$
 \begin{equation}
