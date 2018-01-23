@@ -53,7 +53,7 @@ Building on the document generating model in chapter two, let's try to create do
     * $\phi_{1}$ = [ &#x1F4D5; = 0.8, &#x1F4D8; = 0.2, &#x1F4D7; = 0.0 ]
     * $\phi_{2}$ = [ &#x1F4D5; = 0.2, &#x1F4D8; = 0.1, &#x1F4D7; = 0.7 ]
 * All Documents have same topic distribution:
-    * $\theta = [ topic a = 0.5, topic b = 0.5 ]$
+    * $\theta = [ topic \hspace{2mm} a = 0.5,\hspace{2mm} topic \hspace{2mm} b = 0.5 ]$
 * All Documents contain 10 words
     
 *Generative Model Pseudocode*
@@ -123,14 +123,14 @@ This next example is going to be very similar, but it now allows for varying doc
     * $\phi_{1}$ = [ &#x1F4D5; = 0.8, &#x1F4D8; = 0.2, &#x1F4D7; = 0.0 ]
     * $\phi_{2}$ = [ &#x1F4D5; = 0.2, &#x1F4D8; = 0.1, &#x1F4D7; = 0.7 ]
 * All Documents have same topic distribution:
-    * $\theta = [ topic a = 0.5, topic b = 0.5 ]$
+    * $\theta = [ topic \hspace{2mm} a = 0.5,\hspace{2mm} topic \hspace{2mm} b = 0.5 ]$
     
 
 *Generative Model Pseudocode*
 
 * For d = 1 to D where D is the number of documents
     + *Determine length of document*
-    + $W ~ Poisson(\xi)$
+    + $W$ ~ Poisson($\xi$)
     + For w = 1 to W  where W is the number of words in document *d*
         + *Select the topic for word w *
         + $z_{i}$ ~ Multinomial($\theta_{d}$)
@@ -187,7 +187,7 @@ So this time we will introduce documents with different topic distributions and 
     
 *Generative Model Pseudocode*
 
-For d = 1 to D where number of documents is D
+* For d = 1 to D where number of documents is D
     + *Sample parameters for document topic distribution*
     + $\theta_{d}$ ~ Dirichlet($\alpha$)
     + For w = 1 to W  where W is the number of words in document *d*

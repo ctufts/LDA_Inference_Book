@@ -227,7 +227,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li>All Documents have same topic distribution:
 <ul>
-<li><span class="math inline">\(\theta = [ topic a = 0.5, topic b = 0.5 ]\)</span></li>
+<li><span class="math inline">\(\theta = [ topic \hspace{2mm} a = 0.5,\hspace{2mm} topic \hspace{2mm} b = 0.5 ]\)</span></li>
 </ul></li>
 <li>All Documents contain 10 words</li>
 </ul>
@@ -341,7 +341,7 @@ ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group
 </ul></li>
 <li>All Documents have same topic distribution:
 <ul>
-<li><span class="math inline">\(\theta = [ topic a = 0.5, topic b = 0.5 ]\)</span></li>
+<li><span class="math inline">\(\theta = [ topic \hspace{2mm} a = 0.5,\hspace{2mm} topic \hspace{2mm} b = 0.5 ]\)</span></li>
 </ul></li>
 </ul>
 <p><em>Generative Model Pseudocode</em></p>
@@ -349,7 +349,7 @@ ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group
 <li>For d = 1 to D where D is the number of documents
 <ul>
 <li><em>Determine length of document</em></li>
-<li><span class="math inline">\(W ~ Poisson(\xi)\)</span></li>
+<li><span class="math inline">\(W\)</span> ~ Poisson(<span class="math inline">\(\xi\)</span>)</li>
 <li>For w = 1 to W where W is the number of words in document <em>d</em>
 <ul>
 <li><em>Select the topic for word w </em></li>
@@ -456,7 +456,20 @@ ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group
 </ul></li>
 </ul>
 <p><em>Generative Model Pseudocode</em></p>
-<p>For d = 1 to D where number of documents is D + <em>Sample parameters for document topic distribution</em> + <span class="math inline">\(\theta_{d}\)</span> ~ Dirichlet(<span class="math inline">\(\alpha\)</span>) + For w = 1 to W where W is the number of words in document <em>d</em> + <em>Select the topic for word w </em> + <span class="math inline">\(z_{i}\)</span> ~ Multinomial(<span class="math inline">\(\theta_{d}\)</span>) + <em>Select word based on topic z’s word distribution </em> + <span class="math inline">\(w_{i}\)</span> ~ Multinomial(<span class="math inline">\(\phi^{(z_{i})}\)</span>)</p>
+<ul>
+<li>For d = 1 to D where number of documents is D
+<ul>
+<li><em>Sample parameters for document topic distribution</em></li>
+<li><span class="math inline">\(\theta_{d}\)</span> ~ Dirichlet(<span class="math inline">\(\alpha\)</span>)</li>
+<li>For w = 1 to W where W is the number of words in document <em>d</em>
+<ul>
+<li><em>Select the topic for word w </em></li>
+<li><span class="math inline">\(z_{i}\)</span> ~ Multinomial(<span class="math inline">\(\theta_{d}\)</span>)</li>
+<li><em>Select word based on topic z’s word distribution </em></li>
+<li><span class="math inline">\(w_{i}\)</span> ~ Multinomial(<span class="math inline">\(\phi^{(z_{i})}\)</span>)</li>
+</ul></li>
+</ul></li>
+</ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">k &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># number of topics</span>
 M &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># let&#39;s create 10 documents</span>
 vocab &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F4D8&#39;</span>, <span class="st">&#39;\U1F4D5&#39;</span>, <span class="st">&#39;\U1F4D7&#39;</span>)

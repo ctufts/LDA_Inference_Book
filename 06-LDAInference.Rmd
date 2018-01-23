@@ -1,10 +1,7 @@
 # LDA Inference
 
 ## General Overview
-We have talked about LDA as a generative model, but now it is time to flip the problem around. What if I have a bunch of documents and I want to infer topics? To figure out a problem like this we are first going to assume the documents were generated using a generative model similar to the ones we created in the previous section. 
-
-
-Now it is time to flip the problem around. What happens when I have a bunch of documents and I want to know what topics are present in each document and what words are present (most probable) in each topic? To answer the previous questions, we first need to be able to attain the answer for Equation \@ref(eq:LDAInference). (NOTE: The derivation for LDA inference via Gibbs Sampling is taken from [@darling2011theoretical], [@heinrich2008parameter] and [@steyvers2007probabilistic].)
+We have talked about LDA as a generative model, but now it is time to flip the problem around. What if I have a bunch of documents and I want to infer topics? To solve this problem we will be working under the assumption that the documents were generated using a generative model similar to the ones in the previous section. Under this assumption we need to attain the answer for Equation \@ref(eq:LDAInference). (NOTE: The derivation for LDA inference via Gibbs Sampling is taken from [@darling2011theoretical], [@heinrich2008parameter] and [@steyvers2007probabilistic].)
 
 $$
 \begin{equation}
@@ -14,6 +11,8 @@ p(\theta, \phi, z|w, \alpha, \beta) = {p(\theta, \phi, z, w|\alpha, \beta) \over
 $$
 Equation \@ref(eq:LDAInference) says the following:   
 The probability of the document topic distribution, the word distribution of each topic, and the topic labels of all words (in all documents) and the hyperparameters $\alpha$ and $\beta$. In particular we are interested in estimating the probability of topic (_z_) for a given word (_w_) (and our prior assumptions, i.e. hyperparameters) for all words and topics. From this we can infer $\phi$ and $\theta$. (NOTE - COME BACK TO THIS AS THIS NEEDS TO BE MORE CLEAR)
+
+
 
 _Quick notes:   
 * Equation \@ref(eq:LDAInference) is based on the following statistical property_
@@ -28,6 +27,8 @@ $$
 
 
 * _All the variables used in this section were outlined at the beginning of Chapter 5 if you need a refresher._
+
+
 
 Let's take a step from the math and just map out 'things we know' versus the 'things we don't know' in regards to an inference problem:
 

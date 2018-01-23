@@ -22,24 +22,22 @@ description: "A comprehensive overview of LDA and Gibbs Sampling."
 
 # Preface {-}
 
-The purpose of this book is to provide a step by step guide of LDA utilizing Gibbs Sampling.  It is
-heavily inspired by the Gregor Heinrich's _Parameter Estimation for Text Analysis_[@heinrich2008parameter]. 
+The purpose of this book is to provide a step by step guide to Latent Dirichlet Allocation (LDA) utilizing Gibbs Sampling.  It is inspired by Gregor Heinrich's _Parameter Estimation for Text Analysis_[@heinrich2008parameter] which provides a walk through parameter estimation, Gibbs Sampling, and LDA.  This book extends many of those subjects and provides small code examples written in R.  
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />This work by Chris Tufts is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.
 
 
 __DISCLAIMER: THIS BOOK IS NOT COMPLETE (WORK IN PROGRESS):__
 
-* While much of the content of the book is present, there is still many rounds of editing and additional information required in each chapter. Please feel free to send feedback to my Github or Twitter links in the header. 
-
-
+* While much of the content of the book is present, there is still many rounds of editing and additional information required in each chapter.  
 
 
 # Background {-}
-I've often found that resources covering LDA are difficult to understand. They are often overly technical and amount to being a cobbled collection of calculus derivations or the resources are extremely high level so you get the idea of what LDA accomplishes, but you never fully grasp how it works. The book focuses on LDA for inference via Gibbs Sampling. To aid in understanding both LDA and Gibbs sampling all probability distributions used in LDA will be reviewed along with a variety of different approaches for parameter estimation. Following the introduction of these components, LDA will be presented as a generative model.  This will lay the groundwork for understanding how LDA can be used for inference of topics in a corpus.  
+I've frequently found that resources covering LDA are difficult to understand. They are often excessively technical and amount to being a cobbled collection of calculus derivations. The resources that are easier to follow are high level overviews so you get the idea of what LDA accomplishes, but you never fully grasp how it works. 
 
-I have tried my best to relay an explanation of LDA that fills in the gaps and questions that are sometimes left out of publications. The book contains many code examples, but I do not shy away from walking through mathematical derivations. Where applicable I state mathematical properties used in the derivations so that the reader doesn't have to 'take my word for it', but instead can go from A to B on their own.  You will find code examples written in R in the case you would like to try them out at home. I will warn you that my implmentation of LDA is not optimized and if you are doing analysis for any reason other than trying to learn I would suggest using one of the many great peices of open source software available - Mallet, Gensim, LDA(R), tidytext?, scikit? etc. ADD LINKS FOR THESE OR ADD APPENDIX WITH THESE TOOLS AND COMPARISON NOTES (I.E WHAT LANGUAGE, ETC.)
+This book focuses on LDA for inference via Gibbs Sampling and attempts to provide a comprehensive overview of both the high level and granular components of LDA. To aid in understanding both LDA and Gibbs sampling, all probability distributions used in LDA will be reviewed along with a variety of different approaches for parameter estimation. Following the introduction of these components, LDA will be presented as a generative model.  This will lay the groundwork for understanding how LDA can be used for the inference of topics in a corpus.  
 
+I have tried my best to relay an explanation of LDA that fills in the gaps and questions that are sometimes left out of publications. The book contains many code examples, but I do not shy away from walking through mathematical derivations. Where applicable I state mathematical properties used in the derivations so that the reader doesn't have to 'take my word for it', but instead can go from A to B on their own.  You will find code examples written in R in the case you would like to try them out at home. I will warn you that my implementation of LDA is not optimized and if you are doing analysis for any reason other than trying to learn, I would suggest using one of the many great peices of open source software available: [Mallet](http://mallet.cs.umass.edu/), [Gensim](https://radimrehurek.com/gensim/), [LDA(R)](https://cran.r-project.org/web/packages/lda/), [topicmodels(R)](https://cran.r-project.org/web/packages/topicmodels/index.html), and [scikit](http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.LatentDirichletAllocation.html). 
 
 # Package References {-}
 This book only came together due to the amazing open source work so many have done in the R community. The list of packages utilized to create this book can be found in the reference section and are as follows:
