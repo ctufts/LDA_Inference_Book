@@ -38,9 +38,9 @@ ggplot(ds, aes(x= word)) + geom_histogram(stat='count',color='#1A384A', fill='#7
 ```
 
 
-__Quick Note:__     
-_Let's think of how this will be used in the case of LDA. If I wanted to generate a document based on a model, I could use a multinomial distribution to determine what words would be in the document. If I knew the probability of a word I could use the example above to draw a new word with each sample. Obviously some words occur much more often than others, so the 'fair die' example wouldn't work for generation of document.  In later sections we will build on this concept, but its good to start thinking about how this extends to applications in language._
-
+```{block2, multinomial-thinking, type='rmdnote'}    
+Let's think of how this will be used in the case of LDA. If I wanted to generate a document based on a model, I could use a multinomial distribution to determine what words would be in the document. If I knew the probability of a word I could use the example above to draw a new word with each sample. Obviously some words occur much more often than others, so the 'fair die' example wouldn't work for generation of document.  In later sections we will build on this concept, but its good to start thinking about how this extends to applications in language.
+```
 
 ## How Multinomial and Bernoulli Relate
 

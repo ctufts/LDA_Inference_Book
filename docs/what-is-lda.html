@@ -95,6 +95,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -207,7 +208,11 @@ Figure 1.1: Topic Scrabble: Philadelphia and Seattle
 <p>So let’s move on to generating a specific location. We know that different locations will vary in terms of which habitats are present. For example, a beach contains land, sea, and air, but some areas inland may only contain air and land like a desert. We can define the mixture of these types of habitats in each location. For example, a beach is 1/3 land, 1/3 sea, and 1/3 air. We can think of the beach as a single document. To review: a given location (<em>document</em>) contains a mixture of land, air, and sea (<em>topics</em>) and each of those contain different mixtures of animals (<em>words</em>).</p>
 <p>Let’s work through some examples using our animals and habitats. The examples provided in this chapter are oversimplified so that we can get a general idea how LDA works.</p>
 <p>We’ll start by generating our beach location with 1/3 land animals, 1/3 sea animals, and 1/3 air animals. Below you can see our collection of animals and their probability in each topic. Note that some animals have zero probabilities in a given topic, i.e. a cow is never in the ocean, where some have higher probabilities than others; a crab is in the sea sometimes, but a fish is always in the sea. You may notice that there is only 1 animal in the air category. There are several birds, but only 1 of them is cabable of flight in our vocabulary.</p>
-<p>(NOTE: These are the probability of a word <b>given</b> the topic and therefore the probabilities of each habitat (<em>column</em>) sum to 1.)</p>
+
+<div class="rmdnote">
+These are the probability of a word <b>given</b> the topic and therefore the probabilities of each habitat (<em>column</em>) sum to 1.
+</div>
+
 <table>
 <caption><span id="tab:animalVocab">Table 1.1: </span>Animal Distributions in Each Habitat</caption>
 <thead>
@@ -336,7 +341,7 @@ equal_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(equal_doc)</code></pre></div>
 <pre><code>## 🐘 🐂 🐪 🐧 🐧 🐙 🐦 🐦 🐦</code></pre>
-<p>NOTE: In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach.</p>
+<p>In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach.</p>
 <p>Before proceeding, I want to take a moment to give recognition to Tim Hopper for his presentation utilizing emoji to shed some light on how generative LDA works <span class="citation">(Hopper <a href="references.html#ref-HopperTopicModels">2016</a>)</span>.</p>
 <p>Ok, now let’s make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be 50% sea, 50% air, and 0% land.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">words_per_topic &lt;-<span class="st"> </span><span class="dv">3</span>
@@ -344,7 +349,7 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(ocean_doc)</code></pre></div>
 <pre><code>## 🐋 🐳 🐢 🐦 🐦 🐦</code></pre>
-<p>NOTE: In the example above only the air and land contribute to the ocean location. Therefore they both contribute an equal number of animals to the location.</p>
+<p>In the example above only the air and land contribute to the ocean location. Therefore they both contribute an equal number of animals to the location.</p>
 <div id="generating-the-mixtures" class="section level3">
 <h3><span class="header-section-number">1.1.1</span> Generating the Mixtures</h3>
 <p>It is important to note the examples above use static word and topic mixtures that were predetermined, but these mixtures could just as easily be created by sampling from a Dirichlet distribution. This is an important distinction to make as it is the foundation of how we can use LDA to infer topic structures in our documents. The Dirichlet distribution and it’s role in LDA is discussed in detail in the coming chapters.</p>

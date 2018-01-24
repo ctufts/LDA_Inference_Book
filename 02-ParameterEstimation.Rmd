@@ -19,9 +19,9 @@ When you flip a coin you get either heads or tails as an outcome (barring the po
 #### Bernoulli: A Special Case of the Binomial Distribution
 You will often see Bernoulli distribution mentioned as a special case of the Binomial distribution. The binomial model consists of _n_ Bernoulli trials, where each trial is independent and the probability of success does not change between trials.[@kerns2010introduction] The Bernoulli distribution is the case of a single trial (_n_=1). 
 
-_Quick Note:    
+```{block2, heads-definition, type='rmdnote'}   
 I will use the term <i>success</i> interchangably with the term <i>heads</i> when describing Bernoulli distribution. In reality <i>success</i> could be <i>tails</i> if you choose to define it that way. 
-_
+```
 
 To clarify, if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However, if I want to know the probability of getting 2 heads (or more) in a row, we would use the binomial distribution. For our purposes we are only concerned about the outcome of a single coin flip and will therefore stick to the Bernoulli distribution. 
 
@@ -117,8 +117,7 @@ f(\theta;\alpha,\beta) ={{\theta^{(\alpha-1)}(1-\theta)^{(\beta-1)}}\over B(\alp
 \end{equation}
 $$
 
-Quick Note: 
-
+```{block2, beta-gamma, type='rmdnote'}
 * The _Beta_ function, _B_ is the ratio of the product of the _Gamma_ function, $\Gamma$, of each parameter divided by the _Gamma_ function of the sum of the parameters. The _Beta_ function is __not__ the same as the beta distribution. The _Beta_ function is shown below along with the _Gamma_ function, which is used in the _Beta_ function.  
 
 $$
@@ -128,7 +127,7 @@ $$
 \end{equation}
 $$
 
-* The *Gamma* function is the factorial of the parameter minus 1. 
+The *Gamma* function is the factorial of the parameter minus 1. 
 
 $$
 \begin{equation}
@@ -136,7 +135,8 @@ $$
 (\#eq:gammaFunction)
 \end{equation}
 $$
-
+  
+```
 
 ## Inference: The Building Blocks
 
@@ -331,7 +331,9 @@ Now that we know how to calculate the parameter $\theta$ that maximizes the post
 In the Figure \@ref(fig:mapSmallnUninformedPrior) we see the MAP estimation of $\theta$ with a relatively uninformed prior, low $\alpha$ and $\beta$ values and a small number of observed experiments (n=20). Uninformed means we are going to make a weak assumption about the prior. In more general terms, this means that we don't have a strong intuition that our coin is fair or unfair. In a mathematical sense, uninformed means a low sum of the two parameters, if you had $\alpha=1000$ and $\beta=1$ this would __not__ be considered as uninformed whereas $\alpha$ and $\beta$ both equal to 1 is normally referred to as uniformed or naive. The Beta distribution has $\alpha$ and $\beta$ parameters of 2 resulting in the blue density curve shown in Figure \@ref(fig:mapSmallnUninformedPrior). 
 
 
-__NOTE__: The terms weak, uninformed, and naive are often used interchangeably when referencing priors. The same goes for the terms strong and informed. 
+```{block2, weak-naive, type='rmdnote'}
+The terms weak, uninformed, and naive are often used interchangeably when referencing priors. The same goes for the terms strong and informed. 
+```
 
 ```{r mapSmallnUninformedPrior, echo = TRUE, fig.cap = 'MAP: Small number of experiments and uninformed prior'}
 

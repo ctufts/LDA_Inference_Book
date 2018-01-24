@@ -22,8 +22,9 @@ For the purposes of LDA we need a way of summarizing our documents. We need to k
 2. Document Topic Matrix (variable name: *n_doc_topic_count*, dimensions: *Document x Topics*): This is the total number of words assigned to each topic in each document.  
 3. Topic sum vector (variable name: *n_topic_sum*, dimensions: *1 x Topics*): The topic sum vector keeps count of the total number of words in the entire corpus (all docs together) assigned to each topic. This is just a column sum of the document topic matrix. 
 
-_Note:
-My example code uses a very small vocabulary and therefore the row/column assignment for the matrices above has very little effect on computational efficiency/speed. If you are writing code to do LDA, you may want to swap around the row/columns to maximize efficiency, i.e. some languages are much faster row-wise than column-wise._
+```{block2, row-wise, type='rmdnote'}
+My example code uses a very small vocabulary and therefore the row/column assignment for the matrices above has very little effect on computational efficiency/speed. If you are writing code to do LDA, you may want to swap around the row/columns to maximize efficiency, i.e. some languages are much faster row-wise than column-wise.
+```
 
  
 The structures above are necessary for performing inference tasks utilizing LDA. We will go over how these structures are initialized, updated, and utilized in Chapter 6. 

@@ -39,7 +39,9 @@ Let's work through some examples using our animals and habitats. The examples pr
 
 We'll start by generating our beach location with 1/3 land animals, 1/3 sea animals, and 1/3 air animals. Below you can see our collection of animals and their probability in each topic. Note that some animals have zero probabilities in a given topic, i.e. a cow is never in the ocean, where some have higher probabilities than others; a crab is in the sea sometimes, but a fish is always in the sea. You may notice that there is only 1 animal in the air category. There are several birds, but only 1 of them is cabable of flight in our vocabulary. 
 
-(NOTE: These are the probability of a word <b>given</b> the topic and therefore the probabilities of each habitat (_column_) sum to 1.)
+```{block2, cond-sum, type='rmdnote'}
+These are the probability of a word <b>given</b> the topic and therefore the probabilities of each habitat (_column_) sum to 1.
+```
 
 
 ```{r animalVocab, echo = FALSE, warning=FALSE, message=FALSE}
@@ -134,7 +136,9 @@ cat(equal_doc)
 ```
 
 
-NOTE: In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach. 
+
+In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach. 
+
 
 Before proceeding, I want to take a moment to give recognition to Tim Hopper for his presentation utilizing emoji to shed some light on how generative LDA works [@HopperTopicModels].
 
@@ -149,7 +153,7 @@ cat(ocean_doc)
 
 ```
 
-NOTE: In the example above only the air and land contribute to the ocean location. Therefore they both contribute an equal number of animals to the location. 
+In the example above only the air and land contribute to the ocean location. Therefore they both contribute an equal number of animals to the location. 
 
 ### Generating the Mixtures
 

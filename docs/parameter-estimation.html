@@ -95,6 +95,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -193,11 +194,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="bernoulli-a-special-case-of-the-binomial-distribution" class="section level4">
 <h4><span class="header-section-number">2.1.1.1</span> Bernoulli: A Special Case of the Binomial Distribution</h4>
 <p>You will often see Bernoulli distribution mentioned as a special case of the Binomial distribution. The binomial model consists of <em>n</em> Bernoulli trials, where each trial is independent and the probability of success does not change between trials.<span class="citation">(Kerns <a href="references.html#ref-kerns2010introduction">2010</a>)</span> The Bernoulli distribution is the case of a single trial (<em>n</em>=1).</p>
-<p><em>Quick Note:<br />
-I will use the term <i>success</i> interchangably with the term <i>heads</i> when describing Bernoulli distribution. In reality <i>success</i> could be <i>tails</i> if you choose to define it that way. </em></p>
+
+<div class="rmdnote">
+I will use the term <i>success</i> interchangably with the term <i>heads</i> when describing Bernoulli distribution. In reality <i>success</i> could be <i>tails</i> if you choose to define it that way.
+</div>
+
 <p>To clarify, if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However, if I want to know the probability of getting 2 heads (or more) in a row, we would use the binomial distribution. For our purposes we are only concerned about the outcome of a single coin flip and will therefore stick to the Bernoulli distribution.</p>
 <div class="figure"><span id="fig:BernVSBin"></span>
-<img src="Images/Bern_Binomial.png" alt="Bernoulli and Binomial Distributions"  />
+<img src="Images/Bern_Binomial.png" alt="Bernoulli and Binomial Distributions" width="678" />
 <p class="caption">
 Figure 2.1: Bernoulli and Binomial Distributions
 </p>
@@ -279,7 +283,8 @@ f(\theta;\alpha,\beta) ={{\theta^{(\alpha-1)}(1-\theta)^{(\beta-1)}}\over B(\alp
 \tag{2.3}
 \end{equation}
 \]</span></p>
-<p>Quick Note:</p>
+
+<div class="rmdnote">
 <ul>
 <li>The <em>Beta</em> function, <em>B</em> is the ratio of the product of the <em>Gamma</em> function, <span class="math inline">\(\Gamma\)</span>, of each parameter divided by the <em>Gamma</em> function of the sum of the parameters. The <em>Beta</em> function is <strong>not</strong> the same as the beta distribution. The <em>Beta</em> function is shown below along with the <em>Gamma</em> function, which is used in the <em>Beta</em> function.</li>
 </ul>
@@ -289,15 +294,15 @@ f(\theta;\alpha,\beta) ={{\theta^{(\alpha-1)}(1-\theta)^{(\beta-1)}}\over B(\alp
 \tag{2.4}
 \end{equation}
 \]</span></p>
-<ul>
-<li>The <em>Gamma</em> function is the factorial of the parameter minus 1.</li>
-</ul>
-<p><span class="math display" id="eq:gammaFunction">\[
+<p>The <em>Gamma</em> function is the factorial of the parameter minus 1.</p>
+<span class="math display" id="eq:gammaFunction">\[
 \begin{equation}
 \Gamma(a) = (a-1)!
 \tag{2.5}
 \end{equation}
-\]</span></p>
+\]</span>
+</div>
+
 </div>
 </div>
 <div id="inference-the-building-blocks" class="section level2">
@@ -455,7 +460,11 @@ p(\theta|\alpha,\beta) = {\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \
 \]</span></p>
 <p>Now that we know how to calculate the parameter <span class="math inline">\(\theta\)</span> that maximizes the posterior, lets take a look at how choices of different priors and different numbers of observed trials effects our outcome.</p>
 <p>In the Figure <a href="parameter-estimation.html#fig:mapSmallnUninformedPrior">2.5</a> we see the MAP estimation of <span class="math inline">\(\theta\)</span> with a relatively uninformed prior, low <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> values and a small number of observed experiments (n=20). Uninformed means we are going to make a weak assumption about the prior. In more general terms, this means that we don’t have a strong intuition that our coin is fair or unfair. In a mathematical sense, uninformed means a low sum of the two parameters, if you had <span class="math inline">\(\alpha=1000\)</span> and <span class="math inline">\(\beta=1\)</span> this would <strong>not</strong> be considered as uninformed whereas <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> both equal to 1 is normally referred to as uniformed or naive. The Beta distribution has <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> parameters of 2 resulting in the blue density curve shown in Figure <a href="parameter-estimation.html#fig:mapSmallnUninformedPrior">2.5</a>.</p>
-<p><strong>NOTE</strong>: The terms weak, uninformed, and naive are often used interchangeably when referencing priors. The same goes for the terms strong and informed.</p>
+
+<div class="rmdnote">
+The terms weak, uninformed, and naive are often used interchangeably when referencing priors. The same goes for the terms strong and informed.
+</div>
+
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">20</span>
 heads &lt;-<span class="st"> </span><span class="dv">14</span>
 tails &lt;-<span class="st"> </span><span class="dv">6</span>

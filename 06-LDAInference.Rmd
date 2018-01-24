@@ -13,22 +13,15 @@ The left side of Equation \@ref(eq:LDAInference) defines the following:
 The probability of the document topic distribution, the word distribution of each topic, and the topic labels given all words (in all documents) and the hyperparameters $\alpha$ and $\beta$. In particular we are interested in estimating the probability of topic (_z_) for a given word (_w_) (and our prior assumptions, i.e. hyperparameters) for all words and topics. From this we can infer $\phi$ and $\theta$. 
 
 
-
-_Quick notes:   
-* Equation \@ref(eq:LDAInference) is based on the following statistical property_
-
+```{block2, joint-conditional, type='rmdnote'}
+Equation \@ref(eq:LDAInference) is based on the following statistical property:
 
 $$
-\begin{equation}
 p(A, B | C) = {p(A,B,C) \over p(C)}
-(\#eq:jointConditional)
-\end{equation}
 $$
 
-
-* _All the variables used in this section were outlined at the beginning of Chapter 5 if you need a refresher._
-
-
+All the variables used in this section were outlined at the beginning of Chapter 5 if you need a refresher.
+```
 
 Let's take a step from the math and just map out 'things we know' versus the 'things we don't know' in regards to an inference problem:
 
@@ -148,7 +141,8 @@ $$
 
 The equation necessary for Gibbs sampling can be derived by utilizing \@ref(eq:postConditionalDirs).  This is accomplished via the chain rule and the definition of conditional probability. 
 
-_Quick Note: The chain rule is outlined in Equation \@ref(eq:chainRule)_
+```{block2, chain-rule, type='rmdnote'}
+The chain rule is outlined in Equation \@ref(eq:chainRule)
 
 $$
 \begin{equation}
@@ -156,15 +150,17 @@ p(A,B,C,D) = P(A)P(B|A)P(C|A,B)P(D|A,B,C)
 (\#eq:chainRule)
 \end{equation}
 $$
-_The conditional probability property utilized is shown in \@ref(eq:conditionalPropA)_
+
+The conditional probability property utilized is shown in \@ref(eq:conditionalPropA)
 $$
 \begin{equation}
 P(B|A) = {P(A,B) \over P(A)}
 (\#eq:conditionalPropA)
 \end{equation}
 $$
- 
+``` 
 
+We will now use Equation \@ref(eq:LDAGibbsInference) in the example below to complete the LDA Inference task on a random sample of documents.
 
 $$
 \begin{equation}
@@ -191,7 +187,7 @@ p(z_{i}|z_{\neg i}, w) &= {p(w,z)\over {p(w,z_{\neg i})}} = {p(z)\over p(z_{\neg
 $$
 
 
-We will now use Equation \@ref(eq:LDAGibbsInference) in the example below to complete the LDA Inference task on a random sample of documents. To calculate our word distributions in each topic we will use Equation \@ref(eq:phiEstimate).
+To calculate our word distributions in each topic we will use Equation \@ref(eq:phiEstimate).
 
 $$
 \begin{equation}

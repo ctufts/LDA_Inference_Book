@@ -95,6 +95,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -209,8 +210,11 @@ ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class=
 Figure 3.2: Sampling from Multinomial with Equal Parameters
 </p>
 </div>
-<p><strong>Quick Note:</strong><br />
-<em>Let’s think of how this will be used in the case of LDA. If I wanted to generate a document based on a model, I could use a multinomial distribution to determine what words would be in the document. If I knew the probability of a word I could use the example above to draw a new word with each sample. Obviously some words occur much more often than others, so the ‘fair die’ example wouldn’t work for generation of document. In later sections we will build on this concept, but its good to start thinking about how this extends to applications in language.</em></p>
+
+<div class="rmdnote">
+Let’s think of how this will be used in the case of LDA. If I wanted to generate a document based on a model, I could use a multinomial distribution to determine what words would be in the document. If I knew the probability of a word I could use the example above to draw a new word with each sample. Obviously some words occur much more often than others, so the ‘fair die’ example wouldn’t work for generation of document. In later sections we will build on this concept, but its good to start thinking about how this extends to applications in language.
+</div>
+
 </div>
 <div id="how-multinomial-and-bernoulli-relate" class="section level2">
 <h2><span class="header-section-number">3.2</span> How Multinomial and Bernoulli Relate</h2>

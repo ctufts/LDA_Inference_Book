@@ -95,6 +95,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -205,7 +206,11 @@ Figure 4.1: Bag of Words Representation
 </li>
 <li>Topic sum vector (variable name: <em>n_topic_sum</em>, dimensions: <em>1 x Topics</em>): The topic sum vector keeps count of the total number of words in the entire corpus (all docs together) assigned to each topic. This is just a column sum of the document topic matrix.</li>
 </ol>
-<p><em>Note: My example code uses a very small vocabulary and therefore the row/column assignment for the matrices above has very little effect on computational efficiency/speed. If you are writing code to do LDA, you may want to swap around the row/columns to maximize efficiency, i.e. some languages are much faster row-wise than column-wise.</em></p>
+
+<div class="rmdnote">
+My example code uses a very small vocabulary and therefore the row/column assignment for the matrices above has very little effect on computational efficiency/speed. If you are writing code to do LDA, you may want to swap around the row/columns to maximize efficiency, i.e. some languages are much faster row-wise than column-wise.
+</div>
+
 <p>The structures above are necessary for performing inference tasks utilizing LDA. We will go over how these structures are initialized, updated, and utilized in Chapter 6.</p>
 </div>
 <div id="plug-and-play-lda" class="section level2">

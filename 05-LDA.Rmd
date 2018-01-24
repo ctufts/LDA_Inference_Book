@@ -310,9 +310,6 @@ ds %>% group_by(doc_id, topic) %>% summarise(
 ```
 
 
-(NOTE: Spread the table so topics are side by side for each doc)
-
-
 ```{r  GenerativeTable, echo = FALSE, warning=FALSE, message=FALSE}
 ```
 
