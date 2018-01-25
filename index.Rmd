@@ -25,14 +25,14 @@ description: "A comprehensive overview of LDA and Gibbs Sampling."
 
 # Preface {-}
 
-The purpose of this book is to provide a step by step guide to Latent Dirichlet Allocation (LDA) utilizing Gibbs Sampling.  It is inspired by Gregor Heinrich's _Parameter Estimation for Text Analysis_[@heinrich2008parameter] which provides a walk through parameter estimation, Gibbs Sampling, and LDA.  This book extends many of those subjects and provides small code examples written in R.  
+The purpose of this book is to provide a step by step guide to Latent Dirichlet Allocation (LDA) utilizing Gibbs Sampling.  It is inspired by Gregor Heinrich's _Parameter Estimation for Text Analysis_ [@heinrich2008parameter] which provides a walk through parameter estimation, Gibbs Sampling, and LDA.  This book extends many of those subjects and provides small code examples written in R.  
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />This work by Chris Tufts is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.
 
 
 __DISCLAIMER: THIS BOOK IS NOT COMPLETE (WORK IN PROGRESS):__
 
-* While much of the content of the book is present, there is still many rounds of editing and additional information required in each chapter.  
+* While much of the content of the book is present, there is still rounds of editing and additional information required in each chapter.  
 
 
 # Background {-}
@@ -44,6 +44,6 @@ I have tried my best to relay an explanation of LDA that fills in the gaps and q
 
 # Package References {-}
 This book only came together due to the amazing open source work so many have done in the R community. The list of packages utilized to create this book can be found in the reference section and are as follows:
-[@R-base], [@R-bindrcpp], [@R-bookdown], [@R-coda], [@R-dplyr], [@R-ggplot2], [@R-kableExtra], [@R-knitr],[@R-lsa], [@R-MASS], [@R-MCMCpack], [@R-purrr], [@R-Rcpp], [@R-readr], [@R-SnowballC],[@R-tibble], [@R-tidyr], [@R-tidyverse] 
+R [@R-base], bindrcpp [@R-bindrcpp], bookdown [@R-bookdown], coda [@R-coda], dplyr [@R-dplyr], ggplot2 [@R-ggplot2], kableExtra [@R-kableExtra], knitr [@R-knitr], lsa [@R-lsa], MASS [@R-MASS], MCMCpack [@R-MCMCpack], purr [@R-purrr], Rcpp [@R-Rcpp], readr [@R-readr], SnowballC [@R-SnowballC], tibble [@R-tibble], tidyr [@R-tidyr], tidyverse [@R-tidyverse]. 
 
 

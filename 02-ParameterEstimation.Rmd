@@ -581,7 +581,6 @@ $$
 
 When estimating the posterior we drop out the evidence term. To reiterate, we can drop out the evidence term because it is constant and is used as a normalizing factor for scaling our probabilities to so that they sum to 1. We will see in the upcoming section that Gibbs sampling accounts for the scaling issue and allows us to infer probabilities at the correct scale. 
 
-MAYBE ADD SOMETHING HERE ALONG THESE LINES OTHERWISE JUST SAVE IT FOR GIBBS SECTION....(Gibbs sampling accomplishes this normalization by taking a large number of samples and then dividing by the samples by the sum of all samples resulting in a proportion between 0 and 1. )
 
 $$
 \begin{equation}
@@ -592,7 +591,6 @@ $$
 $$
 
 To estimate the posterior of the bernoulli distribution we plug in our likelihood and prior (_Beta distribution_) equations in Equation \@ref(eq:bernGibbs). 
-
 
 
 $$

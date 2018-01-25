@@ -689,7 +689,6 @@ Figure 2.11: Monte Carlo: Estimating π
 \end{equation}
 \]</span></p>
 <p>When estimating the posterior we drop out the evidence term. To reiterate, we can drop out the evidence term because it is constant and is used as a normalizing factor for scaling our probabilities to so that they sum to 1. We will see in the upcoming section that Gibbs sampling accounts for the scaling issue and allows us to infer probabilities at the correct scale.</p>
-<p>MAYBE ADD SOMETHING HERE ALONG THESE LINES OTHERWISE JUST SAVE IT FOR GIBBS SECTION….(Gibbs sampling accomplishes this normalization by taking a large number of samples and then dividing by the samples by the sum of all samples resulting in a proportion between 0 and 1. )</p>
 <p><span class="math display" id="eq:posteriorPrompto">\[
 \begin{equation}
 \underbrace{p(\theta|D)}_{posterior}  \propto  {\overbrace{p(D|\theta)}^{likelihood}
@@ -1090,9 +1089,9 @@ Figure 2.18: Estimated Theta 2
 </tr>
 <tr class="even">
 <td>Estimated</td>
-<td align="right">0.22</td>
+<td align="right">0.18</td>
 <td align="right">0.59</td>
-<td align="right">99</td>
+<td align="right">101</td>
 </tr>
 </tbody>
 </table>

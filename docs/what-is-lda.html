@@ -340,7 +340,7 @@ equal_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(equal_doc)</code></pre></div>
-<pre><code>## 🐘 🦃 🐓 🐋 🐦 🐟 🐦 🐦 🐦</code></pre>
+<pre><code>## 🐘 🐂 🐪 🐧 🐧 🐙 🐦 🐦 🐦</code></pre>
 <p>In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach.</p>
 <p>Before proceeding, I want to take a moment to give recognition to Tim Hopper for his presentation utilizing emoji to shed some light on how generative LDA works <span class="citation">(Hopper <a href="references.html#ref-HopperTopicModels">2016</a>)</span>.</p>
 <p>Ok, now let’s make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be 50% sea, 50% air, and 0% land.</p>
@@ -348,7 +348,7 @@ equal_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(ocean_doc)</code></pre></div>
-<pre><code>## 🐋 🐙 🐳 🐦 🐦 🐦</code></pre>
+<pre><code>## 🐋 🐳 🐢 🐦 🐦 🐦</code></pre>
 <p>In the example above only the air and land contribute to the ocean location. Therefore they both contribute an equal number of animals to the location.</p>
 <div id="generating-the-mixtures" class="section level3">
 <h3><span class="header-section-number">1.1.1</span> Generating the Mixtures</h3>
@@ -369,11 +369,11 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="left">🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐢 🐦 🐦 🐦 🐠 🐦 🐦 🐦 🐦 🐢 🐦 🐦 🐦 🐦 🐦 🐦 🐋 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐢 🐦 🐦 🐦 🐊 🐦 🐦 🐦 🐦 🐋 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐟 🐦 🐦 🐦 🐠 🐙 🐦 🐊 🐦 🐦 🐋 🐦 🐦 🐧 🐦 🐦 🐦 🐙 🐦 🐦 🐦 🐙 🐳 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐢 🐦 🐦 🐊 🐦 🐦 🐦 🐦 🐦 🐠 🐦 🐦 🐦 🐦 🐦</td>
+<td align="left">🐪 🐘 🐪 🐘 🐦 🐓 🐪 🐪 🐍 🐪 🐧 🦀 🦀 🐪 🐓 🐍 🐘 🐓 🐍 🐿 🐧 🐢 🐧 🦃 🦃 🐧 🐦 🐑 🐑 🐊 🐳 🦀 🦀 🐿 🐢 🐢 🐿 🐓 🐪 🐊 🐘 🐦 🐪 🐂 🐍 🐓 🐍 🐓 🐦 🐍 🦃 🐦 🐪 🐍 🐿 🐦 🐦 🐂 🐿 🐍 🐂 🐿 🐦 🐦 🐑 🐂 🐓 🐓 🐧 🐑 🐦 🐪 🐦 🐧 🐿 🐪 🐦 🐢 🦃 🐿 🦃 🐦 🐑 🐊 🦃 🐪 🦃 🐓 🐂 🐊 🐊 🐂 🦃</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="left">🐂 🐦 🐳 🐪 🐓 🐂 🐦 🐂 🐋 🦃 🐍 🐦 🐦 🐦 🐟 🐓 🐦 🐪 🐧 🐦 🐦 🐦 🐘 🐊 🐦 🐦 🐦 🐿 🐦 🐦 🐦 🦃 🐦 🐦 🐦 🐦 🐘 🐦 🐦 🐪 🐦 🐦 🐦 🐑 🐦 🐦 🐑 🐧 🐦 🐦 🐧 🐘 🐧 🐦 🐍 🐦 🐦 🐦 🐑 🐑 🐿 🐍 🐧 🐦 🐪 🐦 🐦 🐦 🐪 🐑 🐦 🐦 🐿 🐦 🐦 🐦 🐦 🐂 🐦 🐿 🐘 🐦 🐦 🐘 🐪 🐦 🦀 🐦 🐟 🐢 🐠 🐦 🦃 🦃 🐘 🐿 🐘 🐦 🐓 🐦 🐢 🐢 🐦 🐙 🐦 🐳 🐦 🐂</td>
+<td align="left">🐙 🐂 🐦 🐦 🐓 🐧 🐪 🐙 🐧 🐙 🐪 🐘 🐋 🐂 🐦 🐧 🐦 🐙 🐦 🐳 🐟 🐊 🐟 🐢 🐠 🐠 🐪 🐢 🐦 🐘 🐍 🐳 🦃 🐟 🐙 🦀 🐊 🐳 🐪 🐠 🐧 🐢 🐢 🐦 🐍 🐧 🐿 🐢 🐪 🐢 🐧 🐓 🐑 🐳 🐧 🐍 🐊 🐂 🦃 🐋 🐪 🐓 🐿 🐟 🐙 🐋 🦀 🐂 🐦 🐳 🐢 🐟 🐦 🐘 🐊 🐓 🐓 🐧 🐊 🐢 🐪 🐓 🐊 🐢 🐑 🐢 🐙 🐊 🐢 🐧 🐪</td>
 </tr>
 </tbody>
 </table>
@@ -391,15 +391,15 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="right">0.84</td>
+<td align="right">0.09</td>
+<td align="right">0.90</td>
 <td align="right">0.01</td>
-<td align="right">0.15</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="right">0.42</td>
-<td align="right">0.46</td>
-<td align="right">0.12</td>
+<td align="right">0.09</td>
+<td align="right">0.51</td>
+<td align="right">0.39</td>
 </tr>
 </tbody>
 </table>
@@ -423,18 +423,18 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <td>🐋</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
-<td align="right">0.01</td>
 <td align="right">0.00</td>
-<td align="right">0.12</td>
+<td align="right">0.00</td>
+<td align="right">0.11</td>
 <td align="right">0.12</td>
 </tr>
 <tr class="even">
 <td>🐳</td>
-<td align="right">0.00</td>
+<td align="right">0.01</td>
 <td align="right">0</td>
+<td align="right">0.01</td>
 <td align="right">0.00</td>
-<td align="right">0.00</td>
-<td align="right">0.14</td>
+<td align="right">0.10</td>
 <td align="right">0.12</td>
 </tr>
 <tr class="odd">
@@ -443,32 +443,32 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <td align="right">0</td>
 <td align="right">0.00</td>
 <td align="right">0.00</td>
-<td align="right">0.12</td>
+<td align="right">0.11</td>
 <td align="right">0.12</td>
 </tr>
 <tr class="even">
 <td>🐠</td>
-<td align="right">0.01</td>
+<td align="right">0.00</td>
 <td align="right">0</td>
 <td align="right">0.00</td>
 <td align="right">0.00</td>
-<td align="right">0.11</td>
+<td align="right">0.12</td>
 <td align="right">0.12</td>
 </tr>
 <tr class="odd">
 <td>🐙</td>
-<td align="right">0.01</td>
-<td align="right">0</td>
-<td align="right">0.01</td>
 <td align="right">0.00</td>
-<td align="right">0.10</td>
+<td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
 <td align="right">0.12</td>
 </tr>
 <tr class="even">
 <td>🦀</td>
 <td align="right">0.01</td>
 <td align="right">0</td>
-<td align="right">0.05</td>
+<td align="right">0.04</td>
 <td align="right">0.05</td>
 <td align="right">0.06</td>
 <td align="right">0.06</td>
@@ -479,7 +479,7 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <td align="right">0</td>
 <td align="right">0.05</td>
 <td align="right">0.05</td>
-<td align="right">0.06</td>
+<td align="right">0.07</td>
 <td align="right">0.06</td>
 </tr>
 <tr class="even">
@@ -493,11 +493,11 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 </tr>
 <tr class="odd">
 <td>🐍</td>
-<td align="right">0.01</td>
+<td align="right">0.00</td>
 <td align="right">0</td>
-<td align="right">0.04</td>
-<td align="right">0.05</td>
 <td align="right">0.06</td>
+<td align="right">0.05</td>
+<td align="right">0.05</td>
 <td align="right">0.06</td>
 </tr>
 <tr class="even">
@@ -513,18 +513,18 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <td>🦃</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
-<td align="right">0.11</td>
+<td align="right">0.10</td>
 <td align="right">0.10</td>
 <td align="right">0.00</td>
 <td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🐦</td>
-<td align="right">0.91</td>
+<td align="right">0.95</td>
 <td align="right">1</td>
-<td align="right">0.04</td>
+<td align="right">0.02</td>
 <td align="right">0.05</td>
-<td align="right">0.08</td>
+<td align="right">0.11</td>
 <td align="right">0.06</td>
 </tr>
 <tr class="odd">
@@ -538,27 +538,27 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 </tr>
 <tr class="even">
 <td>🐿</td>
-<td align="right">0.01</td>
+<td align="right">0.00</td>
 <td align="right">0</td>
 <td align="right">0.10</td>
 <td align="right">0.10</td>
-<td align="right">0.00</td>
+<td align="right">0.01</td>
 <td align="right">0.00</td>
 </tr>
 <tr class="odd">
 <td>🐘</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
-<td align="right">0.09</td>
 <td align="right">0.10</td>
-<td align="right">0.01</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
 <td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🐂</td>
-<td align="right">0.01</td>
+<td align="right">0.00</td>
 <td align="right">0</td>
-<td align="right">0.09</td>
+<td align="right">0.10</td>
 <td align="right">0.10</td>
 <td align="right">0.00</td>
 <td align="right">0.00</td>
@@ -567,18 +567,18 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <td>🐑</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
-<td align="right">0.11</td>
 <td align="right">0.10</td>
-<td align="right">0.00</td>
+<td align="right">0.10</td>
+<td align="right">0.01</td>
 <td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🐪</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
-<td align="right">0.09</td>
+<td align="right">0.11</td>
 <td align="right">0.10</td>
-<td align="right">0.01</td>
+<td align="right">0.00</td>
 <td align="right">0.00</td>
 </tr>
 </tbody>
@@ -600,57 +600,57 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="right">0.76</td>
-<td align="right">0.84</td>
-<td align="right">0.05</td>
+<td align="right">0.09</td>
+<td align="right">0.09</td>
+<td align="right">0.90</td>
+<td align="right">0.90</td>
 <td align="right">0.01</td>
-<td align="right">0.18</td>
-<td align="right">0.15</td>
+<td align="right">0.01</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="right">0.38</td>
-<td align="right">0.42</td>
-<td align="right">0.56</td>
+<td align="right">0.05</td>
+<td align="right">0.09</td>
 <td align="right">0.46</td>
-<td align="right">0.06</td>
-<td align="right">0.12</td>
+<td align="right">0.51</td>
+<td align="right">0.48</td>
+<td align="right">0.39</td>
 </tr>
 <tr class="odd">
 <td align="right">3</td>
-<td align="right">0.02</td>
-<td align="right">0.01</td>
-<td align="right">0.28</td>
-<td align="right">0.34</td>
-<td align="right">0.70</td>
-<td align="right">0.65</td>
+<td align="right">0.41</td>
+<td align="right">0.36</td>
+<td align="right">0.54</td>
+<td align="right">0.64</td>
+<td align="right">0.05</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td align="right">4</td>
-<td align="right">0.11</td>
-<td align="right">0.16</td>
-<td align="right">0.84</td>
-<td align="right">0.75</td>
-<td align="right">0.06</td>
-<td align="right">0.09</td>
+<td align="right">0.53</td>
+<td align="right">0.50</td>
+<td align="right">0.45</td>
+<td align="right">0.48</td>
+<td align="right">0.02</td>
+<td align="right">0.01</td>
 </tr>
 <tr class="odd">
 <td align="right">5</td>
-<td align="right">0.10</td>
-<td align="right">0.14</td>
-<td align="right">0.15</td>
-<td align="right">0.23</td>
-<td align="right">0.75</td>
-<td align="right">0.63</td>
+<td align="right">0.47</td>
+<td align="right">0.41</td>
+<td align="right">0.25</td>
+<td align="right">0.40</td>
+<td align="right">0.27</td>
+<td align="right">0.19</td>
 </tr>
 <tr class="even">
 <td align="right">6</td>
-<td align="right">0.26</td>
-<td align="right">0.28</td>
-<td align="right">0.20</td>
-<td align="right">0.16</td>
-<td align="right">0.54</td>
-<td align="right">0.56</td>
+<td align="right">0.03</td>
+<td align="right">0.02</td>
+<td align="right">0.35</td>
+<td align="right">0.38</td>
+<td align="right">0.62</td>
+<td align="right">0.59</td>
 </tr>
 </tbody>
 </table>
@@ -685,7 +685,7 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <tr class="odd">
 <td align="left">1.00</td>
 <td align="left">0.99</td>
-<td align="left">0.99</td>
+<td align="left">0.98</td>
 </tr>
 </tbody>
 </table>
