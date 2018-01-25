@@ -12,7 +12,7 @@
   <meta property="og:title" content="The Little Book of Latent Dirichlet Allocation" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://ldabook.com/" />
-  
+  <meta property="og:image" content="https://ldabook.com/Images/cover_image.png" />
   <meta property="og:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
   
 
@@ -20,7 +20,7 @@
   <meta name="twitter:title" content="The Little Book of Latent Dirichlet Allocation" />
   <meta name="twitter:site" content="@devlintufts" />
   <meta name="twitter:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
-  
+  <meta name="twitter:image" content="https://ldabook.com/Images/cover_image.png" />
 
 <meta name="author" content="Chris Tufts">
 
@@ -203,12 +203,13 @@ p(A, B | C) = {p(A,B,C) \over p(C)}
 All the variables used in this section were outlined at the beginning of Chapter 5 if you need a refresher.
 </div>
 
-<p>Let’s take a step from the math and just map out ‘things we know’ versus the ‘things we don’t know’ in regards to an inference problem:</p>
+<p>Let’s take a step from the math and map out ‘variables we know’ versus the ‘variables we don’t know’ in regards to the inference problem:</p>
 <p><strong>Known Parameters</strong></p>
 <ul>
 <li><strong>Documents (d in D):</strong> We have a set number of documents we want to identify the topic strucutres in.</li>
-<li><strong>Words (w in W):</strong> We have a collection of words and word counts for each document which we place in a document word matrix.</li>
-<li><strong>Vocabulary (W):</strong> The unique list of words across all documents. This means our document word matrix has one row for each document and one column for each word in our vocabulary.</li>
+<li><strong>Words (w in W):</strong> We have a collection of words and word counts for each document.</li>
+<li><strong>Vocabulary (W):</strong> The unique list of words across all documents.<br />
+</li>
 <li><strong>Hyperparemeters:</strong>
 <ul>
 <li><span class="math inline">\(\overrightarrow{\alpha}\)</span>: Our prior assumption about the topic distribution of our documents. This book will only use symmetric <span class="math inline">\(\alpha\)</span> values, in other words we assume all topics are equally as probably in any given document (similar to the naive assumption of a fair die). We will be supplying the <span class="math inline">\(\alpha\)</span> value for inference.
@@ -224,9 +225,9 @@ All the variables used in this section were outlined at the beginning of Chapter
 </ul></li>
 </ul>
 <p>And on to the parts we don’t know….</p>
-<p>** Unknown (Latent) Parameters **</p>
+<p><strong>Unknown (Latent) Parameters</strong></p>
 <ul>
-<li><strong>Number of Topics (k):</strong> Disclaimer - We need to specify the number of topics we assume are present in the documents. However we don’t know the <em>real</em> number of topics in the corpus. For the purposes of this book I’m going to skip how to estimate the number of topics. If you are interested in learning more about how to estimate the number of topics present in a document see <b>REFERENCE LIST</b>.</li>
+<li><strong>Number of Topics (k):</strong> We need to specify the number of topics we assume are present in the documents. However we don’t know the <em>real</em> number of topics in the corpus. Methods for estimating the number of topics in a corpus are outside the scope of this book. If you are interested in learning more see <span class="citation">(Griffiths and Steyvers <a href="references.html#ref-griffiths2004finding">2004</a>)</span> and <span class="citation">(Teh et al. <a href="references.html#ref-teh2005sharing">2005</a>)</span>.</li>
 <li><strong>Document Topic Mixture (<span class="math inline">\(\theta\)</span>):</strong> We need to determine the topic distribution in each document.</li>
 <li><strong>Word Distribution of Each Topic (<span class="math inline">\(\phi\)</span>):</strong> We need to know the distribution of words in each topic. Obviously some words are going to occur very often in a topic while others may have zero probability of occurring in a topic.</li>
 <li><strong>Word topic assignment (z):</strong> This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture, <span class="math inline">\(\theta\)</span>, and the word distribution, <span class="math inline">\(\phi\)</span>, of each topic.</li>
@@ -314,15 +315,16 @@ p(A,B,C,D) = P(A)P(B|A)P(C|A,B)P(D|A,B,C)
 \tag{6.8}
 \end{equation}
 \]</span></p>
-The conditional probability property utilized is shown in <a href="#eq:conditionalPropA">(<strong>??</strong>)</a> <span class="math display">\[
+<p>The conditional probability property utilized is shown in <a href="lda-inference.html#eq:conditionalPropA">(6.9)</a></p>
+<span class="math display" id="eq:conditionalPropA">\[
 \begin{equation}
 P(B|A) = {P(A,B) \over P(A)}
-(\#eq:conditionalPropA)
+\tag{6.9}
 \end{equation}
 \]</span>
 </div>
 
-<p>We will now use Equation <a href="lda-inference.html#eq:LDAGibbsInference">(6.9)</a> in the example below to complete the LDA Inference task on a random sample of documents.</p>
+<p>We will now use Equation <a href="lda-inference.html#eq:LDAGibbsInference">(6.10)</a> in the example below to complete the LDA Inference task on a random sample of documents.</p>
 <p><span class="math display" id="eq:LDAGibbsInference">\[
 \begin{equation}
 \begin{aligned}
@@ -343,21 +345,21 @@ p(z_{i}|z_{\neg i}, w) &amp;= {p(w,z)\over {p(w,z_{\neg i})}} = {p(z)\over p(z_{
 &amp;\propto (n_{d,\neg i}^{k} + \alpha_{k}) {n_{k,\neg i}^{w} + \beta_{w} \over 
   \sum_{w} n_{k,\neg i}^{w} + \beta_{w}}
 \end{aligned}
-\tag{6.9}
-\end{equation}
-\]</span></p>
-<p>To calculate our word distributions in each topic we will use Equation <a href="lda-inference.html#eq:phiEstimate">(6.10)</a>.</p>
-<p><span class="math display" id="eq:phiEstimate">\[
-\begin{equation}
-\phi_{k,w} = { n^{(w)}_{k}  + \beta_{w} \over  \sum_{w=1}^{W} n^{(w)}_{k} +  \beta_{w}}
 \tag{6.10}
 \end{equation}
 \]</span></p>
-<p>The topic distribution in each document is calcuated using Equation <a href="lda-inference.html#eq:thetaEstimation">(6.11)</a>.</p>
+<p>To calculate our word distributions in each topic we will use Equation <a href="lda-inference.html#eq:phiEstimate">(6.11)</a>.</p>
+<p><span class="math display" id="eq:phiEstimate">\[
+\begin{equation}
+\phi_{k,w} = { n^{(w)}_{k}  + \beta_{w} \over  \sum_{w=1}^{W} n^{(w)}_{k} +  \beta_{w}}
+\tag{6.11}
+\end{equation}
+\]</span></p>
+<p>The topic distribution in each document is calcuated using Equation <a href="lda-inference.html#eq:thetaEstimation">(6.12)</a>.</p>
 <p><span class="math display" id="eq:thetaEstimation">\[
 \begin{equation}
 \theta_{d,k} = {n^{(k)}_{d} + \alpha_{k} \over \sum_{k=1}^{K}n_{d}^{k} + \alpha_{k}}
-\tag{6.11}
+\tag{6.12}
 \end{equation}
 \]</span></p>
 <p>What if I don’t want to generate docuements. What if my goal is to infer what topics are present in each document and what words belong to each topic? This is were LDA for inference comes into play.</p>
@@ -374,7 +376,7 @@ p(z_{i}|z_{\neg i}, w) &amp;= {p(w,z)\over {p(w,z_{\neg i})}} = {p(z)\over p(z_{
 <ul>
 <li>For each word in document d:
 <ul>
-<li><i>assign a topic to the current word based on probability of the topic given the topic of all other words (except the current word) as shown in Equation <a href="lda-inference.html#eq:LDAGibbsInference">(6.9)</a> </i></li>
+<li><i>assign a topic to the current word based on probability of the topic given the topic of all other words (except the current word) as shown in Equation <a href="lda-inference.html#eq:LDAGibbsInference">(6.10)</a> </i></li>
 </ul></li>
 </ul></li>
 </ul>

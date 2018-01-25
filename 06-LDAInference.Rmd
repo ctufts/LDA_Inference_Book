@@ -23,13 +23,13 @@ $$
 All the variables used in this section were outlined at the beginning of Chapter 5 if you need a refresher.
 ```
 
-Let's take a step from the math and just map out 'things we know' versus the 'things we don't know' in regards to an inference problem:
+Let's take a step from the math and map out 'variables we know' versus the 'variables we don't know' in regards to the inference problem:
 
 **Known Parameters**
 
 * **Documents (d in D):** We have a set number of documents we want to identify the topic strucutres in. 
-* **Words (w in W):** We have a collection of words and word counts for each document which we place in a document word matrix. 
-* **Vocabulary (W):** The unique list of words across all documents. This means our document word matrix has one row for each document and one column for each word in our vocabulary. 
+* **Words (w in W):** We have a collection of words and word counts for each document. 
+* **Vocabulary (W):** The unique list of words across all documents.  
 * **Hyperparemeters:**
     * $\overrightarrow{\alpha}$: Our prior assumption about the topic distribution of our documents. This book will only use symmetric $\alpha$ values, in other words we assume all topics are equally as probably in any given document (similar to the naive assumption of a fair die). We will be supplying the $\alpha$ value for inference. 
         * Higher $\overrightarrow{\alpha}$ - We assume documents will have a similar and close to uniform distribution of topics.
@@ -40,9 +40,9 @@ Let's take a step from the math and just map out 'things we know' versus the 'th
 
 And on to the parts we don't know....
 
-** Unknown (Latent) Parameters **
+__Unknown (Latent) Parameters__
 
-* **Number of Topics (k):** Disclaimer - We need to specify the number of topics we assume are present in the documents. However we don't know the _real_ number of topics in the corpus. For the purposes of this book I'm going to skip how to estimate the number of topics. If you are interested in learning more about how to estimate the number of topics present in a document see <b>REFERENCE LIST</b>. 
+* **Number of Topics (k):** We need to specify the number of topics we assume are present in the documents. However we don't know the _real_ number of topics in the corpus. Methods for estimating the number of topics in a corpus are outside the scope of this book. If you are interested in learning more see [@griffiths2004finding]  and [@teh2005sharing].
 * **Document Topic Mixture ($\theta$):**  We need to determine the topic distribution in each document. 
 * **Word Distribution of Each Topic ($\phi$):**  We need to know the distribution of words in each topic. Obviously some words are going to occur very often in a topic while others may have zero probability of occurring in a topic. 
 * **Word topic assignment (z):** This is actually the main thing we need to infer. To be clear, if we know the topic assignment of every word in every document, then we can derive the document topic mixture, $\theta$, and the word distribution, $\phi$, of each topic. 
@@ -152,6 +152,7 @@ p(A,B,C,D) = P(A)P(B|A)P(C|A,B)P(D|A,B,C)
 $$
 
 The conditional probability property utilized is shown in \@ref(eq:conditionalPropA)
+
 $$
 \begin{equation}
 P(B|A) = {P(A,B) \over P(A)}
@@ -159,6 +160,8 @@ P(B|A) = {P(A,B) \over P(A)}
 \end{equation}
 $$
 ``` 
+
+
 
 We will now use Equation \@ref(eq:LDAGibbsInference) in the example below to complete the LDA Inference task on a random sample of documents.
 

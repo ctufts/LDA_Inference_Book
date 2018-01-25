@@ -334,6 +334,7 @@ ds %>% filter(doc_id < 3) %>% group_by(doc_id) %>% summarise(
   tokens = paste(vocab[word], collapse = ' ')
 ) %>% kable(col.names = c('Document', 'Animals'), 
             caption ="Animals at the First Two Locations")
+
 ```
 
 

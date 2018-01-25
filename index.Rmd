@@ -1,6 +1,7 @@
 ---
 title: "The Little Book of Latent Dirichlet Allocation"
 author: "Chris Tufts"
+cover-image: "Images/cover_image.png"
 bibliography:
 - books.bib
 - packages.bib
