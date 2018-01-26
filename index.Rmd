@@ -1,5 +1,5 @@
 ---
-title: "The Little Book of Latent Dirichlet Allocation"
+title: "The Little Book of LDA"
 author: "Chris Tufts"
 cover-image: "Images/cover_image.png"
 favicon: "Images/favicon.ico"
