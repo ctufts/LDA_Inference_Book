@@ -1,7 +1,7 @@
 ---
 title: "The Little Book of LDA"
 author: "Chris Tufts"
-cover-image: "Images/cover_image.png"
+cover-image: "Images/cover_image_small.png"
 favicon: "Images/favicon.ico"
 bibliography:
 - books.bib
@@ -26,7 +26,7 @@ description: "A comprehensive overview of LDA and Gibbs Sampling."
 
 # Welcome to The Little Book of LDA {-}
 
-<img width="50%" height="50%"  style="border: 1px solid black;display: block; margin: auto;" src="Images/cover_image.png"/>
+<img   style="border: 1px solid black;display: block; margin: auto;" src="Images/cover_image_small.png"/>
 
 
 The purpose of this book is to provide a step by step guide to Latent Dirichlet Allocation (LDA) utilizing Gibbs Sampling.  It is inspired by Gregor Heinrich's _Parameter Estimation for Text Analysis_ [@heinrich2008parameter] which provides a walk through parameter estimation, Gibbs Sampling, and LDA.  This book extends many of those subjects and provides small code examples written in R.  
