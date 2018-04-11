@@ -1,6 +1,6 @@
 ---
 title: "The Little Book of LDA"
-author: "Chris Tufts"
+author: '<a href="https://twitter.com/devlintufts">Chris Tufts <br/> &#64;devlintufts</a> '
 cover-image: "Images/cover_image_small.png"
 favicon: "Images/favicon.ico"
 bibliography:
