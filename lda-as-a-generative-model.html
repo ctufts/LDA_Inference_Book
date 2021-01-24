@@ -5,24 +5,24 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>LDA Tutorial</title>
-  <meta name="description" content="LDA Tutorial">
+  <title>The Little Book of LDA</title>
+  <meta name="description" content="A comprehensive overview of LDA and Gibbs Sampling.">
   <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
 
-  <meta property="og:title" content="LDA Tutorial" />
+  <meta property="og:title" content="The Little Book of LDA" />
   <meta property="og:type" content="book" />
-  
-  
-  
+  <meta property="og:url" content="https://ldabook.com/" />
+  <meta property="og:image" content="https://ldabook.com/Images/cover_image_small.png" />
+  <meta property="og:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="LDA Tutorial" />
+  <meta name="twitter:title" content="The Little Book of LDA" />
   <meta name="twitter:site" content="@devlintufts" />
-  
-  
+  <meta name="twitter:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
+  <meta name="twitter:image" content="https://ldabook.com/Images/cover_image_small.png" />
 
-<meta name="author" content="Chris Tufts">
+<meta name="author" content="Chris Tufts   @devlintufts">
 
 
 
@@ -30,7 +30,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
-  
+  <link rel="shortcut icon" href="Images/favicon.ico" type="image/x-icon">
 <link rel="prev" href="word-representations.html">
 <link rel="next" href="lda-inference.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -46,6 +46,15 @@
 
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-62188022-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-62188022-3');
+</script>
 
 
 <style type="text/css">
@@ -86,6 +95,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -98,9 +108,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome to The Little Book of LDA</a></li>
 <li class="chapter" data-level="" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i>Background</a></li>
-<li class="chapter" data-level="" data-path="layout-of-book.html"><a href="layout-of-book.html"><i class="fa fa-check"></i>Layout of Book</a></li>
 <li class="chapter" data-level="" data-path="package-references.html"><a href="package-references.html"><i class="fa fa-check"></i>Package References</a></li>
 <li class="chapter" data-level="1" data-path="what-is-lda.html"><a href="what-is-lda.html"><i class="fa fa-check"></i><b>1</b> What is LDA?</a><ul>
 <li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a><ul>
@@ -165,7 +174,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">LDA Tutorial</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The Little Book of LDA</a>
           </h1>
         </div>
 
@@ -219,7 +228,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li>All Documents have same topic distribution:
 <ul>
-<li><span class="math inline">\(\theta = [ topic a = 0.5, topic b = 0.5 ]\)</span></li>
+<li><span class="math inline">\(\theta = [ topic \hspace{2mm} a = 0.5,\hspace{2mm} topic \hspace{2mm} b = 0.5 ]\)</span></li>
 </ul></li>
 <li>All Documents contain 10 words</li>
 </ul>
@@ -333,7 +342,7 @@ ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group
 </ul></li>
 <li>All Documents have same topic distribution:
 <ul>
-<li><span class="math inline">\(\theta = [ topic a = 0.5, topic b = 0.5 ]\)</span></li>
+<li><span class="math inline">\(\theta = [ topic \hspace{2mm} a = 0.5,\hspace{2mm} topic \hspace{2mm} b = 0.5 ]\)</span></li>
 </ul></li>
 </ul>
 <p><em>Generative Model Pseudocode</em></p>
@@ -341,7 +350,7 @@ ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group
 <li>For d = 1 to D where D is the number of documents
 <ul>
 <li><em>Determine length of document</em></li>
-<li><span class="math inline">\(W ~ Poisson(\xi)\)</span></li>
+<li><span class="math inline">\(W\)</span> ~ Poisson(<span class="math inline">\(\xi\)</span>)</li>
 <li>For w = 1 to W where W is the number of words in document <em>d</em>
 <ul>
 <li><em>Select the topic for word w </em></li>
@@ -448,7 +457,20 @@ ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group
 </ul></li>
 </ul>
 <p><em>Generative Model Pseudocode</em></p>
-<p>For d = 1 to D where number of documents is D + <em>Sample parameters for document topic distribution</em> + <span class="math inline">\(\theta_{d}\)</span> ~ Dirichlet(<span class="math inline">\(\alpha\)</span>) + For w = 1 to W where W is the number of words in document <em>d</em> + <em>Select the topic for word w </em> + <span class="math inline">\(z_{i}\)</span> ~ Multinomial(<span class="math inline">\(\theta_{d}\)</span>) + <em>Select word based on topic z’s word distribution </em> + <span class="math inline">\(w_{i}\)</span> ~ Multinomial(<span class="math inline">\(\phi^{(z_{i})}\)</span>)</p>
+<ul>
+<li>For d = 1 to D where number of documents is D
+<ul>
+<li><em>Sample parameters for document topic distribution</em></li>
+<li><span class="math inline">\(\theta_{d}\)</span> ~ Dirichlet(<span class="math inline">\(\alpha\)</span>)</li>
+<li>For w = 1 to W where W is the number of words in document <em>d</em>
+<ul>
+<li><em>Select the topic for word w </em></li>
+<li><span class="math inline">\(z_{i}\)</span> ~ Multinomial(<span class="math inline">\(\theta_{d}\)</span>)</li>
+<li><em>Select word based on topic z’s word distribution </em></li>
+<li><span class="math inline">\(w_{i}\)</span> ~ Multinomial(<span class="math inline">\(\phi^{(z_{i})}\)</span>)</li>
+</ul></li>
+</ul></li>
+</ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">k &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># number of topics</span>
 M &lt;-<span class="st"> </span><span class="dv">10</span> <span class="co"># let&#39;s create 10 documents</span>
 vocab &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;\U1F4D8&#39;</span>, <span class="st">&#39;\U1F4D5&#39;</span>, <span class="st">&#39;\U1F4D7&#39;</span>)
@@ -765,7 +787,6 @@ ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">group
 </tr>
 </tbody>
 </table>
-<p>(NOTE: Spread the table so topics are side by side for each doc)</p>
 <p>The LDA generative process for each document is shown below<span class="citation">(Darling <a href="references.html#ref-darling2011theoretical">2011</a>)</span>:</p>
 <p><span class="math display" id="eq:generativeLDA">\[
 \begin{equation}
@@ -816,7 +837,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["_main.pdf"],
+"download": null,
 "toc": {
 "collapse": "subsection"
 }

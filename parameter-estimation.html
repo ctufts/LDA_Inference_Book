@@ -5,24 +5,24 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>LDA Tutorial</title>
-  <meta name="description" content="LDA Tutorial">
+  <title>The Little Book of LDA</title>
+  <meta name="description" content="A comprehensive overview of LDA and Gibbs Sampling.">
   <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
 
-  <meta property="og:title" content="LDA Tutorial" />
+  <meta property="og:title" content="The Little Book of LDA" />
   <meta property="og:type" content="book" />
-  
-  
-  
+  <meta property="og:url" content="https://ldabook.com/" />
+  <meta property="og:image" content="https://ldabook.com/Images/cover_image_small.png" />
+  <meta property="og:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="LDA Tutorial" />
+  <meta name="twitter:title" content="The Little Book of LDA" />
   <meta name="twitter:site" content="@devlintufts" />
-  
-  
+  <meta name="twitter:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
+  <meta name="twitter:image" content="https://ldabook.com/Images/cover_image_small.png" />
 
-<meta name="author" content="Chris Tufts">
+<meta name="author" content="Chris Tufts   @devlintufts">
 
 
 
@@ -30,7 +30,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
-  
+  <link rel="shortcut icon" href="Images/favicon.ico" type="image/x-icon">
 <link rel="prev" href="what-is-lda.html">
 <link rel="next" href="multinomial-distribution.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -46,6 +46,15 @@
 
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-62188022-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-62188022-3');
+</script>
 
 
 <style type="text/css">
@@ -86,6 +95,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -98,9 +108,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome to The Little Book of LDA</a></li>
 <li class="chapter" data-level="" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i>Background</a></li>
-<li class="chapter" data-level="" data-path="layout-of-book.html"><a href="layout-of-book.html"><i class="fa fa-check"></i>Layout of Book</a></li>
 <li class="chapter" data-level="" data-path="package-references.html"><a href="package-references.html"><i class="fa fa-check"></i>Package References</a></li>
 <li class="chapter" data-level="1" data-path="what-is-lda.html"><a href="what-is-lda.html"><i class="fa fa-check"></i><b>1</b> What is LDA?</a><ul>
 <li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a><ul>
@@ -165,7 +174,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">LDA Tutorial</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The Little Book of LDA</a>
           </h1>
         </div>
 
@@ -176,7 +185,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="parameter-estimation" class="section level1">
 <h1><span class="header-section-number">2</span> Parameter Estimation</h1>
 <p>LDA is a generative probabilistic model, so to understand exactly how this works we need to understand the underlying probability distributions. In this chapter we will focus on the Bernoulli distribution and the Beta distribution. Both of these distributions are very closely related to (and also special cases of) the multinomial and Dirichlet distributions utilized by LDA, but they are a bit easier to comprehend. Once we have made our way through Bernoulli and beta, we will go over how they are linked to the multinomial and Dirichlet distributions.</p>
-<p>Throughout the chapter I’m going to build off of a simple example - a single coin flip. Let’s begin.</p>
+<p>Throughout the chapter I’m going to build off of a simple example - a single coin flip.</p>
 <div id="distributions" class="section level2">
 <h2><span class="header-section-number">2.1</span> Distributions</h2>
 <div id="bernoulli" class="section level3">
@@ -185,8 +194,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="bernoulli-a-special-case-of-the-binomial-distribution" class="section level4">
 <h4><span class="header-section-number">2.1.1.1</span> Bernoulli: A Special Case of the Binomial Distribution</h4>
 <p>You will often see Bernoulli distribution mentioned as a special case of the Binomial distribution. The binomial model consists of <em>n</em> Bernoulli trials, where each trial is independent and the probability of success does not change between trials.<span class="citation">(Kerns <a href="references.html#ref-kerns2010introduction">2010</a>)</span> The Bernoulli distribution is the case of a single trial (<em>n</em>=1).</p>
-<p><em>Quick Note:<br />
-I will use the term <i>success</i> interchangably with the term <i>heads</i> when describing Bernoulli distribution. In reality <i>success</i> could be <i>tails</i> if you choose to define it that way. </em></p>
+
+<div class="rmdnote">
+I will use the term <i>success</i> interchangably with the term <i>heads</i> when describing Bernoulli distribution. In reality <i>success</i> could be <i>tails</i> if you choose to define it that way.
+</div>
+
 <p>To clarify, if I want to calculate the probability of getting heads on a single coin flip I will use a bernoulli distribution. However, if I want to know the probability of getting 2 heads (or more) in a row, we would use the binomial distribution. For our purposes we are only concerned about the outcome of a single coin flip and will therefore stick to the Bernoulli distribution.</p>
 <div class="figure"><span id="fig:BernVSBin"></span>
 <img src="Images/Bern_Binomial.png" alt="Bernoulli and Binomial Distributions"  />
@@ -271,7 +283,8 @@ f(\theta;\alpha,\beta) ={{\theta^{(\alpha-1)}(1-\theta)^{(\beta-1)}}\over B(\alp
 \tag{2.3}
 \end{equation}
 \]</span></p>
-<p>Quick Note:</p>
+
+<div class="rmdnote">
 <ul>
 <li>The <em>Beta</em> function, <em>B</em> is the ratio of the product of the <em>Gamma</em> function, <span class="math inline">\(\Gamma\)</span>, of each parameter divided by the <em>Gamma</em> function of the sum of the parameters. The <em>Beta</em> function is <strong>not</strong> the same as the beta distribution. The <em>Beta</em> function is shown below along with the <em>Gamma</em> function, which is used in the <em>Beta</em> function.</li>
 </ul>
@@ -281,15 +294,15 @@ f(\theta;\alpha,\beta) ={{\theta^{(\alpha-1)}(1-\theta)^{(\beta-1)}}\over B(\alp
 \tag{2.4}
 \end{equation}
 \]</span></p>
-<ul>
-<li>The <em>Gamma</em> function is the factorial of the parameter minus 1.</li>
-</ul>
-<p><span class="math display" id="eq:gammaFunction">\[
+<p>The <em>Gamma</em> function is the factorial of the parameter minus 1.</p>
+<span class="math display" id="eq:gammaFunction">\[
 \begin{equation}
 \Gamma(a) = (a-1)!
 \tag{2.5}
 \end{equation}
-\]</span></p>
+\]</span>
+</div>
+
 </div>
 </div>
 <div id="inference-the-building-blocks" class="section level2">
@@ -430,12 +443,11 @@ p(\theta|\alpha,\beta) = {\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \
 \end{equation}
 \]</span></p>
 <p>Next, we plug in the PDF of the beta distribution in the place of the prior (Equation <a href="parameter-estimation.html#eq:bernMAPTheta">(2.17)</a>).</p>
-$$
-<span class="math display" id="eq:bernMAPTheta">\[\begin{equation}
+<p><span class="math display" id="eq:bernMAPTheta">\[
+\begin{equation}
 \begin{aligned}
 \theta_{MAP}&amp;= \mathcal{L}(\theta|D) + log(p(\theta)) \\\\
 \theta_{MAP}&amp;= n^{(1)}log(\theta) + n^{(0)}log(1-\theta) + log({\theta^{\alpha-1}(1-\theta)^{\beta-1}\over{B(\alpha, \beta)}}) \\\\
-
 \theta_{MAP}&amp;= n^{(1)}log(\theta) + n^{(0)}log(1-\theta)  + \\ &amp;\quad log({\theta^{\alpha-1}) + log((1-\theta)^{\beta-1}) - log({B(\alpha, \beta)}}) \\\\
 {d \over d\theta} \mathcal{L}(\theta|D) + log(p(\theta)) &amp;= {n^{(1)}\over \theta} - {n^{(0)}\over 1-\theta} + {\alpha - 1\over\theta} - {\beta - 1 \over 1-\theta}
 \\\\
@@ -444,23 +456,20 @@ $$
 \theta_{MAP}&amp;= {{n^{(1)} + \alpha -1} \over {n^{(1)} + n^{0} + \alpha + \beta - 2}}
 \end{aligned}
 \tag{2.17}
-\end{equation}\]</span>
-<p>$$</p>
+\end{equation}
+\]</span></p>
 <p>Now that we know how to calculate the parameter <span class="math inline">\(\theta\)</span> that maximizes the posterior, lets take a look at how choices of different priors and different numbers of observed trials effects our outcome.</p>
 <p>In the Figure <a href="parameter-estimation.html#fig:mapSmallnUninformedPrior">2.5</a> we see the MAP estimation of <span class="math inline">\(\theta\)</span> with a relatively uninformed prior, low <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> values and a small number of observed experiments (n=20). Uninformed means we are going to make a weak assumption about the prior. In more general terms, this means that we don’t have a strong intuition that our coin is fair or unfair. In a mathematical sense, uninformed means a low sum of the two parameters, if you had <span class="math inline">\(\alpha=1000\)</span> and <span class="math inline">\(\beta=1\)</span> this would <strong>not</strong> be considered as uninformed whereas <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> both equal to 1 is normally referred to as uniformed or naive. The Beta distribution has <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> parameters of 2 resulting in the blue density curve shown in Figure <a href="parameter-estimation.html#fig:mapSmallnUninformedPrior">2.5</a>.</p>
-<p><strong>NOTE</strong>: The terms weak, uninformed, and naive are often used interchangeably when referencing priors. The same goes for the terms strong and informed.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># description:</span>
-<span class="co"># ml will yeild the expected average and is not effected by the prior</span>
-<span class="co"># map uses a weak assumption - uniform density for all values of theta</span>
-<span class="co"># this results in a theta_map value very similar to the ml value</span>
-n &lt;-<span class="st"> </span><span class="dv">20</span>
+
+<div class="rmdnote">
+The terms weak, uninformed, and naive are often used interchangeably when referencing priors. The same goes for the terms strong and informed.
+</div>
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">20</span>
 heads &lt;-<span class="st"> </span><span class="dv">14</span>
 tails &lt;-<span class="st"> </span><span class="dv">6</span>
 
 
-<span class="co"># ml</span>
-ml_theta &lt;-<span class="st"> </span>heads<span class="op">/</span>n
-<span class="co"># map</span>
 B &lt;-<span class="st"> </span><span class="dv">2</span>
 alpha &lt;-<span class="st"> </span><span class="dv">2</span>
 
@@ -478,20 +487,10 @@ Figure 2.5: MAP: Small number of experiments and uninformed prior
 </p>
 </div>
 <p>In the next example we have the same number of samples, but we assume a much stronger prior. In particular, we assume the coin is most likely fair by selecting <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> parameters both equal to 100. These parameters represent a Beta distribution that is centered at 0.5 and is very dense around that point. We can see the resuting MAP estimate is much closer to 0.5 than our previous example with the uniformed prior.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># description:</span>
-<span class="co"># the strong assumption of a &#39;fair&#39; coin prior reduces the width of the </span>
-<span class="co"># distribution, i.e. much higher probability density near theta (p) of 0.5</span>
-<span class="co"># This forces the MAP theta value to stay much closer to the prior due to the </span>
-<span class="co"># small amount of observed evidence</span>
-
-n &lt;-<span class="st"> </span><span class="dv">20</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">20</span>
 heads &lt;-<span class="st"> </span><span class="dv">14</span>
 tails &lt;-<span class="st"> </span><span class="dv">6</span>
 
-
-<span class="co"># ml</span>
-ml_theta &lt;-<span class="st"> </span>heads<span class="op">/</span>n
-<span class="co"># map</span>
 B &lt;-<span class="st"> </span><span class="dv">100</span>
 alpha &lt;-<span class="st"> </span><span class="dv">100</span>
 
@@ -509,18 +508,11 @@ Figure 2.6: MAP: Small number of experiments and informed prior
 </p>
 </div>
 <p>What happens when we have a much larger number of observed experiments and an uninformed prior? In this case the MAP estimate will give us a value that is very close to a maximum likelihood estimate, i.e. heads divide by number of trials.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># description</span>
-<span class="co"># high number of observed samples (evidence)</span>
-<span class="co"># weak prior - uniform </span>
-<span class="co"># ml and map are close to one another - close... as expected</span>
-n &lt;-<span class="st"> </span><span class="dv">1000</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">1000</span>
 heads &lt;-<span class="st"> </span><span class="dv">723</span>
 tails &lt;-<span class="st"> </span>n<span class="op">-</span>heads
 
 
-<span class="co"># ml</span>
-ml_theta &lt;-<span class="st"> </span>heads<span class="op">/</span>n
-<span class="co"># map</span>
 B &lt;-<span class="st"> </span><span class="dv">2</span>
 alpha &lt;-<span class="st"> </span><span class="dv">2</span>
 map_theta &lt;-<span class="st"> </span>(heads <span class="op">+</span><span class="st"> </span>alpha <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)<span class="op">/</span>(heads <span class="op">+</span><span class="st"> </span>tails <span class="op">+</span><span class="st"> </span>alpha <span class="op">+</span><span class="st"> </span>B <span class="op">-</span><span class="dv">2</span>)
@@ -541,10 +533,6 @@ Figure 2.7: MAP: Large number of experiments and uninformed prior
 heads &lt;-<span class="st"> </span><span class="dv">723</span>
 tails &lt;-<span class="st"> </span>n<span class="op">-</span>heads
 
-
-<span class="co"># ml</span>
-ml_theta &lt;-<span class="st"> </span>heads<span class="op">/</span>n
-<span class="co"># map</span>
 B &lt;-<span class="st"> </span><span class="dv">100</span>
 alpha &lt;-<span class="st"> </span><span class="dv">100</span>
 possible_theta &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>)
@@ -626,10 +614,6 @@ E[\theta] &amp;= {z+a \over {z+a + n-z+b}}\\\\
 heads &lt;-<span class="st"> </span><span class="dv">14</span>
 tails &lt;-<span class="st"> </span>n<span class="op">-</span>heads
 
-
-<span class="co"># ml</span>
-ml_theta &lt;-<span class="st"> </span>heads<span class="op">/</span>n
-<span class="co"># map</span>
 B &lt;-<span class="st"> </span><span class="dv">2</span>
 alpha &lt;-<span class="st"> </span><span class="dv">2</span>
 possible_theta &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="fl">0.001</span>)
@@ -658,16 +642,26 @@ Figure 2.9: Bayesian Inference: Analytical Solution (n=20)
 <div id="a-tale-of-two-mcs" class="section level3">
 <h3><span class="header-section-number">2.6.2</span> A Tale of Two MC’s</h3>
 <p>Gibbs Sampling is a Markov Chain Monte Carlo (MCMC) technique for parameter estimation. Let’s break down the two MC’s. A markov chain is a process where the next state is determined by the current state. More importantly it does not rely on any information prior to the current state.</p>
-<p>????? 1. This needs a diagram and possibly a general example. * Weather - Sunny/Rainy (it’s always sunny in philadelphia), Next word in sentence (probably too complicated), board game (dice rolls)</p>
-<ol start="2" style="list-style-type: decimal">
-<li>LETS MAKE SURE TO REITERATE THIS AFTER SHOWING THE GENERAL GIBBS SAMPLING MATH AND DIAGRAM ????</li>
-</ol>
-<p>The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of <span class="math inline">\(\pi\)</span>. <span class="citation">(Resnik and Hardisty <a href="references.html#ref-resnik2010gibbs">2010</a>)</span> All we need is some chalk and a bucket of rice. First I draw a circle on the ground. Then I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. (Side note: you could save yourself a bunch of time and just weight the two proportions of rice instead of straining your vision and wasting your time.) From here I can infer the value of <span class="math inline">\(\pi\)</span> as follows:</p>
+<div class="figure" style="text-align: center"><span id="fig:MarkovChain"></span>
+<img src="Images/MarkovChain.png" alt="Markov Chain: Rain or Shine" width="50%" height="50%" />
+<p class="caption">
+Figure 2.10: Markov Chain: Rain or Shine
+</p>
+</div>
+<p>The other MC, Monte Carlo, is a technique used to solve a variety of problems by repeated random sampling. A common example used to showcase Monte Carlo methods is the estimation of the value of <span class="math inline">\(\pi\)</span>. <span class="citation">(Resnik and Hardisty <a href="references.html#ref-resnik2010gibbs">2010</a>)</span> All we need is some chalk and a bucket of rice. First I draw a circle on the ground. Then I then draw a square along the circumference of the square. Now for the bucket of rice, aka our random number generator. I stand over the square and uniformly pour rice over the area of the square. Now comes the monotonous part, counting the rice. First I count the number of pieces of rice inside the circle. Next I tally the number of pieces of rice remaining. (Side note: you could save yourself a bunch of time and just weight the two proportions of rice instead of straining your vision and wasting your time.)</p>
+<div class="figure" style="text-align: center"><span id="fig:MonteCarlo"></span>
+<img src="Images/MonteCarlo.png" alt="Monte Carlo: Estimating &amp;#960;" width="75%" height="75%" />
+<p class="caption">
+Figure 2.11: Monte Carlo: Estimating π
+</p>
+</div>
+<p>From here I can infer the value of <span class="math inline">\(\pi\)</span> as follows:</p>
 <p><span class="math display" id="eq:MCRice">\[
 \begin{equation}
 \begin{aligned}
 {\pi r^{2} \over (2r)^{2}} &amp;= {Rice_{circle}\over Rice_{circle + square}} \\\\
-\pi &amp;\approx {4Rice_{circle}\over Rice_{circle + square}}
+\pi &amp;\approx {4Rice_{circle}\over Rice_{circle + square}}\\
+\hat{\pi} &amp;= {4*1kg \over 1.2kg} = 3.333
 \end{aligned}
 \tag{2.24}
 \end{equation}
@@ -695,7 +689,6 @@ Figure 2.9: Bayesian Inference: Analytical Solution (n=20)
 \end{equation}
 \]</span></p>
 <p>When estimating the posterior we drop out the evidence term. To reiterate, we can drop out the evidence term because it is constant and is used as a normalizing factor for scaling our probabilities to so that they sum to 1. We will see in the upcoming section that Gibbs sampling accounts for the scaling issue and allows us to infer probabilities at the correct scale.</p>
-<p>MAYBE ADD SOMETHING HERE ALONG THESE LINES OTHERWISE JUST SAVE IT FOR GIBBS SECTION….(Gibbs sampling accomplishes this normalization by taking a large number of samples and then dividing by the samples by the sum of all samples resulting in a proportion between 0 and 1. )</p>
 <p><span class="math display" id="eq:posteriorPrompto">\[
 \begin{equation}
 \underbrace{p(\theta|D)}_{posterior}  \propto  {\overbrace{p(D|\theta)}^{likelihood}
@@ -745,8 +738,8 @@ p(\theta|z,N) &amp;\propto Beta(a+z, N-z+b)
 \begin{aligned}
 p(\theta_{1}, \theta_{2}|z_{1}, z_{2}, N) &amp;\propto p(\theta_{1}|z_{1}, N)p(\theta_{2}|z_{2}, N) \\
 p(\theta_{1}, \theta_{2}|z_{1}, z_{2}, N) &amp;\propto p(z_{1}|\theta_{1})p(z_{2}|\theta_{2})p(\theta_{1})p(\theta_{2})
-\tag{2.29}
 \end{aligned}
+\tag{2.29}
 \end{equation}
 \]</span></p>
 <p>Then we break down the full joint density into our posterior conditionals: <span class="math display">\[
@@ -783,9 +776,14 @@ For \ i \ in \ iterations:\\
 \end{equation}
 \]</span></p>
 <p>Gibbs sampling works by estimating all parameters via the posterior conditional iteratively for a set number of iterations or a distinct stopping criteria/convergence measure. For the sake of our example we will stick with a set number of iterations. In Equation <a href="parameter-estimation.html#eq:GibbsGeneral">(2.31)</a> we see the next estimate, <em>i+1</em>, of <span class="math inline">\(\theta_{1}\)</span> is based on all other current parameter values. When estimating <span class="math inline">\(\theta_{2}\)</span> the <em>i+1</em> value of <span class="math inline">\(\theta_{1}\)</span> is used along with all of the current (<em>i</em>) parameter values. This continues for all parameter values. After the the <em>nth</em> parameter is estimated, the process starts all over again for the next iteration.</p>
-<p>Without the math it looks like this:</p>
-<p>FIGURE OF 3 CIRCLES CROSSED OUT/OPEN/COLORED - BEING ESTIMATED, CURRENT STEP, PAST STEP</p>
-<p>The calculations done in our example are shown in Equation <a href="parameter-estimation.html#eq:TwoCoinsGibbsGeneral">(2.32)</a>. Note that since the two coins are independent of one another, we are sampling from a Beta distribution based on each coin’s priors and evidence then repeating.</p>
+<p>The process without the math is shown in Figure <a href="parameter-estimation.html#fig:GibbsViz">2.12</a>. The red circles represent the parameters yet to be estimated in this iteration where the blue represent those that have been previously estimated during the current iteration. Note that the purple circle in each row is the parameter currently being estimated in that step (the current row) and that it takes into account all the available info, i.e. all the red and blue circles in that row.</p>
+<div class="figure" style="text-align: center"><span id="fig:GibbsViz"></span>
+<img src="Images/GibbsSamplingViz.png" alt="Gibbs Sampling - The Process" width="75%" height="75%" />
+<p class="caption">
+Figure 2.12: Gibbs Sampling - The Process
+</p>
+</div>
+<p>The calculations used for our example are shown in Equation <a href="parameter-estimation.html#eq:TwoCoinsGibbsGeneral">(2.32)</a>. Note that since the two coins are independent of one another, we are sampling from a Beta distribution based on each coin’s priors and evidence then repeating.</p>
 <p><span class="math display" id="eq:TwoCoinsGibbsGeneral">\[
 \begin{equation}
 \begin{aligned}
@@ -837,7 +835,7 @@ ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class=
 <div class="figure"><span id="fig:2coins"></span>
 <img src="_main_files/figure-html/2coins-1.png" alt="Bias of Two Coins: Theta 1" width="672" />
 <p class="caption">
-Figure 2.10: Bias of Two Coins: Theta 1
+Figure 2.13: Bias of Two Coins: Theta 1
 </p>
 </div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(ds, <span class="kw">aes</span>(<span class="dt">x=</span>theta2)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">y=</span>..density..),<span class="dt">color=</span><span class="st">&#39;#1A384A&#39;</span>, <span class="dt">fill=</span><span class="st">&#39;#7A99AC&#39;</span>) <span class="op">+</span><span class="st"> </span>
@@ -847,10 +845,10 @@ Figure 2.10: Bias of Two Coins: Theta 1
 <div class="figure"><span id="fig:2coins2"></span>
 <img src="_main_files/figure-html/2coins2-1.png" alt="Bias of Two Coins - Theta 2" width="672" />
 <p class="caption">
-Figure 2.11: Bias of Two Coins - Theta 2
+Figure 2.14: Bias of Two Coins - Theta 2
 </p>
 </div>
-<p>In the Figures <a href="parameter-estimation.html#fig:2coins2">2.11</a> and <a href="parameter-estimation.html#fig:2coins">2.10</a> we can see the distribution of samples drawn from the Beta distribution using the prior parameters and the observed data we have. The red line represents the mean of the samples for each coin. Our resulting bias values are:</p>
+<p>In the Figures <a href="parameter-estimation.html#fig:2coins2">2.14</a> and <a href="parameter-estimation.html#fig:2coins">2.13</a> we can see the distribution of samples drawn from the Beta distribution using the prior parameters and the observed data we have. The red line represents the mean of the samples for each coin. Our resulting bias values are:</p>
 <ul>
 <li><span class="math inline">\(\theta_{1}\)</span> = 0.5</li>
 <li><span class="math inline">\(\theta_{2}\)</span> = 0.21</li>
@@ -861,10 +859,10 @@ Figure 2.11: Bias of Two Coins - Theta 2
 <div class="figure"><span id="fig:bernChangePointExampleFig"></span>
 <img src="_main_files/figure-html/bernChangePointExampleFig-1.png" alt="Change Point Example" width="672" />
 <p class="caption">
-Figure 2.12: Change Point Example
+Figure 2.15: Change Point Example
 </p>
 </div>
-<p>What if the problem we are solving is more complicated? Let’s say I flip a coin repeatedly, but at some point I switch to another coin with a different bias (<span class="math inline">\(\theta\)</span>) as shown in Figure <a href="parameter-estimation.html#fig:bernChangePointExampleFig">2.12</a>. I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem.</p>
+<p>What if the problem we are solving is more complicated? Let’s say I flip a coin repeatedly, but at some point I switch to another coin with a different bias (<span class="math inline">\(\theta\)</span>) as shown in Figure <a href="parameter-estimation.html#fig:bernChangePointExampleFig">2.15</a>. I want to detect the point in time when coin 1 was swapped out for coin 2. We can use Gibbs sampling to solve this problem.</p>
 <p>In the previous example we only needed to get a posterior of a single variable (technically there were two variables, but both have the same posterior conditional and were independent of one another). In this case we have 3 variables that we need to estimate:</p>
 <ol style="list-style-type: decimal">
 <li>Coin bias for coin 1: <span class="math inline">\(\theta_{1}\)</span></li>
@@ -1036,7 +1034,7 @@ ds &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class=
 <div class="figure"><span id="fig:bernChangePointN"></span>
 <img src="_main_files/figure-html/bernChangePointN-1.png" alt="Estimated Change Point" width="672" />
 <p class="caption">
-Figure 2.13: Estimated Change Point
+Figure 2.16: Estimated Change Point
 </p>
 </div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> theta1)) <span class="op">+</span><span class="st"> </span>
@@ -1048,7 +1046,7 @@ Figure 2.13: Estimated Change Point
 <div class="figure"><span id="fig:bernChangePointTheta1"></span>
 <img src="_main_files/figure-html/bernChangePointTheta1-1.png" alt="Estimated Theta 1" width="672" />
 <p class="caption">
-Figure 2.14: Estimated Theta 1
+Figure 2.17: Estimated Theta 1
 </p>
 </div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(params_df, <span class="kw">aes</span>(<span class="dt">x =</span> theta2)) <span class="op">+</span><span class="st"> </span>
@@ -1060,7 +1058,7 @@ Figure 2.14: Estimated Theta 1
 <div class="figure"><span id="fig:bernChangePointTheta2"></span>
 <img src="_main_files/figure-html/bernChangePointTheta2-1.png" alt="Estimated Theta 2" width="672" />
 <p class="caption">
-Figure 2.15: Estimated Theta 2
+Figure 2.18: Estimated Theta 2
 </p>
 </div>
 <p>The resulting estimates for each of our parameters is shown below along with the real value used to generate the dataset.</p>
@@ -1091,17 +1089,12 @@ Figure 2.15: Estimated Theta 2
 </tr>
 <tr class="even">
 <td>Estimated</td>
-<td align="right">0.22</td>
-<td align="right">0.63</td>
+<td align="right">0.18</td>
+<td align="right">0.59</td>
 <td align="right">101</td>
 </tr>
 </tbody>
 </table>
-<ul>
-<li><span class="math inline">\(\hat{\theta_{1}}\)</span> = 0.24, 0.14, 0.21, 0.21, 0.22, 0.28, 0.25, 0.29, 0.16, 0.29, 0.2, 0.24, 0.23, 0.2, 0.21, 0.21, 0.23, 0.24, 0.29, 0.23, 0.2, 0.19, 0.22, 0.23, 0.2, 0.25, 0.25, 0.23, 0.23, 0.19, 0.2, 0.2, 0.19, 0.28, 0.2, 0.24, 0.18, 0.24, 0.28, 0.23, 0.18, 0.27, 0.26, 0.2, 0.24, 0.27, 0.18, 0.21, 0.22, 0.25, 0.22, 0.24, 0.22, 0.23, 0.29, 0.15, 0.17, 0.17, 0.22, 0.25, 0.22, 0.21, 0.22, 0.17, 0.23, 0.28, 0.21, 0.19, 0.26, 0.21, 0.23, 0.2, 0.24, 0.19, 0.19, 0.18, 0.25, 0.23, 0.16, 0.23, 0.27, 0.16, 0.15, 0.25, 0.31, 0.21, 0.22, 0.19, 0.17, 0.22, 0.19, 0.21, 0.16, 0.23, 0.23, 0.19, 0.19, 0.19, 0.27, 0.21, 0.22, 0.19, 0.26, 0.19, 0.24, 0.25, 0.22, 0.22, 0.21, 0.28, 0.19, 0.25, 0.25, 0.25, 0.2, 0.25, 0.19, 0.3, 0.25, 0.26, 0.16, 0.25, 0.21, 0.25, 0.19, 0.23, 0.21, 0.22, 0.22, 0.18, 0.25, 0.28, 0.23, 0.13, 0.23, 0.2, 0.2, 0.25, 0.2, 0.23, 0.22, 0.2, 0.28, 0.33, 0.19, 0.18, 0.21, 0.28, 0.25, 0.26, 0.18, 0.17, 0.22, 0.2, 0.29, 0.25, 0.25, 0.21, 0.25, 0.23, 0.23, 0.2, 0.22, 0.22, 0.28, 0.25, 0.16, 0.19, 0.24, 0.21, 0.24, 0.2, 0.24, 0.16, 0.26, 0.2, 0.15, 0.14, 0.22, 0.25, 0.29, 0.23, 0.21, 0.3, 0.26, 0.22, 0.25, 0.22, 0.19, 0.24, 0.23, 0.19, 0.22, 0.28, 0.15, 0.24, 0.28, 0.24, 0.27, 0.21, 0.18, 0.2, 0.2, 0.19, 0.24, 0.2, 0.15, 0.22, 0.2, 0.24, 0.25, 0.22, 0.21, 0.23, 0.19, 0.24, 0.28, 0.18, 0.13, 0.15, 0.23, 0.21, 0.19, 0.17, 0.19, 0.25, 0.22, 0.27, 0.2, 0.2, 0.26, 0.26, 0.25, 0.18, 0.25, 0.3, 0.29, 0.18, 0.18, 0.17, 0.19, 0.22, 0.21, 0.26, 0.26, 0.17, 0.21, 0.17, 0.21, 0.23, 0.26, 0.25, 0.24, 0.19, 0.24, 0.27, 0.11, 0.24, 0.22, 0.19, 0.3, 0.25, 0.21, 0.3, 0.15, 0.19, 0.25, 0.17, 0.2, 0.27, 0.17, 0.28, 0.2, 0.22, 0.22, 0.17, 0.18, 0.14, 0.18, 0.23, 0.2, 0.25, 0.17, 0.21, 0.31, 0.25, 0.21, 0.24, 0.25, 0.24, 0.2, 0.23, 0.24, 0.2, 0.23, 0.25, 0.24, 0.15, 0.23, 0.21, 0.28, 0.3, 0.2, 0.26, 0.17, 0.28, 0.24, 0.26, 0.29, 0.23, 0.21, 0.18, 0.26, 0.21, 0.24, 0.16, 0.23, 0.19, 0.21, 0.25, 0.15, 0.17, 0.2, 0.17, 0.19, 0.19, 0.22, 0.26, 0.29, 0.22, 0.17, 0.24, 0.21, 0.17, 0.19, 0.18, 0.25, 0.26, 0.16, 0.18, 0.26, 0.11, 0.24, 0.21, 0.29, 0.25, 0.29, 0.22, 0.25, 0.27, 0.2, 0.24, 0.2, 0.2, 0.21, 0.26, 0.28, 0.2, 0.29, 0.24, 0.17, 0.2, 0.24, 0.2, 0.18, 0.23, 0.27, 0.26, 0.23, 0.19, 0.21, 0.19, 0.18, 0.22, 0.3, 0.33, 0.16, 0.16, 0.23, 0.19, 0.22, 0.2, 0.29, 0.19, 0.21, 0.19, 0.23, 0.22, 0.19, 0.25, 0.2, 0.27, 0.19, 0.15, 0.26, 0.25, 0.27, 0.21, 0.29, 0.17, 0.23, 0.17, 0.23, 0.24, 0.22, 0.22, 0.23, 0.14, 0.18, 0.26, 0.24, 0.21, 0.16, 0.26, 0.27, 0.21, 0.15, 0.17, 0.21, 0.23, 0.23, 0.3, 0.25, 0.15, 0.25, 0.15, 0.21, 0.23, 0.21, 0.21, 0.24, 0.17, 0.3, 0.24, 0.23, 0.23, 0.22, 0.19, 0.24, 0.24, 0.24, 0.23, 0.13, 0.21, 0.16, 0.16, 0.28, 0.23, 0.22, 0.27, 0.21, 0.29, 0.2, 0.21, 0.25, 0.21, 0.27, 0.27, 0.3, 0.18, 0.18, 0.27, 0.26, 0.22, 0.29, 0.25, 0.25, 0.18, 0.2, 0.21, 0.23, 0.19, 0.25, 0.22, 0.31, 0.22, 0.24, 0.13, 0.21, 0.23, 0.21, 0.21, 0.25, 0.25, 0.23, 0.24, 0.25, 0.15, 0.2, 0.25, 0.25, 0.25, 0.18, 0.24, 0.27, 0.19, 0.21, 0.29, 0.21, 0.19, 0.21, 0.22, 0.21, 0.16, 0.14, 0.23, 0.19, 0.23, 0.21, 0.25, 0.23, 0.27, 0.19, 0.22, 0.24, 0.2, 0.27, 0.2, 0.27, 0.19, 0.21, 0.17, 0.18, 0.2, 0.3, 0.25, 0.31, 0.22, 0.13, 0.19, 0.19, 0.19, 0.23, 0.2, 0.21, 0.23, 0.15, 0.32, 0.21, 0.22, 0.2, 0.14, 0.19, 0.15, 0.19, 0.27, 0.27, 0.26, 0.18, 0.16, 0.18, 0.24, 0.25, 0.23, 0.24, 0.25, 0.23, 0.23, 0.19, 0.23, 0.27, 0.24, 0.16, 0.24, 0.21, 0.26, 0.24, 0.15, 0.19, 0.18, 0.19, 0.28, 0.24, 0.18, 0.11, 0.25, 0.15, 0.16, 0.32, 0.25, 0.25, 0.16, 0.2, 0.2, 0.27, 0.26, 0.24, 0.22, 0.14, 0.24, 0.23, 0.27, 0.24, 0.24, 0.23, 0.13, 0.16, 0.23, 0.22, 0.19, 0.31, 0.25, 0.32, 0.22, 0.2, 0.21, 0.27, 0.24, 0.25, 0.18, 0.33, 0.24, 0.25, 0.2, 0.28, 0.2, 0.21, 0.26, 0.27, 0.19, 0.15, 0.22, 0.17, 0.21, 0.22, 0.28, 0.2, 0.22, 0.2, 0.19, 0.18, 0.24, 0.19, 0.28, 0.32, 0.18, 0.17, 0.26, 0.18, 0.21, 0.3, 0.31, 0.26, 0.18, 0.17, 0.23, 0.19, 0.26, 0.21, 0.23, 0.17, 0.24, 0.32, 0.23, 0.28, 0.27, 0.22, 0.26, 0.21, 0.19, 0.24, 0.2, 0.23, 0.18, 0.33, 0.27, 0.23, 0.28, 0.25, 0.22, 0.22, 0.21, 0.24, 0.21, 0.2, 0.2, 0.23, 0.26, 0.22, 0.27, 0.24, 0.2, 0.24, 0.22, 0.14, 0.23, 0.16, 0.25, 0.24, 0.27, 0.24, 0.23, 0.26, 0.23, 0.23, 0.18, 0.21, 0.25, 0.22, 0.28, 0.15, 0.24, 0.22, 0.2, 0.25, 0.19, 0.22, 0.18, 0.23, 0.2, 0.24, 0.24, 0.19, 0.18, 0.17, 0.25, 0.21, 0.24, 0.24, 0.28, 0.18, 0.25, 0.26, 0.2, 0.25, 0.22, 0.31, 0.24, 0.31, 0.17, 0.29, 0.22, 0.2, 0.21, 0.23, 0.19, 0.22, 0.19, 0.2, 0.18, 0.18, 0.28, 0.22, 0.3, 0.31, 0.27, 0.16, 0.21, 0.19, 0.19, 0.24, 0.3, 0.23, 0.27, 0.19, 0.17, 0.24, 0.23, 0.19, 0.24, 0.21, 0.23, 0.3, 0.22, 0.16, 0.24, 0.18, 0.31, 0.29, 0.17, 0.18, 0.27, 0.16, 0.19, 0.25, 0.18, 0.18, 0.1, 0.24, 0.22, 0.21, 0.2, 0.24, 0.2, 0.21, 0.25, 0.19, 0.26, 0.21, 0.25, 0.17, 0.2, 0.2, 0.19, 0.17, 0.17, 0.22, 0.25, 0.24, 0.24, 0.18, 0.22, 0.18, 0.26, 0.22, 0.25, 0.24, 0.23, 0.21, 0.23, 0.25, 0.22, 0.25, 0.19, 0.25, 0.23, 0.27, 0.15, 0.21, 0.21, 0.23, 0.3, 0.23, 0.26, 0.26, 0.24, 0.18, 0.31, 0.19, 0.19, 0.17, 0.24, 0.18, 0.2, 0.2, 0.22, 0.19, 0.13, 0.22, 0.18, 0.26, 0.19, 0.16, 0.22, 0.25, 0.17, 0.24, 0.25, 0.28, 0.22, 0.28, 0.23, 0.28, 0.28, 0.21, 0.19, 0.21, 0.23, 0.29, 0.2, 0.31, 0.19, 0.17, 0.21, 0.16, 0.27, 0.21, 0.2, 0.2, 0.16, 0.27, 0.24, 0.18, 0.21, 0.22, 0.21, 0.21, 0.19, 0.17, 0.26, 0.19, 0.16, 0.19, 0.25, 0.14, 0.24, 0.19, 0.29, 0.2, 0.26, 0.17, 0.25, 0.19, 0.19, 0.24, 0.22, 0.2, 0.25, 0.26, 0.17, 0.21, 0.22, 0.17, 0.2, 0.26, 0.15, 0.2, 0.18, 0.12, 0.27, 0.22, 0.26, 0.26, 0.19, 0.16, 0.21, 0.17, 0.24, 0.2, 0.22, 0.28, 0.14, 0.23, 0.15, 0.23, 0.21, 0.22, 0.23, 0.17, 0.37, 0.25, 0.22, 0.23, 0.2, 0.21, 0.26, 0.25, 0.2, 0.2, 0.27, 0.16, 0.22, 0.21, 0.14, 0.13, 0.18, 0.15, 0.27, 0.2, 0.23, 0.23, 0.2, 0.22, 0.24, 0.28, 0.18, 0.24, 0.21, 0.14, 0.23, 0.32, 0.25, 0.13, 0.25, 0.26, 0.24, 0.19, 0.23, 0.17, 0.2, 0.26, 0.22, 0.21, 0.24, 0.21, 0.23, 0.3, 0.24, 0.25, 0.2, 0.22, 0.21, 0.18, 0.2, 0.18, 0.18, 0.23, 0.22, 0.2, 0.18, 0.23, 0.2, 0.27, 0.26, 0.22, 0.22, 0.27, 0.23, 0.24, 0.22, 0.19, 0.16, 0.22, 0.17, 0.2, 0.27, 0.25, 0.17, 0.24, 0.28, 0.17, 0.15, 0.28, 0.27, 0.17, 0.28, 0.18, 0.25, 0.23, 0.23, 0.27, 0.25, 0.25, 0.21, 0.22, 0.16, 0.15, 0.23, 0.26, 0.23, 0.28, 0.18, 0.16, 0.27, 0.21, 0.22, 0.23, 0.26, 0.19, 0.29, 0.17, 0.27, 0.23, 0.19, 0.22, 0.24, 0.23, 0.26, 0.21, 0.19, 0.21, 0.21, 0.24, 0.17, 0.22, 0.22, 0.23, 0.17, 0.13, 0.25, 0.23, 0.21, 0.34, 0.27, 0.22, 0.2, 0.14, 0.21, 0.23, 0.17, 0.22, 0.19, 0.25, 0.2, 0.23, 0.21, 0.2, 0.25, 0.17, 0.22, 0.25, 0.25, 0.19, 0.21, 0.26, 0.25, 0.26, 0.25, 0.28, 0.19, 0.19, 0.35, 0.21, 0.22, 0.22, 0.19, 0.18, 0.22, 0.23, 0.28, 0.24, 0.21, 0.28, 0.21, 0.21, 0.21, 0.22, 0.19, 0.16, 0.2, 0.25, 0.15, 0.18, 0.24, 0.26, 0.21, 0.3, 0.29, 0.29, 0.18, 0.26, 0.22, 0.2, 0.2, 0.26, 0.31, 0.19, 0.23, 0.24, 0.21, 0.18, 0.2, 0.27, 0.22, 0.24, 0.17, 0.19, 0.23, 0.26, 0.17, 0.26, 0.26, 0.23, 0.25, 0.23, 0.27, 0.21, 0.24, 0.25, 0.29, 0.23, 0.25, 0.22, 0.2, 0.22, 0.23, 0.27, 0.14, 0.16, 0.18, 0.19, 0.23, 0.17, 0.28, 0.21, 0.24, 0.22, 0.27, 0.2, 0.25, 0.24, 0.22, 0.23, 0.2, 0.25, 0.22, 0.28, 0.19, 0.22, 0.21, 0.2, 0.22, 0.16, 0.21, 0.24, 0.2, 0.19, 0.22, 0.22, 0.22, 0.24, 0.25, 0.17, 0.22, 0.25, 0.2, 0.21, 0.21, 0.14, 0.15, 0.23, 0.29, 0.26, 0.2, 0.24, 0.25, 0.24, 0.24, 0.17, 0.2, 0.24, 0.16, 0.2, 0.22, 0.18, 0.22, 0.25, 0.24, 0.26, 0.18, 0.21, 0.23, 0.23, 0.22, 0.27, 0.26, 0.26, 0.19, 0.28, 0.15, 0.16, 0.21, 0.28, 0.18, 0.29, 0.2, 0.21, 0.25, 0.25, 0.18, 0.3, 0.36, 0.19, 0.18, 0.19, 0.28, 0.24, 0.22, 0.17, 0.17, 0.3, 0.21, 0.18, 0.18, 0.28, 0.22, 0.26, 0.17, 0.32, 0.27, 0.25, 0.25, 0.17, 0.22, 0.25, 0.24, 0.31, 0.25, 0.19, 0.27, 0.25, 0.23, 0.28, 0.22, 0.21, 0.2, 0.2, 0.22, 0.23, 0.26, 0.16, 0.2, 0.25, 0.16, 0.16, 0.12, 0.2, 0.21, 0.15, 0.2, 0.22, 0.26, 0.27, 0.26, 0.19, 0.19, 0.25, 0.2, 0.28, 0.24, 0.18, 0.27, 0.24, 0.24, 0.29, 0.23, 0.28, 0.19, 0.27, 0.24, 0.25, 0.2, 0.3, 0.25, 0.21, 0.22, 0.18, 0.28, 0.2, 0.22, 0.31, 0.26, 0.25, 0.35, 0.3, 0.22, 0.17, 0.19, 0.23, 0.2, 0.19, 0.18, 0.17, 0.26, 0.2, 0.21, 0.14, 0.25, 0.21, 0.26, 0.24, 0.25, 0.23, 0.24, 0.2, 0.18, 0.23, 0.23, 0.3, 0.21, 0.21, 0.23, 0.21, 0.29, 0.23, 0.19, 0.31, 0.1, 0.2, 0.21, 0.21, 0.28, 0.24, 0.23, 0.22, 0.24, 0.28, 0.25, 0.26, 0.18, 0.25, 0.2, 0.26, 0.22, 0.26, 0.23, 0.26, 0.27, 0.18, 0.18, 0.28, 0.25, 0.19, 0.32, 0.19, 0.21, 0.22, 0.18, 0.19, 0.26, 0.26, 0.19, 0.19, 0.21, 0.19, 0.22, 0.24, 0.21, 0.28, 0.24, 0.2, 0.28, 0.19, 0.35, 0.21, 0.18, 0.24, 0.21, 0.19, 0.26, 0.28, 0.23, 0.27, 0.24, 0.24, 0.3, 0.19, 0.24, 0.31, 0.19, 0.21, 0.21, 0.22, 0.22, 0.2, 0.2, 0.22, 0.22, 0.13, 0.18, 0.27, 0.21, 0.14, 0.3, 0.17, 0.23, 0.19, 0.25, 0.19, 0.2, 0.13, 0.2, 0.19, 0.24, 0.22, 0.26, 0.24, 0.23, 0.19, 0.23, 0.22, 0.17, 0.25, 0.32, 0.21, 0.23, 0.19, 0.24, 0.18, 0.28, 0.28, 0.27, 0.15, 0.24, 0.18, 0.19, 0.18, 0.17, 0.26, 0.15, 0.25, 0.22, 0.2, 0.21, 0.18, 0.25, 0.19, 0.2, 0.25, 0.2, 0.22, 0.29, 0.24, 0.17, 0.22, 0.21, 0.2, 0.15, 0.25, 0.21, 0.31, 0.18, 0.17, 0.26, 0.28, 0.22, 0.14, 0.2, 0.18, 0.19, 0.2, 0.31, 0.31, 0.23, 0.27, 0.19, 0.27, 0.26, 0.29, 0.16, 0.2, 0.24, 0.19, 0.22, 0.26, 0.18, 0.16, 0.27, 0.27, 0.19, 0.21, 0.19, 0.15, 0.21, 0.28, 0.29, 0.14, 0.34, 0.26, 0.27, 0.24, 0.22, 0.24, 0.3, 0.22, 0.21, 0.22, 0.17, 0.21, 0.16, 0.25, 0.25, 0.25, 0.26, 0.16, 0.15, 0.14, 0.19, 0.27, 0.26, 0.28, 0.19, 0.24, 0.21, 0.17, 0.22, 0.16, 0.21, 0.21, 0.27, 0.21, 0.14, 0.26, 0.22, 0.25, 0.26, 0.19, 0.2, 0.26, 0.19, 0.22, 0.17, 0.16, 0.23, 0.22, 0.2, 0.22, 0.16, 0.18, 0.18, 0.19, 0.22, 0.25, 0.28, 0.18, 0.2, 0.22, 0.28, 0.21, 0.18, 0.21, 0.28, 0.27, 0.24, 0.22, 0.22, 0.27, 0.18, 0.25, 0.27, 0.26, 0.22, 0.21, 0.24, 0.23, 0.21, 0.18, 0.17, 0.21, 0.19, 0.24, 0.27, 0.25, 0.16, 0.2, 0.26, 0.28, 0.21, 0.27, 0.21, 0.19, 0.2, 0.2, 0.22, 0.24, 0.24, 0.23, 0.25, 0.22, 0.27, 0.28, 0.31, 0.18, 0.17, 0.23, 0.19, 0.22, 0.23, 0.26, 0.17, 0.2, 0.17, 0.19, 0.18, 0.25, 0.24, 0.24, 0.2, 0.19, 0.23, 0.2, 0.24, 0.26, 0.18, 0.2, 0.2, 0.2, 0.18, 0.18, 0.27, 0.27, 0.26, 0.19, 0.18, 0.21, 0.19, 0.16, 0.29, 0.21, 0.18, 0.25, 0.18, 0.21, 0.18, 0.22, 0.26, 0.21, 0.2, 0.19, 0.14, 0.2, 0.22, 0.18, 0.2, 0.23, 0.22, 0.14, 0.19, 0.3, 0.29, 0.17, 0.17, 0.18, 0.26, 0.23, 0.21, 0.21, 0.18, 0.2, 0.27, 0.2, 0.18, 0.26, 0.19, 0.23, 0.25, 0.27, 0.19, 0.18, 0.22, 0.22, 0.25, 0.25, 0.2, 0.17, 0.29, 0.22, 0.23, 0.21, 0.24, 0.22, 0.13, 0.23, 0.13, 0.21, 0.27, 0.21, 0.22, 0.22, 0.23, 0.23, 0.24, 0.3, 0.16, 0.19, 0.17, 0.21, 0.21, 0.24, 0.19, 0.18, 0.28, 0.21, 0.16, 0.21, 0.21, 0.26, 0.25, 0.24, 0.21, 0.23, 0.16, 0.21, 0.3, 0.18, 0.25, 0.29, 0.21, 0.16, 0.25, 0.24, 0.22, 0.22, 0.19, 0.15, 0.21, 0.16, 0.19, 0.22, 0.21, 0.21, 0.2, 0.23, 0.2, 0.15, 0.3, 0.21, 0.25, 0.25, 0.28, 0.21, 0.2, 0.23, 0.24, 0.3, 0.2, 0.28, 0.28, 0.2, 0.22, 0.15, 0.21, 0.26, 0.15, 0.21, 0.29, 0.2, 0.22, 0.2, 0.23, 0.28, 0.27, 0.2, 0.15, 0.27, 0.23, 0.21, 0.22, 0.27, 0.22, 0.14, 0.23, 0.21, 0.2, 0.24, 0.15, 0.22, 0.18, 0.22, 0.23, 0.28, 0.22, 0.16, 0.21, 0.21, 0.16, 0.18, 0.25, 0.22, 0.16, 0.2, 0.22, 0.17, 0.16, 0.23, 0.24, 0.18, 0.16, 0.15, 0.18, 0.3, 0.26, 0.23, 0.28, 0.25, 0.23, 0.24, 0.16, 0.25, 0.28, 0.21, 0.19, 0.24, 0.24, 0.28, 0.2, 0.26, 0.18, 0.19, 0.29, 0.29, 0.23, 0.24, 0.22, 0.17, 0.21, 0.22, 0.24, 0.17, 0.23, 0.21, 0.23, 0.29, 0.25, 0.22, 0.22, 0.17, 0.22, 0.18, 0.22, 0.23, 0.21, 0.25, 0.15, 0.18, 0.21, 0.23, 0.27, 0.22, 0.16, 0.2, 0.24, 0.17, 0.24, 0.17, 0.14, 0.21, 0.23, 0.23, 0.18, 0.2, 0.19, 0.24, 0.16, 0.19, 0.22, 0.22, 0.26, 0.16, 0.19, 0.2, 0.21, 0.19, 0.2, 0.15, 0.22, 0.22, 0.25, 0.33, 0.17, 0.23, 0.22, 0.27, 0.28, 0.3, 0.18, 0.18, 0.16, 0.18, 0.26, 0.23, 0.14, 0.24, 0.3, 0.31, 0.22, 0.2, 0.23, 0.24, 0.18, 0.25, 0.29, 0.25, 0.23, 0.21, 0.21, 0.22, 0.17, 0.28, 0.2, 0.21, 0.29, 0.21, 0.19, 0.21, 0.17, 0.15, 0.16, 0.3, 0.3, 0.25, 0.19, 0.18, 0.21, 0.2, 0.24, 0.23, 0.19, 0.28, 0.25, 0.28, 0.27, 0.3, 0.27, 0.15, 0.23, 0.18, 0.19, 0.17, 0.2, 0.28, 0.25, 0.21, 0.17, 0.24, 0.22, 0.26, 0.21, 0.24, 0.25, 0.23, 0.19, 0.24, 0.24, 0.21, 0.18, 0.26, 0.23, 0.2, 0.22</li>
-<li><span class="math inline">\(\hat{\theta_{2}}\)</span> = 0.63, 0.62, 0.62, 0.6, 0.63, 0.64, 0.65, 0.62, 0.64, 0.64, 0.6, 0.61, 0.66, 0.62, 0.62, 0.66, 0.64, 0.61, 0.61, 0.62, 0.65, 0.59, 0.59, 0.66, 0.59, 0.57, 0.61, 0.58, 0.6, 0.63, 0.66, 0.59, 0.61, 0.63, 0.65, 0.71, 0.62, 0.65, 0.65, 0.69, 0.61, 0.62, 0.6, 0.67, 0.63, 0.59, 0.62, 0.56, 0.59, 0.71, 0.65, 0.63, 0.58, 0.61, 0.67, 0.66, 0.66, 0.63, 0.62, 0.66, 0.59, 0.65, 0.61, 0.63, 0.68, 0.61, 0.64, 0.61, 0.68, 0.62, 0.59, 0.65, 0.68, 0.64, 0.63, 0.6, 0.66, 0.62, 0.66, 0.64, 0.61, 0.62, 0.55, 0.62, 0.63, 0.59, 0.59, 0.65, 0.61, 0.58, 0.64, 0.61, 0.66, 0.65, 0.56, 0.65, 0.66, 0.64, 0.64, 0.61, 0.6, 0.65, 0.73, 0.7, 0.67, 0.63, 0.63, 0.61, 0.56, 0.6, 0.63, 0.58, 0.6, 0.65, 0.61, 0.62, 0.62, 0.67, 0.64, 0.61, 0.6, 0.66, 0.64, 0.67, 0.69, 0.61, 0.63, 0.63, 0.61, 0.66, 0.64, 0.61, 0.66, 0.61, 0.63, 0.57, 0.63, 0.57, 0.66, 0.6, 0.66, 0.62, 0.58, 0.59, 0.6, 0.59, 0.64, 0.64, 0.59, 0.57, 0.64, 0.62, 0.61, 0.6, 0.63, 0.59, 0.62, 0.66, 0.58, 0.61, 0.6, 0.65, 0.58, 0.64, 0.6, 0.63, 0.65, 0.63, 0.64, 0.7, 0.67, 0.67, 0.63, 0.67, 0.64, 0.67, 0.63, 0.64, 0.65, 0.58, 0.58, 0.65, 0.55, 0.6, 0.6, 0.57, 0.64, 0.66, 0.57, 0.64, 0.59, 0.67, 0.67, 0.59, 0.68, 0.62, 0.68, 0.59, 0.6, 0.61, 0.71, 0.65, 0.61, 0.67, 0.57, 0.65, 0.61, 0.58, 0.63, 0.64, 0.65, 0.61, 0.63, 0.67, 0.61, 0.62, 0.62, 0.63, 0.64, 0.68, 0.66, 0.65, 0.61, 0.66, 0.62, 0.61, 0.62, 0.61, 0.59, 0.69, 0.66, 0.63, 0.65, 0.64, 0.66, 0.63, 0.62, 0.56, 0.57, 0.64, 0.6, 0.65, 0.56, 0.64, 0.63, 0.64, 0.65, 0.61, 0.62, 0.61, 0.7, 0.66, 0.65, 0.64, 0.61, 0.56, 0.64, 0.69, 0.67, 0.62, 0.59, 0.61, 0.61, 0.61, 0.72, 0.59, 0.61, 0.64, 0.72, 0.59, 0.64, 0.61, 0.59, 0.7, 0.63, 0.61, 0.67, 0.58, 0.62, 0.62, 0.63, 0.62, 0.64, 0.57, 0.6, 0.68, 0.64, 0.63, 0.64, 0.65, 0.59, 0.61, 0.61, 0.57, 0.62, 0.66, 0.65, 0.62, 0.59, 0.62, 0.64, 0.58, 0.59, 0.61, 0.63, 0.65, 0.71, 0.64, 0.68, 0.68, 0.63, 0.58, 0.58, 0.61, 0.61, 0.64, 0.62, 0.7, 0.6, 0.6, 0.6, 0.66, 0.61, 0.63, 0.62, 0.68, 0.66, 0.64, 0.61, 0.6, 0.68, 0.64, 0.68, 0.59, 0.65, 0.63, 0.64, 0.67, 0.59, 0.68, 0.61, 0.66, 0.66, 0.64, 0.64, 0.63, 0.62, 0.58, 0.62, 0.65, 0.64, 0.64, 0.68, 0.58, 0.66, 0.62, 0.62, 0.59, 0.64, 0.64, 0.6, 0.62, 0.64, 0.64, 0.61, 0.65, 0.64, 0.62, 0.6, 0.62, 0.63, 0.6, 0.59, 0.66, 0.64, 0.58, 0.61, 0.62, 0.62, 0.61, 0.63, 0.65, 0.58, 0.67, 0.61, 0.66, 0.59, 0.64, 0.6, 0.62, 0.53, 0.63, 0.65, 0.6, 0.65, 0.71, 0.58, 0.63, 0.63, 0.56, 0.61, 0.6, 0.62, 0.56, 0.64, 0.57, 0.55, 0.69, 0.64, 0.59, 0.66, 0.64, 0.61, 0.65, 0.62, 0.54, 0.58, 0.61, 0.63, 0.66, 0.65, 0.64, 0.61, 0.63, 0.67, 0.63, 0.59, 0.59, 0.61, 0.57, 0.63, 0.63, 0.67, 0.64, 0.63, 0.66, 0.66, 0.69, 0.65, 0.66, 0.62, 0.61, 0.63, 0.65, 0.64, 0.66, 0.63, 0.61, 0.67, 0.64, 0.58, 0.58, 0.63, 0.57, 0.6, 0.65, 0.6, 0.63, 0.67, 0.68, 0.59, 0.64, 0.64, 0.65, 0.61, 0.64, 0.6, 0.65, 0.61, 0.59, 0.65, 0.59, 0.59, 0.64, 0.59, 0.57, 0.63, 0.65, 0.55, 0.63, 0.65, 0.63, 0.67, 0.56, 0.58, 0.6, 0.57, 0.66, 0.62, 0.62, 0.64, 0.62, 0.58, 0.57, 0.6, 0.59, 0.57, 0.57, 0.65, 0.68, 0.63, 0.66, 0.6, 0.63, 0.57, 0.64, 0.67, 0.59, 0.65, 0.67, 0.64, 0.6, 0.57, 0.63, 0.69, 0.63, 0.65, 0.66, 0.67, 0.59, 0.63, 0.6, 0.61, 0.67, 0.65, 0.72, 0.62, 0.62, 0.64, 0.57, 0.65, 0.6, 0.65, 0.62, 0.63, 0.7, 0.59, 0.68, 0.72, 0.57, 0.66, 0.6, 0.64, 0.64, 0.62, 0.61, 0.65, 0.69, 0.64, 0.57, 0.64, 0.56, 0.67, 0.64, 0.61, 0.61, 0.63, 0.61, 0.61, 0.63, 0.69, 0.66, 0.6, 0.64, 0.59, 0.62, 0.64, 0.64, 0.67, 0.62, 0.64, 0.63, 0.63, 0.63, 0.63, 0.67, 0.57, 0.61, 0.67, 0.59, 0.61, 0.61, 0.59, 0.62, 0.64, 0.67, 0.61, 0.62, 0.66, 0.63, 0.61, 0.65, 0.65, 0.59, 0.59, 0.62, 0.7, 0.65, 0.56, 0.63, 0.64, 0.61, 0.65, 0.68, 0.6, 0.63, 0.59, 0.58, 0.65, 0.6, 0.6, 0.65, 0.63, 0.6, 0.6, 0.67, 0.66, 0.6, 0.64, 0.65, 0.65, 0.58, 0.66, 0.65, 0.6, 0.61, 0.69, 0.62, 0.56, 0.61, 0.66, 0.65, 0.59, 0.63, 0.66, 0.61, 0.66, 0.6, 0.61, 0.61, 0.62, 0.63, 0.63, 0.64, 0.63, 0.65, 0.67, 0.6, 0.62, 0.62, 0.65, 0.64, 0.69, 0.65, 0.68, 0.61, 0.67, 0.62, 0.61, 0.64, 0.62, 0.58, 0.6, 0.63, 0.61, 0.62, 0.6, 0.59, 0.62, 0.54, 0.63, 0.67, 0.58, 0.63, 0.63, 0.58, 0.66, 0.57, 0.63, 0.59, 0.65, 0.66, 0.64, 0.68, 0.66, 0.6, 0.66, 0.63, 0.67, 0.65, 0.67, 0.63, 0.63, 0.63, 0.65, 0.6, 0.62, 0.56, 0.65, 0.63, 0.62, 0.65, 0.63, 0.61, 0.58, 0.66, 0.66, 0.65, 0.62, 0.64, 0.64, 0.67, 0.68, 0.61, 0.56, 0.65, 0.57, 0.59, 0.61, 0.61, 0.63, 0.6, 0.63, 0.65, 0.66, 0.66, 0.6, 0.61, 0.63, 0.63, 0.62, 0.6, 0.63, 0.67, 0.65, 0.7, 0.65, 0.62, 0.6, 0.61, 0.62, 0.56, 0.61, 0.63, 0.55, 0.61, 0.62, 0.64, 0.62, 0.65, 0.64, 0.57, 0.61, 0.6, 0.63, 0.63, 0.55, 0.64, 0.62, 0.61, 0.64, 0.6, 0.63, 0.63, 0.59, 0.64, 0.6, 0.56, 0.64, 0.6, 0.64, 0.61, 0.62, 0.61, 0.65, 0.61, 0.64, 0.66, 0.64, 0.63, 0.71, 0.65, 0.57, 0.66, 0.66, 0.61, 0.57, 0.6, 0.63, 0.67, 0.64, 0.64, 0.64, 0.58, 0.61, 0.63, 0.61, 0.61, 0.66, 0.7, 0.61, 0.62, 0.65, 0.64, 0.61, 0.62, 0.61, 0.63, 0.64, 0.64, 0.67, 0.63, 0.62, 0.56, 0.64, 0.57, 0.67, 0.63, 0.59, 0.66, 0.65, 0.63, 0.65, 0.64, 0.6, 0.67, 0.66, 0.62, 0.66, 0.62, 0.66, 0.61, 0.58, 0.67, 0.66, 0.66, 0.62, 0.59, 0.63, 0.63, 0.53, 0.58, 0.61, 0.65, 0.62, 0.59, 0.58, 0.58, 0.63, 0.63, 0.63, 0.67, 0.6, 0.67, 0.64, 0.68, 0.64, 0.66, 0.65, 0.6, 0.63, 0.66, 0.63, 0.63, 0.58, 0.61, 0.66, 0.59, 0.59, 0.6, 0.57, 0.6, 0.68, 0.6, 0.66, 0.64, 0.67, 0.63, 0.64, 0.67, 0.65, 0.65, 0.61, 0.67, 0.63, 0.67, 0.66, 0.64, 0.65, 0.64, 0.58, 0.62, 0.65, 0.63, 0.63, 0.63, 0.62, 0.62, 0.58, 0.62, 0.6, 0.72, 0.66, 0.63, 0.63, 0.63, 0.57, 0.63, 0.63, 0.62, 0.66, 0.65, 0.56, 0.66, 0.61, 0.61, 0.61, 0.63, 0.65, 0.61, 0.63, 0.65, 0.61, 0.59, 0.57, 0.61, 0.6, 0.58, 0.55, 0.61, 0.62, 0.62, 0.65, 0.62, 0.65, 0.57, 0.63, 0.66, 0.61, 0.6, 0.56, 0.59, 0.6, 0.69, 0.59, 0.59, 0.57, 0.61, 0.66, 0.71, 0.64, 0.6, 0.64, 0.61, 0.67, 0.68, 0.55, 0.62, 0.6, 0.62, 0.65, 0.64, 0.66, 0.63, 0.63, 0.63, 0.62, 0.61, 0.64, 0.66, 0.67, 0.68, 0.56, 0.61, 0.66, 0.61, 0.63, 0.64, 0.62, 0.6, 0.65, 0.61, 0.64, 0.64, 0.68, 0.69, 0.63, 0.71, 0.71, 0.59, 0.62, 0.63, 0.68, 0.61, 0.66, 0.68, 0.63, 0.64, 0.61, 0.62, 0.62, 0.7, 0.64, 0.64, 0.65, 0.64, 0.65, 0.64, 0.61, 0.64, 0.61, 0.6, 0.62, 0.65, 0.66, 0.62, 0.63, 0.6, 0.62, 0.61, 0.67, 0.6, 0.63, 0.65, 0.64, 0.64, 0.61, 0.61, 0.66, 0.66, 0.62, 0.66, 0.6, 0.55, 0.67, 0.56, 0.66, 0.59, 0.63, 0.63, 0.65, 0.55, 0.51, 0.53, 0.63, 0.65, 0.63, 0.64, 0.57, 0.67, 0.61, 0.57, 0.65, 0.59, 0.6, 0.63, 0.61, 0.62, 0.6, 0.61, 0.62, 0.59, 0.6, 0.65, 0.65, 0.66, 0.61, 0.62, 0.66, 0.59, 0.61, 0.62, 0.65, 0.64, 0.6, 0.63, 0.62, 0.62, 0.63, 0.63, 0.64, 0.65, 0.57, 0.62, 0.69, 0.59, 0.62, 0.58, 0.69, 0.62, 0.58, 0.62, 0.67, 0.62, 0.65, 0.58, 0.58, 0.67, 0.61, 0.64, 0.59, 0.64, 0.62, 0.64, 0.65, 0.64, 0.69, 0.61, 0.61, 0.58, 0.61, 0.6, 0.65, 0.62, 0.68, 0.63, 0.6, 0.65, 0.62, 0.63, 0.64, 0.63, 0.59, 0.65, 0.7, 0.65, 0.63, 0.65, 0.64, 0.58, 0.64, 0.62, 0.57, 0.65, 0.64, 0.58, 0.61, 0.64, 0.67, 0.65, 0.64, 0.59, 0.6, 0.67, 0.66, 0.64, 0.62, 0.65, 0.65, 0.58, 0.61, 0.59, 0.66, 0.56, 0.68, 0.65, 0.55, 0.56, 0.62, 0.61, 0.57, 0.62, 0.63, 0.61, 0.64, 0.62, 0.59, 0.65, 0.68, 0.58, 0.67, 0.65, 0.69, 0.61, 0.63, 0.63, 0.68, 0.58, 0.48, 0.63, 0.54, 0.6, 0.69, 0.64, 0.61, 0.62, 0.54, 0.61, 0.68, 0.69, 0.7, 0.62, 0.66, 0.63, 0.6, 0.58, 0.65, 0.62, 0.63, 0.63, 0.6, 0.62, 0.64, 0.54, 0.69, 0.7, 0.63, 0.62, 0.65, 0.66, 0.67, 0.6, 0.63, 0.67, 0.64, 0.52, 0.61, 0.69, 0.6, 0.65, 0.6, 0.63, 0.57, 0.59, 0.64, 0.63, 0.62, 0.54, 0.67, 0.62, 0.64, 0.66, 0.65, 0.62, 0.64, 0.57, 0.63, 0.61, 0.64, 0.65, 0.63, 0.71, 0.59, 0.65, 0.64, 0.65, 0.6, 0.62, 0.62, 0.6, 0.59, 0.6, 0.58, 0.63, 0.61, 0.66, 0.63, 0.66, 0.6, 0.61, 0.66, 0.56, 0.6, 0.66, 0.6, 0.59, 0.65, 0.65, 0.62, 0.58, 0.65, 0.66, 0.66, 0.67, 0.6, 0.58, 0.61, 0.62, 0.64, 0.62, 0.71, 0.65, 0.71, 0.57, 0.59, 0.63, 0.64, 0.61, 0.63, 0.61, 0.64, 0.66, 0.56, 0.64, 0.67, 0.62, 0.62, 0.66, 0.6, 0.68, 0.58, 0.61, 0.61, 0.7, 0.58, 0.58, 0.66, 0.65, 0.7, 0.62, 0.69, 0.65, 0.63, 0.65, 0.62, 0.65, 0.71, 0.61, 0.64, 0.66, 0.66, 0.66, 0.65, 0.64, 0.63, 0.64, 0.58, 0.62, 0.68, 0.56, 0.69, 0.62, 0.64, 0.64, 0.64, 0.68, 0.6, 0.67, 0.64, 0.63, 0.61, 0.68, 0.6, 0.59, 0.65, 0.64, 0.6, 0.6, 0.65, 0.61, 0.6, 0.61, 0.61, 0.62, 0.58, 0.65, 0.65, 0.57, 0.65, 0.6, 0.62, 0.6, 0.61, 0.63, 0.63, 0.65, 0.57, 0.65, 0.66, 0.62, 0.65, 0.65, 0.6, 0.61, 0.65, 0.64, 0.64, 0.55, 0.63, 0.55, 0.65, 0.58, 0.68, 0.68, 0.63, 0.62, 0.62, 0.62, 0.53, 0.61, 0.58, 0.63, 0.56, 0.59, 0.67, 0.66, 0.62, 0.64, 0.57, 0.61, 0.59, 0.62, 0.58, 0.65, 0.65, 0.63, 0.6, 0.68, 0.58, 0.7, 0.59, 0.63, 0.63, 0.6, 0.64, 0.6, 0.65, 0.62, 0.59, 0.63, 0.64, 0.64, 0.62, 0.63, 0.62, 0.66, 0.67, 0.59, 0.62, 0.61, 0.66, 0.65, 0.64, 0.67, 0.6, 0.61, 0.6, 0.59, 0.58, 0.59, 0.65, 0.66, 0.67, 0.64, 0.58, 0.64, 0.68, 0.6, 0.62, 0.63, 0.6, 0.63, 0.66, 0.62, 0.68, 0.62, 0.64, 0.63, 0.62, 0.64, 0.62, 0.56, 0.71, 0.62, 0.63, 0.58, 0.67, 0.7, 0.59, 0.69, 0.64, 0.58, 0.67, 0.62, 0.64, 0.66, 0.65, 0.6, 0.6, 0.62, 0.61, 0.57, 0.65, 0.62, 0.62, 0.59, 0.65, 0.62, 0.63, 0.68, 0.68, 0.61, 0.59, 0.6, 0.66, 0.61, 0.61, 0.58, 0.61, 0.66, 0.54, 0.59, 0.59, 0.56, 0.59, 0.58, 0.6, 0.59, 0.61, 0.64, 0.66, 0.67, 0.64, 0.66, 0.66, 0.6, 0.63, 0.64, 0.61, 0.58, 0.63, 0.64, 0.61, 0.6, 0.56, 0.6, 0.62, 0.65, 0.72, 0.68, 0.65, 0.68, 0.69, 0.64, 0.64, 0.65, 0.6, 0.64, 0.68, 0.57, 0.55, 0.64, 0.63, 0.63, 0.56, 0.66, 0.66, 0.68, 0.65, 0.59, 0.67, 0.56, 0.64, 0.6, 0.64, 0.59, 0.52, 0.56, 0.61, 0.7, 0.65, 0.66, 0.64, 0.59, 0.63, 0.71, 0.67, 0.64, 0.61, 0.62, 0.64, 0.61, 0.69, 0.58, 0.65, 0.63, 0.69, 0.58, 0.66, 0.58, 0.6, 0.62, 0.66, 0.6, 0.63, 0.64, 0.57, 0.64, 0.71, 0.62, 0.63, 0.64, 0.58, 0.63, 0.64, 0.65, 0.67, 0.58, 0.59, 0.55, 0.64, 0.61, 0.63, 0.59, 0.61, 0.65, 0.66, 0.6, 0.62, 0.62, 0.66, 0.66, 0.68, 0.64, 0.65, 0.64, 0.65, 0.67, 0.7, 0.61, 0.62, 0.65, 0.63, 0.62, 0.61, 0.58, 0.66, 0.64, 0.62, 0.61, 0.63, 0.63, 0.64, 0.62, 0.63, 0.61, 0.66, 0.62, 0.68, 0.68, 0.63, 0.55, 0.68, 0.71, 0.66, 0.6, 0.65, 0.6, 0.62, 0.68, 0.62, 0.63, 0.61, 0.62, 0.63, 0.67, 0.61, 0.65, 0.65, 0.64, 0.63, 0.67, 0.64, 0.59, 0.6, 0.59, 0.65, 0.65, 0.63, 0.64, 0.62, 0.52, 0.62, 0.6, 0.55, 0.6, 0.65, 0.63, 0.58, 0.66, 0.65, 0.63, 0.64, 0.63, 0.68, 0.61, 0.6, 0.58, 0.66, 0.64, 0.68, 0.69, 0.61, 0.58, 0.61, 0.61, 0.66, 0.62, 0.66, 0.66, 0.61, 0.64, 0.65, 0.59, 0.6, 0.62, 0.54, 0.67, 0.61, 0.6, 0.63, 0.66, 0.68, 0.62, 0.58, 0.6, 0.66, 0.65, 0.68, 0.64, 0.67, 0.66, 0.59, 0.64, 0.58, 0.6, 0.64, 0.65, 0.66, 0.58, 0.66, 0.66, 0.63, 0.64, 0.62, 0.58, 0.57, 0.66, 0.63, 0.63, 0.64, 0.64, 0.61, 0.67, 0.62, 0.6, 0.6, 0.6, 0.64, 0.6, 0.65, 0.62, 0.6, 0.63, 0.65, 0.61, 0.58, 0.6, 0.63, 0.67, 0.61, 0.67, 0.65, 0.62, 0.66, 0.62, 0.63, 0.61, 0.6, 0.66, 0.66, 0.61, 0.58, 0.65, 0.65, 0.64, 0.64, 0.59, 0.54, 0.54, 0.63, 0.63, 0.52, 0.61, 0.65, 0.64, 0.65, 0.64, 0.64, 0.6, 0.63, 0.62, 0.63, 0.63, 0.61, 0.55, 0.62, 0.65, 0.6, 0.62, 0.69, 0.61, 0.59, 0.58, 0.61, 0.54, 0.66, 0.64, 0.66, 0.59, 0.69, 0.65, 0.69, 0.58, 0.58, 0.65, 0.63, 0.61, 0.55, 0.58, 0.64, 0.62, 0.65, 0.6, 0.55, 0.7, 0.62, 0.62, 0.55, 0.63, 0.63, 0.59, 0.6, 0.65, 0.65, 0.61, 0.63, 0.61, 0.54, 0.61, 0.67, 0.66, 0.66, 0.65, 0.69, 0.6, 0.6, 0.63, 0.62, 0.68, 0.64, 0.64, 0.61, 0.58, 0.56, 0.65, 0.57, 0.58, 0.62, 0.63, 0.58, 0.56, 0.62, 0.57, 0.6, 0.6, 0.71, 0.57, 0.6, 0.62, 0.65, 0.56, 0.64, 0.65, 0.63, 0.6, 0.66, 0.61, 0.65, 0.64, 0.64, 0.62, 0.63, 0.61, 0.64, 0.62, 0.64, 0.67, 0.62, 0.59, 0.57, 0.64, 0.62, 0.6, 0.68, 0.67, 0.66, 0.58, 0.64, 0.63, 0.55, 0.67, 0.65, 0.68, 0.64, 0.59, 0.62, 0.62, 0.61, 0.61, 0.61, 0.66, 0.64, 0.64, 0.61, 0.62, 0.63, 0.58, 0.65, 0.61, 0.67, 0.59, 0.57, 0.6, 0.64, 0.64, 0.64, 0.64, 0.65, 0.6, 0.59, 0.64, 0.62, 0.64, 0.59, 0.68, 0.55, 0.6, 0.66, 0.63, 0.64, 0.59, 0.67, 0.65, 0.54, 0.63, 0.62, 0.6, 0.65, 0.58, 0.62, 0.61, 0.59, 0.61, 0.62, 0.66, 0.6, 0.62, 0.65, 0.62, 0.64, 0.6, 0.62, 0.59, 0.67, 0.63, 0.6, 0.63, 0.65, 0.63, 0.59, 0.66, 0.68, 0.52, 0.57, 0.65, 0.66, 0.59, 0.63, 0.62, 0.65, 0.63, 0.63, 0.55, 0.66, 0.57, 0.64, 0.62, 0.69, 0.68, 0.57, 0.64, 0.64, 0.69, 0.62, 0.62, 0.65, 0.62, 0.63, 0.68</li>
-<li><em>n</em> = 101.86</li>
-</ul>
 
 </div>
 </div>
@@ -1145,7 +1138,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["_main.pdf"],
+"download": null,
 "toc": {
 "collapse": "subsection"
 }

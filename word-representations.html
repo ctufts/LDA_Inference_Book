@@ -5,24 +5,24 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>LDA Tutorial</title>
-  <meta name="description" content="LDA Tutorial">
+  <title>The Little Book of LDA</title>
+  <meta name="description" content="A comprehensive overview of LDA and Gibbs Sampling.">
   <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
 
-  <meta property="og:title" content="LDA Tutorial" />
+  <meta property="og:title" content="The Little Book of LDA" />
   <meta property="og:type" content="book" />
-  
-  
-  
+  <meta property="og:url" content="https://ldabook.com/" />
+  <meta property="og:image" content="https://ldabook.com/Images/cover_image_small.png" />
+  <meta property="og:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="LDA Tutorial" />
+  <meta name="twitter:title" content="The Little Book of LDA" />
   <meta name="twitter:site" content="@devlintufts" />
-  
-  
+  <meta name="twitter:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
+  <meta name="twitter:image" content="https://ldabook.com/Images/cover_image_small.png" />
 
-<meta name="author" content="Chris Tufts">
+<meta name="author" content="Chris Tufts   @devlintufts">
 
 
 
@@ -30,7 +30,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
-  
+  <link rel="shortcut icon" href="Images/favicon.ico" type="image/x-icon">
 <link rel="prev" href="multinomial-distribution.html">
 <link rel="next" href="lda-as-a-generative-model.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -46,6 +46,15 @@
 
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-62188022-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-62188022-3');
+</script>
 
 
 <style type="text/css">
@@ -86,6 +95,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -98,9 +108,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome to The Little Book of LDA</a></li>
 <li class="chapter" data-level="" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i>Background</a></li>
-<li class="chapter" data-level="" data-path="layout-of-book.html"><a href="layout-of-book.html"><i class="fa fa-check"></i>Layout of Book</a></li>
 <li class="chapter" data-level="" data-path="package-references.html"><a href="package-references.html"><i class="fa fa-check"></i>Package References</a></li>
 <li class="chapter" data-level="1" data-path="what-is-lda.html"><a href="what-is-lda.html"><i class="fa fa-check"></i><b>1</b> What is LDA?</a><ul>
 <li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a><ul>
@@ -165,7 +174,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">LDA Tutorial</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The Little Book of LDA</a>
           </h1>
         </div>
 
@@ -197,7 +206,11 @@ Figure 4.1: Bag of Words Representation
 </li>
 <li>Topic sum vector (variable name: <em>n_topic_sum</em>, dimensions: <em>1 x Topics</em>): The topic sum vector keeps count of the total number of words in the entire corpus (all docs together) assigned to each topic. This is just a column sum of the document topic matrix.</li>
 </ol>
-<p><em>Note: My example code uses a very small vocabulary and therefore the row/column assignment for the matrices above has very little effect on computational efficiency/speed. If you are writing code to do LDA, you may want to swap around the row/columns to maximize efficiency, i.e. some languages are much faster row-wise than column-wise.</em></p>
+
+<div class="rmdnote">
+My example code uses a very small vocabulary and therefore the row/column assignment for the matrices above has very little effect on computational efficiency/speed. If you are writing code to do LDA, you may want to swap around the row/columns to maximize efficiency, i.e. some languages are much faster row-wise than column-wise.
+</div>
+
 <p>The structures above are necessary for performing inference tasks utilizing LDA. We will go over how these structures are initialized, updated, and utilized in Chapter 6.</p>
 </div>
 <div id="plug-and-play-lda" class="section level2">
@@ -244,7 +257,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["_main.pdf"],
+"download": null,
 "toc": {
 "collapse": "subsection"
 }

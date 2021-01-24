@@ -5,24 +5,24 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>LDA Tutorial</title>
-  <meta name="description" content="LDA Tutorial">
+  <title>The Little Book of LDA</title>
+  <meta name="description" content="A comprehensive overview of LDA and Gibbs Sampling.">
   <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
 
-  <meta property="og:title" content="LDA Tutorial" />
+  <meta property="og:title" content="The Little Book of LDA" />
   <meta property="og:type" content="book" />
-  
-  
-  
+  <meta property="og:url" content="https://ldabook.com/" />
+  <meta property="og:image" content="https://ldabook.com/Images/cover_image_small.png" />
+  <meta property="og:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="LDA Tutorial" />
+  <meta name="twitter:title" content="The Little Book of LDA" />
   <meta name="twitter:site" content="@devlintufts" />
-  
-  
+  <meta name="twitter:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
+  <meta name="twitter:image" content="https://ldabook.com/Images/cover_image_small.png" />
 
-<meta name="author" content="Chris Tufts">
+<meta name="author" content="Chris Tufts   @devlintufts">
 
 
 
@@ -30,7 +30,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
-  
+  <link rel="shortcut icon" href="Images/favicon.ico" type="image/x-icon">
 <link rel="prev" href="package-references.html">
 <link rel="next" href="parameter-estimation.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -46,6 +46,15 @@
 
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-62188022-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-62188022-3');
+</script>
 
 
 <style type="text/css">
@@ -86,6 +95,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -98,9 +108,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome to The Little Book of LDA</a></li>
 <li class="chapter" data-level="" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i>Background</a></li>
-<li class="chapter" data-level="" data-path="layout-of-book.html"><a href="layout-of-book.html"><i class="fa fa-check"></i>Layout of Book</a></li>
 <li class="chapter" data-level="" data-path="package-references.html"><a href="package-references.html"><i class="fa fa-check"></i>Package References</a></li>
 <li class="chapter" data-level="1" data-path="what-is-lda.html"><a href="what-is-lda.html"><i class="fa fa-check"></i><b>1</b> What is LDA?</a><ul>
 <li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a><ul>
@@ -165,7 +174,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">LDA Tutorial</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The Little Book of LDA</a>
           </h1>
         </div>
 
@@ -175,18 +184,23 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="what-is-lda" class="section level1">
 <h1><span class="header-section-number">1</span> What is LDA?</h1>
-<p>Latent Dirichlet Allocation (LDA) is a generative probablistic model for collections of discrete data developed by Blei, Ng, and Jordan. <span class="citation">(Blei, Ng, and Jordan <a href="references.html#ref-blei2003latent">2003</a>)</span> One of the most common uses of LDA is for modeling collections of text. LDA is often used for what is known as topic modeling.</p>
-<p>A topic is a probability distribution over words.<span class="citation">(Steyvers and Griffiths <a href="references.html#ref-steyvers2007probabilistic">2007</a>)</span> Imagine you have a bag that has a bunch of little squares in it with a word printed on each (similar to the game Scrabble, but words instead of letters). Any word not in the bag has a probability of being drawn equal to zero. However all other words in the bag have a probability greater than zero. Let’s say we have 2 chips with the word ‘philadelphia’ and 1 with the word ‘eagles’ on it. We would say you have a 1/3 chance of drawing ‘eagles’, 2/3 chance of drawing ‘philadelphia’, and 0 for any other word. This is effectively what a topic is; it provides us with the probabilities of a set of words for the given topic.</p>
-<p>—————–IMAGE PLACE HOLDER - different bags of topics————————-</p>
+<p>Latent Dirichlet Allocation (LDA) is a generative probablistic model for collections of discrete data developed by Blei, Ng, and Jordan. <span class="citation">(Blei, Ng, and Jordan <a href="references.html#ref-blei2003latent">2003</a>)</span> The most common use of LDA is for modeling of collections of text, also known as <em>topic modeling</em>.</p>
+<p>A topic is a probability distribution over words.<span class="citation">(Steyvers and Griffiths <a href="references.html#ref-steyvers2007probabilistic">2007</a>)</span> Imagine you have a bag that has a bunch of little squares in it with a word printed on each (similar to the game Scrabble, but a word on each chip instead of a single letter). Any word not in the bag has a probability of being drawn equal to zero. However, all other words in the bag have a probability greater than zero. Let’s say we have 2 chips with the word ‘Philadelphia’ and 1 with the word ‘Eagles’ on it. We would say you have a 1/3 chance of drawing ‘Eagles’, 2/3 chance of drawing ‘Philadelphia’, and 0 for any other word. This is effectively what a topic is; it provides us with the probabilities of a set of words for the given topic.</p>
+<div class="figure" style="text-align: center"><span id="fig:BOWScrabble"></span>
+<img src="Images/BOW_scrabble.png" alt="Topic Scrabble: Philadelphia and Seattle" width="75%" height="75%" />
+<p class="caption">
+Figure 1.1: Topic Scrabble: Philadelphia and Seattle
+</p>
+</div>
 <p>The general idea of LDA is that each document is generated from a mixture of topics and each of those topics is a mixture of words. This can be used as a mechanism for generating new documents, i.e. we know the topics a priori, or for inferring topics present in a set of documents we already have.</p>
 <p>In regards to the model name, you can think of it as follows:</p>
 <ul>
-<li><b>Latent</b>: Topic structures in a document are ‘latent’ meaning they are hidden structures in the text.</li>
+<li><b>Latent</b>: Topic structures in a document are <strong>latent</strong> meaning they are <strong>hidden</strong> structures in the text.</li>
 <li><b>Dirichlet</b>: The Dirichlet distribution determines the mixture proportions of the topics in the documents and the words in each topic.</li>
 <li><b>Allocation</b>: Allocation of words to a given topic.</li>
 </ul>
 <p>To review: we have latent structures in a corpus (topics), with topic distributions in each document and word distributions in each topic based on the Dirichlet distribution, to allocate words to a given topic and topics to a given document.</p>
-<p>I realize many reading this may be unfamiliar with some of the terminology and distributions mentioned in the opening paragraphs. Please keep reading, all the nuts an bolts will be addressed in the following chapters, but to help get an understanding of what LDA is and why it is useful, I will offer a quick example and we will get to the math and technical concepts in the following chapters.</p>
+<p>I realize some readers may be unfamiliar with a portion of the terminology and distributions mentioned in the opening paragraphs. Please keep reading, all the nuts an bolts will be addressed in the following chapters, but to help get an understanding of what LDA is and why it is useful, I will offer a quick example. We will get to the math and technical concepts in the following chapters.</p>
 <div id="animal-generator" class="section level2">
 <h2><span class="header-section-number">1.1</span> Animal Generator</h2>
 <p>The majority of this book is about words, topics, and documents, but lets start with something a bit different: animals and where they live. One of the ways you can classify animals is by where they spend the majority of their time - land, air, sea. Obviously there are some animals that only dwell in one place; a cow only lives on land and a fish only lives in the sea. However, there are other animals, such as some birds, that split their time between land, sea, and air.</p>
@@ -194,7 +208,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>So let’s move on to generating a specific location. We know that different locations will vary in terms of which habitats are present. For example, a beach contains land, sea, and air, but some areas inland may only contain air and land like a desert. We can define the mixture of these types of habitats in each location. For example, a beach is 1/3 land, 1/3 sea, and 1/3 air. We can think of the beach as a single document. To review: a given location (<em>document</em>) contains a mixture of land, air, and sea (<em>topics</em>) and each of those contain different mixtures of animals (<em>words</em>).</p>
 <p>Let’s work through some examples using our animals and habitats. The examples provided in this chapter are oversimplified so that we can get a general idea how LDA works.</p>
 <p>We’ll start by generating our beach location with 1/3 land animals, 1/3 sea animals, and 1/3 air animals. Below you can see our collection of animals and their probability in each topic. Note that some animals have zero probabilities in a given topic, i.e. a cow is never in the ocean, where some have higher probabilities than others; a crab is in the sea sometimes, but a fish is always in the sea. You may notice that there is only 1 animal in the air category. There are several birds, but only 1 of them is cabable of flight in our vocabulary.</p>
-<p>(NOTE: These are the probability of a word <b>given</b> the topic and therefore the probabilities of each habitat (<em>column</em>) sum to 1.)</p>
+
+<div class="rmdnote">
+These are the probability of a word <b>given</b> the topic and therefore the probabilities of each habitat (<em>column</em>) sum to 1.
+</div>
+
 <table>
 <caption><span id="tab:animalVocab">Table 1.1: </span>Animal Distributions in Each Habitat</caption>
 <thead>
@@ -322,16 +340,16 @@ equal_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(equal_doc)</code></pre></div>
-<pre><code>## 🐂 🐿 🐢 🐍 🐙 🦀 🐦 🐦 🐦</code></pre>
-<p>NOTE: In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach.</p>
+<pre><code>## 🐘 🐂 🐪 🐧 🐧 🐙 🐦 🐦 🐦</code></pre>
+<p>In the above example the topic mixtures are static and equal, so each habitat (<i>topic</i>) contributes 3 animals to the beach.</p>
 <p>Before proceeding, I want to take a moment to give recognition to Tim Hopper for his presentation utilizing emoji to shed some light on how generative LDA works <span class="citation">(Hopper <a href="references.html#ref-HopperTopicModels">2016</a>)</span>.</p>
 <p>Ok, now let’s make an ocean setting. In the case of the ocean we only have sea and air present, so our topic distribution in the document would be 50% sea, 50% air, and 0% land.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">words_per_topic &lt;-<span class="st"> </span><span class="dv">3</span>
 ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>sea, <span class="dt">replace =</span> T)],
                vocab[<span class="kw">sample.int</span>(<span class="kw">length</span>(vocab),words_per_topic, <span class="dt">prob=</span>phi_ds<span class="op">$</span>air, <span class="dt">replace =</span> T)])
 <span class="kw">cat</span>(ocean_doc)</code></pre></div>
-<pre><code>## 🐙 🦀 🐳 🐦 🐦 🐦</code></pre>
-<p>NOTE: In the example above only the air and land contribute to the ocean location. Therefore they both contribute an equal number of animals to the location.</p>
+<pre><code>## 🐋 🐳 🐢 🐦 🐦 🐦</code></pre>
+<p>In the example above only the air and land contribute to the ocean location. Therefore they both contribute an equal number of animals to the location.</p>
 <div id="generating-the-mixtures" class="section level3">
 <h3><span class="header-section-number">1.1.1</span> Generating the Mixtures</h3>
 <p>It is important to note the examples above use static word and topic mixtures that were predetermined, but these mixtures could just as easily be created by sampling from a Dirichlet distribution. This is an important distinction to make as it is the foundation of how we can use LDA to infer topic structures in our documents. The Dirichlet distribution and it’s role in LDA is discussed in detail in the coming chapters.</p>
@@ -351,11 +369,11 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="left">🐦 🐧 🐦 🐙 🐦 🐋 🐍 🐦 🐦 🐑 🐦 🐙 🐘 🐦 🐦 🐢 🐍 🐦 🐠 🐦 🐋 🐠 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐙 🐦 🐙 🐦 🐍 🐦 🐦 🐋 🐠 🐑 🐧 🐦 🐦 🐓 🐂 🐦 🐢 🐦 🐑 🐦 🐦 🐍 🐦 🐦 🐦 🦀 🐦 🐠 🐦 🐦 🐦 🐙 🐦 🐊 🐦 🐳 🐠 🐦 🐳 🐠 🐊 🐟 🐦 🐦 🐦 🐧 🐦 🐠 🐦 🐋 🐟 🐦 🐦 🐦 🐦 🐦 🐍 🐦 🐙 🐦 🐠 🐊 🐠 🐟 🐦 🐦 🐦 🐳 🦀 🐦 🐋 🐿 🐦 🐍</td>
+<td align="left">🐪 🐘 🐪 🐘 🐦 🐓 🐪 🐪 🐍 🐪 🐧 🦀 🦀 🐪 🐓 🐍 🐘 🐓 🐍 🐿 🐧 🐢 🐧 🦃 🦃 🐧 🐦 🐑 🐑 🐊 🐳 🦀 🦀 🐿 🐢 🐢 🐿 🐓 🐪 🐊 🐘 🐦 🐪 🐂 🐍 🐓 🐍 🐓 🐦 🐍 🦃 🐦 🐪 🐍 🐿 🐦 🐦 🐂 🐿 🐍 🐂 🐿 🐦 🐦 🐑 🐂 🐓 🐓 🐧 🐑 🐦 🐪 🐦 🐧 🐿 🐪 🐦 🐢 🦃 🐿 🦃 🐦 🐑 🐊 🦃 🐪 🦃 🐓 🐂 🐊 🐊 🐂 🦃</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="left">🐦 🐦 🐍 🐦 🐦 🐦 🐦 🐢 🐙 🐦 🐦 🐪 🐘 🐠 🐊 🐙 🐦 🐦 🐦 🐟 🐢 🐦 🐦 🐓 🐦 🐍 🐦 🐟 🐦 🐦 🐦 🐦 🐦 🐋 🐦 🐪 🐦 🐦 🐦 🐦 🐙 🐦 🐋 🐧 🐦 🐙 🐍 🐦 🐿 🐦 🐦 🐦 🐪 🐠 🐓 🐦 🐦 🐍 🐘 🐦 🐳 🐳 🐦 🐍 🐢 🐓 🐳 🐍 🐙 🐦 🐦 🐙 🐢 🦀 🐦 🐿 🐦 🐦 🐦 🐦 🐦 🐦 🐦 🐑 🐪 🐑 🐙 🐧 🐦 🐘 🦀 🐊 🐘 🐠 🐦 🐦 🐦 🐠 🐦 🐟 🦀 🐋 🐦 🐦 🐦 🐦 🐦</td>
+<td align="left">🐙 🐂 🐦 🐦 🐓 🐧 🐪 🐙 🐧 🐙 🐪 🐘 🐋 🐂 🐦 🐧 🐦 🐙 🐦 🐳 🐟 🐊 🐟 🐢 🐠 🐠 🐪 🐢 🐦 🐘 🐍 🐳 🦃 🐟 🐙 🦀 🐊 🐳 🐪 🐠 🐧 🐢 🐢 🐦 🐍 🐧 🐿 🐢 🐪 🐢 🐧 🐓 🐑 🐳 🐧 🐍 🐊 🐂 🦃 🐋 🐪 🐓 🐿 🐟 🐙 🐋 🦀 🐂 🐦 🐳 🐢 🐟 🐦 🐘 🐊 🐓 🐓 🐧 🐊 🐢 🐪 🐓 🐊 🐢 🐑 🐢 🐙 🐊 🐢 🐧 🐪</td>
 </tr>
 </tbody>
 </table>
@@ -365,23 +383,23 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <thead>
 <tr class="header">
 <th align="right">Document</th>
+<th align="right">air</th>
 <th align="right">land</th>
 <th align="right">sea</th>
-<th align="right">air</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
 <td align="right">0.09</td>
-<td align="right">0.34</td>
-<td align="right">0.58</td>
+<td align="right">0.90</td>
+<td align="right">0.01</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="right">0.24</td>
-<td align="right">0.31</td>
-<td align="right">0.46</td>
+<td align="right">0.09</td>
+<td align="right">0.51</td>
+<td align="right">0.39</td>
 </tr>
 </tbody>
 </table>
@@ -392,176 +410,176 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <thead>
 <tr class="header">
 <th></th>
+<th align="right">air estimated</th>
+<th align="right">air</th>
 <th align="right">land estimated</th>
 <th align="right">land</th>
 <th align="right">sea estimated</th>
 <th align="right">sea</th>
-<th align="right">air estimated</th>
-<th align="right">air</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>🐋</td>
 <td align="right">0.00</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
-<td align="right">0.12</td>
-<td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.11</td>
+<td align="right">0.12</td>
 </tr>
 <tr class="even">
 <td>🐳</td>
 <td align="right">0.01</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
-<td align="right">0.12</td>
-<td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.01</td>
+<td align="right">0.00</td>
+<td align="right">0.10</td>
+<td align="right">0.12</td>
 </tr>
 <tr class="odd">
 <td>🐟</td>
-<td align="right">0.01</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+<td align="right">0.00</td>
 <td align="right">0.00</td>
 <td align="right">0.11</td>
 <td align="right">0.12</td>
-<td align="right">0.00</td>
-<td align="right">0</td>
 </tr>
 <tr class="even">
 <td>🐠</td>
 <td align="right">0.00</td>
+<td align="right">0</td>
+<td align="right">0.00</td>
 <td align="right">0.00</td>
 <td align="right">0.12</td>
 <td align="right">0.12</td>
-<td align="right">0.01</td>
-<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td>🐙</td>
 <td align="right">0.00</td>
-<td align="right">0.00</td>
-<td align="right">0.12</td>
-<td align="right">0.12</td>
-<td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.12</td>
+<td align="right">0.12</td>
 </tr>
 <tr class="even">
 <td>🦀</td>
-<td align="right">0.05</td>
-<td align="right">0.05</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
 <td align="right">0.01</td>
 <td align="right">0</td>
+<td align="right">0.04</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0.06</td>
 </tr>
 <tr class="odd">
 <td>🐊</td>
-<td align="right">0.05</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
-<td align="right">0.06</td>
-<td align="right">0.01</td>
+<td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.05</td>
+<td align="right">0.05</td>
+<td align="right">0.07</td>
+<td align="right">0.06</td>
 </tr>
 <tr class="even">
 <td>🐢</td>
-<td align="right">0.05</td>
-<td align="right">0.05</td>
-<td align="right">0.06</td>
-<td align="right">0.06</td>
-<td align="right">0.00</td>
+<td align="right">0.01</td>
 <td align="right">0</td>
+<td align="right">0.05</td>
+<td align="right">0.05</td>
+<td align="right">0.06</td>
+<td align="right">0.06</td>
 </tr>
 <tr class="odd">
 <td>🐍</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
 <td align="right">0.06</td>
 <td align="right">0.05</td>
+<td align="right">0.05</td>
 <td align="right">0.06</td>
-<td align="right">0.06</td>
-<td align="right">0.01</td>
-<td align="right">0</td>
 </tr>
 <tr class="even">
 <td>🐓</td>
-<td align="right">0.11</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+<td align="right">0.10</td>
 <td align="right">0.10</td>
 <td align="right">0.00</td>
 <td align="right">0.00</td>
-<td align="right">0.00</td>
-<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td>🦃</td>
-<td align="right">0.10</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
-<td align="right">0.00</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.10</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🐦</td>
-<td align="right">0.03</td>
+<td align="right">0.95</td>
+<td align="right">1</td>
+<td align="right">0.02</td>
 <td align="right">0.05</td>
 <td align="right">0.11</td>
 <td align="right">0.06</td>
-<td align="right">0.93</td>
-<td align="right">1</td>
 </tr>
 <tr class="odd">
 <td>🐧</td>
-<td align="right">0.06</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+<td align="right">0.05</td>
 <td align="right">0.05</td>
 <td align="right">0.06</td>
 <td align="right">0.06</td>
-<td align="right">0.00</td>
-<td align="right">0</td>
 </tr>
 <tr class="even">
 <td>🐿</td>
-<td align="right">0.09</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+<td align="right">0.10</td>
 <td align="right">0.10</td>
 <td align="right">0.01</td>
 <td align="right">0.00</td>
-<td align="right">0.00</td>
-<td align="right">0</td>
 </tr>
 <tr class="odd">
 <td>🐘</td>
-<td align="right">0.10</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
-<td align="right">0.00</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.10</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td>🐂</td>
-<td align="right">0.08</td>
-<td align="right">0.10</td>
-<td align="right">0.01</td>
 <td align="right">0.00</td>
-<td align="right">0.01</td>
 <td align="right">0</td>
+<td align="right">0.10</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="odd">
 <td>🐑</td>
-<td align="right">0.10</td>
-<td align="right">0.10</td>
-<td align="right">0.00</td>
-<td align="right">0.00</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
-</tr>
-<tr class="even">
-<td>🐪</td>
 <td align="right">0.10</td>
 <td align="right">0.10</td>
 <td align="right">0.01</td>
 <td align="right">0.00</td>
+</tr>
+<tr class="even">
+<td>🐪</td>
 <td align="right">0.00</td>
 <td align="right">0</td>
+<td align="right">0.11</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
 </tr>
 </tbody>
 </table>
@@ -571,68 +589,68 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <thead>
 <tr class="header">
 <th align="right">Location</th>
+<th align="right">air estimated</th>
+<th align="right">air</th>
 <th align="right">land estimated</th>
 <th align="right">land</th>
 <th align="right">sea estimated</th>
 <th align="right">sea</th>
-<th align="right">air estimated</th>
-<th align="right">air</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="right">0.08</td>
 <td align="right">0.09</td>
-<td align="right">0.51</td>
-<td align="right">0.34</td>
-<td align="right">0.42</td>
-<td align="right">0.58</td>
+<td align="right">0.09</td>
+<td align="right">0.90</td>
+<td align="right">0.90</td>
+<td align="right">0.01</td>
+<td align="right">0.01</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="right">0.18</td>
-<td align="right">0.24</td>
-<td align="right">0.31</td>
-<td align="right">0.31</td>
-<td align="right">0.51</td>
+<td align="right">0.05</td>
+<td align="right">0.09</td>
 <td align="right">0.46</td>
+<td align="right">0.51</td>
+<td align="right">0.48</td>
+<td align="right">0.39</td>
 </tr>
 <tr class="odd">
 <td align="right">3</td>
-<td align="right">0.16</td>
-<td align="right">0.07</td>
-<td align="right">0.62</td>
+<td align="right">0.41</td>
+<td align="right">0.36</td>
+<td align="right">0.54</td>
 <td align="right">0.64</td>
-<td align="right">0.22</td>
-<td align="right">0.29</td>
+<td align="right">0.05</td>
+<td align="right">0.00</td>
 </tr>
 <tr class="even">
 <td align="right">4</td>
-<td align="right">0.63</td>
-<td align="right">0.59</td>
-<td align="right">0.16</td>
-<td align="right">0.20</td>
-<td align="right">0.21</td>
-<td align="right">0.21</td>
+<td align="right">0.53</td>
+<td align="right">0.50</td>
+<td align="right">0.45</td>
+<td align="right">0.48</td>
+<td align="right">0.02</td>
+<td align="right">0.01</td>
 </tr>
 <tr class="odd">
 <td align="right">5</td>
-<td align="right">0.11</td>
-<td align="right">0.09</td>
-<td align="right">0.74</td>
-<td align="right">0.74</td>
-<td align="right">0.14</td>
-<td align="right">0.17</td>
+<td align="right">0.47</td>
+<td align="right">0.41</td>
+<td align="right">0.25</td>
+<td align="right">0.40</td>
+<td align="right">0.27</td>
+<td align="right">0.19</td>
 </tr>
 <tr class="even">
 <td align="right">6</td>
-<td align="right">0.77</td>
-<td align="right">0.72</td>
-<td align="right">0.01</td>
-<td align="right">0.04</td>
-<td align="right">0.22</td>
-<td align="right">0.24</td>
+<td align="right">0.03</td>
+<td align="right">0.02</td>
+<td align="right">0.35</td>
+<td align="right">0.38</td>
+<td align="right">0.62</td>
+<td align="right">0.59</td>
 </tr>
 </tbody>
 </table>
@@ -641,9 +659,9 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <caption><span id="tab:cosineDistanceDocTop">Table 1.6: </span>Cosine Similarity between Estimated Document Topic Distributions and Real Distributions</caption>
 <thead>
 <tr class="header">
+<th align="left">air</th>
 <th align="left">land</th>
 <th align="left">sea</th>
-<th align="left">air</th>
 </tr>
 </thead>
 <tbody>
@@ -658,16 +676,16 @@ ocean_doc &lt;-<span class="st"> </span><span class="kw">c</span>(vocab[<span cl
 <caption><span id="tab:cosineDistanceTermTop">Table 1.7: </span>Cosine Similarity between Estimated Topic Word Distributions and Real Distributions</caption>
 <thead>
 <tr class="header">
+<th align="left">air</th>
 <th align="left">land</th>
 <th align="left">sea</th>
-<th align="left">air</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">1.00</td>
 <td align="left">0.99</td>
 <td align="left">0.98</td>
-<td align="left">1.00</td>
 </tr>
 </tbody>
 </table>
@@ -712,7 +730,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["_main.pdf"],
+"download": null,
 "toc": {
 "collapse": "subsection"
 }

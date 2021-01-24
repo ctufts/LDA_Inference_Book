@@ -5,24 +5,24 @@
 
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>LDA Tutorial</title>
-  <meta name="description" content="LDA Tutorial">
+  <title>The Little Book of LDA</title>
+  <meta name="description" content="A comprehensive overview of LDA and Gibbs Sampling.">
   <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
 
-  <meta property="og:title" content="LDA Tutorial" />
+  <meta property="og:title" content="The Little Book of LDA" />
   <meta property="og:type" content="book" />
-  
-  
-  
+  <meta property="og:url" content="https://ldabook.com/" />
+  <meta property="og:image" content="https://ldabook.com/Images/cover_image_small.png" />
+  <meta property="og:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="LDA Tutorial" />
+  <meta name="twitter:title" content="The Little Book of LDA" />
   <meta name="twitter:site" content="@devlintufts" />
-  
-  
+  <meta name="twitter:description" content="A comprehensive overview of LDA and Gibbs Sampling." />
+  <meta name="twitter:image" content="https://ldabook.com/Images/cover_image_small.png" />
 
-<meta name="author" content="Chris Tufts">
+<meta name="author" content="Chris Tufts   @devlintufts">
 
 
 
@@ -30,7 +30,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
-  
+  <link rel="shortcut icon" href="Images/favicon.ico" type="image/x-icon">
 
 <link rel="next" href="background.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
@@ -46,6 +46,15 @@
 
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-62188022-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-62188022-3');
+</script>
 
 
 <style type="text/css">
@@ -86,6 +95,7 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
+<link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
 <body>
@@ -98,9 +108,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Preface</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Welcome to The Little Book of LDA</a></li>
 <li class="chapter" data-level="" data-path="background.html"><a href="background.html"><i class="fa fa-check"></i>Background</a></li>
-<li class="chapter" data-level="" data-path="layout-of-book.html"><a href="layout-of-book.html"><i class="fa fa-check"></i>Layout of Book</a></li>
 <li class="chapter" data-level="" data-path="package-references.html"><a href="package-references.html"><i class="fa fa-check"></i>Package References</a></li>
 <li class="chapter" data-level="1" data-path="what-is-lda.html"><a href="what-is-lda.html"><i class="fa fa-check"></i><b>1</b> What is LDA?</a><ul>
 <li class="chapter" data-level="1.1" data-path="what-is-lda.html"><a href="what-is-lda.html#animal-generator"><i class="fa fa-check"></i><b>1.1</b> Animal Generator</a><ul>
@@ -165,7 +174,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">LDA Tutorial</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">The Little Book of LDA</a>
           </h1>
         </div>
 
@@ -174,17 +183,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title">LDA Tutorial</h1>
-<h4 class="author"><em>Chris Tufts</em></h4>
+<h1 class="title">The Little Book of LDA</h1>
+<h4 class="author"><em><a href="https://twitter.com/devlintufts">Chris Tufts <br/> @devlintufts</a></em></h4>
 </div>
-<div id="preface" class="section level1 unnumbered">
-<h1>Preface</h1>
-<p>DISCLAIMER: THIS BOOK IS NOT COMPLETE (WORK IN PROGRESS):</p>
+<div id="welcome-to-the-little-book-of-lda" class="section level1 unnumbered">
+<h1>Welcome to The Little Book of LDA</h1>
+<p><img   style="border: 1px solid black;display: block; margin: auto;" src="Images/cover_image_small.png"/></p>
+<p>The purpose of this book is to provide a step by step guide to Latent Dirichlet Allocation (LDA) utilizing Gibbs Sampling. It is inspired by Gregor Heinrich’s <em>Parameter Estimation for Text Analysis</em> <span class="citation">(Heinrich <a href="references.html#ref-heinrich2008parameter">2008</a>)</span> which provides a walk through parameter estimation, Gibbs Sampling, and LDA. This book extends many of those subjects and provides small code examples written in R.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />This work by Chris Tufts is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.</p>
+<p><strong>DISCLAIMER: THIS BOOK IS NOT COMPLETE (WORK IN PROGRESS):</strong></p>
 <ul>
-<li>Please note this is a work in progress and is only being made available for viewing to provide an overview of the project.</li>
-<li>Please do not share.</li>
+<li>While much of the content of the book is present, there is still rounds of editing and additional information required in each chapter.</li>
 </ul>
-<p>The purpose of this book is to provide a step by step guide of LDA utilizing Gibbs Sampling. It is heavily inspired by the Gregor Heinrich’s <em>Parameter Estimation for Text Analysis</em><span class="citation">(Heinrich <a href="references.html#ref-heinrich2008parameter">2008</a>)</span>.</p>
 </div>
             </section>
 
@@ -224,7 +234,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["_main.pdf"],
+"download": null,
 "toc": {
 "collapse": "subsection"
 }
