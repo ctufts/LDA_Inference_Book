@@ -1,2 +1,0 @@
-* Find a way to denote - "hey skip this section if you don't care about 
-math derivations and want to just know what the bottom line is"
